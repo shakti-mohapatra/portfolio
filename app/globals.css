@@ -12,15 +12,113 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ── Keyframes ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes floatBob {
+  0%,  100% { transform: translateY(0px)   rotate(0deg);  }
+  33%        { transform: translateY(-22px) rotate(2deg);  }
+  66%        { transform: translateY(-10px) rotate(-1deg); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-28px); }
+  to   { opacity: 1; transform: translateX(0);     }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* ── Hero entry utilities ── */
+@layer utilities {
+  .anim-fade-in {
+    animation: fadeIn 0.6s ease-out both;
+  }
+  .anim-fade-in-up {
+    animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .anim-float {
+    animation: floatBob 8s ease-in-out infinite;
+  }
+}
+
+/* ── Scroll-reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s ease-out, transform 0.65s ease-out;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(28px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Stagger skill tags once parent is visible */
+.reveal-right.visible .skill-tag {
+  animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.reveal-right.visible .skill-tag:nth-child(1)  { animation-delay: 0ms;   }
+.reveal-right.visible .skill-tag:nth-child(2)  { animation-delay: 60ms;  }
+.reveal-right.visible .skill-tag:nth-child(3)  { animation-delay: 120ms; }
+.reveal-right.visible .skill-tag:nth-child(4)  { animation-delay: 180ms; }
+.reveal-right.visible .skill-tag:nth-child(5)  { animation-delay: 240ms; }
+.reveal-right.visible .skill-tag:nth-child(6)  { animation-delay: 300ms; }
+.reveal-right.visible .skill-tag:nth-child(7)  { animation-delay: 360ms; }
+.reveal-right.visible .skill-tag:nth-child(8)  { animation-delay: 420ms; }
+
+/* Gradient text shimmer on hero */
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    #4f46e5 0%,
+    #7c3aed 40%,
+    #4f46e5 80%,
+    #7c3aed 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
 }
