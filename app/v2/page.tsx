@@ -29,6 +29,7 @@ function GitHubIcon() {
     </svg>
   );
 }
+
 function ArrowUpRight({ className = "w-4 h-4" }: { className?: string }) {
   return (
     <svg viewBox="0 0 20 20" fill="currentColor" className={className} aria-hidden>
@@ -36,11 +37,37 @@ function ArrowUpRight({ className = "w-4 h-4" }: { className?: string }) {
     </svg>
   );
 }
-function ArrowDown() {
+
+// ── Service icons ────────────────────────────────────────────────────────────
+
+function ServiceIcon({ n }: { n: string }) {
+  const cls = "w-5 h-5";
+  if (n === "01") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <polyline points="16 18 22 12 16 6" />
+      <polyline points="8 6 2 12 8 18" />
+    </svg>
+  );
+  if (n === "02") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <rect x="2" y="3" width="20" height="14" rx="2" />
+      <path d="M8 21h8M12 17v4" />
+    </svg>
+  );
+  if (n === "03") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+    </svg>
+  );
+  if (n === "04") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+    </svg>
+  );
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-5 h-5" aria-hidden>
-      <line x1="12" y1="4" x2="12" y2="20" />
-      <polyline points="6 14 12 20 18 14" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <polyline points="4 17 10 11 4 5" />
+      <line x1="12" y1="19" x2="20" y2="19" />
     </svg>
   );
 }
@@ -97,10 +124,7 @@ function initHeroGL(canvas: HTMLCanvasElement): (() => void) | null {
     if (!s) return null;
     gl.shaderSource(s, src);
     gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-      gl.deleteShader(s);
-      return null;
-    }
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { gl.deleteShader(s); return null; }
     return s;
   };
 
@@ -122,11 +146,11 @@ function initHeroGL(canvas: HTMLCanvasElement): (() => void) | null {
   gl.enableVertexAttribArray(aPos);
   gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
-  const uTime = gl.getUniformLocation(prog, "u_time");
-  const uRes = gl.getUniformLocation(prog, "u_res");
+  const uTime  = gl.getUniformLocation(prog, "u_time");
+  const uRes   = gl.getUniformLocation(prog, "u_res");
   const uMouse = gl.getUniformLocation(prog, "u_mouse");
 
-  const mouse = { x: 0.5, y: 0.5 };
+  const mouse  = { x: 0.5, y: 0.5 };
   const target = { x: 0.5, y: 0.5 };
   let raf = 0;
   let visible = true;
@@ -134,7 +158,7 @@ function initHeroGL(canvas: HTMLCanvasElement): (() => void) | null {
 
   const resize = () => {
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    canvas.width = Math.floor(canvas.clientWidth * dpr);
+    canvas.width  = Math.floor(canvas.clientWidth  * dpr);
     canvas.height = Math.floor(canvas.clientHeight * dpr);
     gl.viewport(0, 0, canvas.width, canvas.height);
   };
@@ -143,15 +167,13 @@ function initHeroGL(canvas: HTMLCanvasElement): (() => void) | null {
     target.y = 1 - e.clientY / window.innerHeight;
   };
   const loop = () => {
-    if (!visible) {
-      raf = 0;
-      return;
-    }
-    mouse.x += (target.x - mouse.x) * 0.05;
-    mouse.y += (target.y - mouse.y) * 0.05;
+    if (!visible) { raf = 0; return; }
+    // Slowed from 0.05 → 0.02 for a dreamlike drift instead of snap
+    mouse.x += (target.x - mouse.x) * 0.02;
+    mouse.y += (target.y - mouse.y) * 0.02;
     const t = (performance.now() - start) / 1000;
     gl.uniform1f(uTime, t);
-    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.uniform2f(uRes,   canvas.width, canvas.height);
     gl.uniform2f(uMouse, mouse.x * canvas.width, mouse.y * canvas.height);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     raf = requestAnimationFrame(loop);
@@ -166,13 +188,13 @@ function initHeroGL(canvas: HTMLCanvasElement): (() => void) | null {
   io.observe(canvas);
 
   resize();
-  window.addEventListener("resize", resize);
+  window.addEventListener("resize",    resize);
   window.addEventListener("mousemove", onMove);
   loop();
 
   return () => {
     cancelAnimationFrame(raf);
-    window.removeEventListener("resize", resize);
+    window.removeEventListener("resize",    resize);
     window.removeEventListener("mousemove", onMove);
     io.disconnect();
   };
@@ -184,10 +206,7 @@ function HeroCanvas() {
   useEffect(() => {
     if (!ref.current) return;
     const cleanup = initHeroGL(ref.current);
-    if (!cleanup) {
-      setFailed(true);
-      return;
-    }
+    if (!cleanup) { setFailed(true); return; }
     return cleanup;
   }, []);
   return (
@@ -203,12 +222,12 @@ function HeroCanvas() {
   );
 }
 
-// ── Intro loader ─────────────────────────────────────────────────────────────
+// ── Intro loader — split reveal ───────────────────────────────────────────────
 
 function Loader({ onDone }: { onDone: () => void }) {
   const [count, setCount] = useState(0);
   const [slide, setSlide] = useState(false);
-  const [gone, setGone] = useState(false);
+  const [gone,  setGone]  = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -224,21 +243,14 @@ function Loader({ onDone }: { onDone: () => void }) {
       window.setTimeout(() => {
         setGone(true);
         document.body.style.overflow = "";
-      }, 900);
+      }, 1050);
     };
-    // Wall-clock driven so it never stalls (rAF pauses in background tabs).
     const id = window.setInterval(() => {
       const p = Math.min((Date.now() - start) / dur, 1);
       setCount(Math.floor(p * 100));
-      if (p >= 1) {
-        window.clearInterval(id);
-        finish();
-      }
+      if (p >= 1) { window.clearInterval(id); finish(); }
     }, 30);
-    const safety = window.setTimeout(() => {
-      window.clearInterval(id);
-      finish();
-    }, dur + 400);
+    const safety = window.setTimeout(() => { window.clearInterval(id); finish(); }, dur + 400);
     return () => {
       window.clearInterval(id);
       window.clearTimeout(safety);
@@ -248,32 +260,40 @@ function Loader({ onDone }: { onDone: () => void }) {
 
   if (gone) return null;
   return (
-    <div className={`v2-loader ${slide ? "done" : ""}`}>
-      <span className="v2-loader-count v2-accent-text">{String(count).padStart(3, "0")}</span>
-      <span className="text-xs uppercase tracking-[0.35em] text-white/40 mb-3">
-        shaktibuilds — building experience
-      </span>
+    <div className={`v2-loader-wrap ${slide ? "done" : ""}`} aria-hidden>
+      <div className="v2-loader-half v2-loader-left" />
+      <div className="v2-loader-half v2-loader-right" />
+      <div className="v2-loader-content">
+        <div className="v2-loader-top">
+          <span className="text-sm uppercase tracking-[0.4em] text-white/45">Shakti M.</span>
+        </div>
+        <div className="v2-loader-bottom">
+          <span className="v2-loader-count v2-accent-text">{String(count).padStart(3, "0")}</span>
+          <span className="text-xs uppercase tracking-[0.35em] text-white/35 mb-3">
+            building experience
+          </span>
+        </div>
+        <div className="v2-loader-bar">
+          <div className="v2-loader-bar-fill" style={{ width: `${count}%` }} />
+        </div>
+      </div>
     </div>
   );
 }
 
-// ── Rotating circular badge ────────────────────────────────────────────────
+// ── Scroll indicator (replaces circular badge) ────────────────────────────────
 
-function CircularBadge() {
+function ScrollIndicator() {
   return (
-    <div className="relative w-32 h-32">
-      <svg viewBox="0 0 100 100" className="v2-badge-spin w-full h-full">
-        <defs>
-          <path id="badgepath" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" fill="none" />
-        </defs>
-        <text fill="rgba(255,255,255,0.5)" style={{ fontSize: "8.5px", letterSpacing: "2.5px" }}>
-          <textPath href="#badgepath">
-            AVAILABLE FOR WORK • OPEN TO PROJECTS •
-          </textPath>
-        </text>
-      </svg>
-      <span className="absolute inset-0 flex items-center justify-center text-violet-300">
-        <ArrowDown />
+    <div className="flex flex-col items-center gap-3">
+      <div className="v2-scroll-line">
+        <div className="v2-scroll-line-fill" />
+      </div>
+      <span
+        className="text-[10px] uppercase tracking-[0.3em] text-white/35"
+        style={{ writingMode: "vertical-rl", transform: "rotate(180deg)", letterSpacing: "0.25em" }}
+      >
+        scroll
       </span>
     </div>
   );
@@ -323,10 +343,7 @@ function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (prefersReduced()) {
-      setVal(to);
-      return;
-    }
+    if (prefersReduced()) { setVal(to); return; }
     let raf = 0;
     let started = false;
     const io = new IntersectionObserver(
@@ -346,17 +363,9 @@ function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
       { threshold: 0.4 }
     );
     io.observe(el);
-    return () => {
-      io.disconnect();
-      cancelAnimationFrame(raf);
-    };
+    return () => { io.disconnect(); cancelAnimationFrame(raf); };
   }, [to]);
-  return (
-    <span ref={ref}>
-      {val}
-      {suffix}
-    </span>
-  );
+  return <span ref={ref}>{val}{suffix}</span>;
 }
 
 // ── Reveal ─────────────────────────────────────────────────────────────────
@@ -388,10 +397,10 @@ function Reveal({
 // ── Data ──────────────────────────────────────────────────────────────────────
 
 const navLinks = [
-  { href: "#work", label: "Work" },
+  { href: "#work",     label: "Work"     },
   { href: "#services", label: "Services" },
-  { href: "#about", label: "About" },
-  { href: "#contact", label: "Contact" },
+  { href: "#about",    label: "About"    },
+  { href: "#contact",  label: "Contact"  },
 ];
 
 const marqueeWords = ["Python automation", "AI tools", "Web apps", "Chatbots", "Discord & Telegram bots", "Bug fixing", "Web design"];
@@ -404,13 +413,29 @@ const stats: Stat[] = [
   { to: 4, suffix: "+", label: "Real projects shipped" },
 ];
 
-const services = [
-  { n: "01", title: "Python Automation & AI Tools", desc: "Web scrapers, automation scripts, AI tools (OpenAI/Claude), and data pipelines — ready to run.", from: "from $50", href: "https://www.fiverr.com/shaktibuilds/build-a-python-automation-script-web-scraper-or-ai-tool-for-business" },
-  { n: "02", title: "Website & Web App Design", desc: "For anyone, anything. Landing pages, portfolios, business sites, and full web apps — designed and built end to end.", from: "from $120", href: FIVERR_PROFILE },
-  { n: "03", title: "Custom AI Chatbot", desc: "GPT-powered chatbots trained on your data and embedded anywhere on your site.", from: "from $60", href: "https://www.fiverr.com/s/kLQWx2W" },
-  { n: "04", title: "Discord & Telegram Bots", desc: "Commands, moderation, role assignment, notifications, and API integrations.", from: "from $50", href: "https://www.fiverr.com/s/ljayrzb" },
-  { n: "05", title: "Bug Fixes & Debugging", desc: "Python, JavaScript, React, and Next.js bugs fixed fast — 24h turnaround on simple ones.", from: "from $30", href: "https://www.fiverr.com/s/99VW9BA" },
+type ServiceData = { n: string; title: string; desc: string; from: string; href: string };
+const services: ServiceData[] = [
+  { n: "01", title: "Python Automation & AI Tools",  desc: "Web scrapers, automation scripts, AI tools (OpenAI/Claude), and data pipelines — ready to run.",                   from: "from $50",  href: "https://www.fiverr.com/shaktibuilds/build-a-python-automation-script-web-scraper-or-ai-tool-for-business" },
+  { n: "02", title: "Website & Web App Design",       desc: "For anyone, anything. Landing pages, portfolios, business sites, and full web apps — designed and built end to end.", from: "from $120", href: FIVERR_PROFILE },
+  { n: "03", title: "Custom AI Chatbot",              desc: "GPT-powered chatbots trained on your data and embedded anywhere on your site.",                                        from: "from $60",  href: "https://www.fiverr.com/s/kLQWx2W" },
+  { n: "04", title: "Discord & Telegram Bots",        desc: "Commands, moderation, role assignment, notifications, and API integrations.",                                         from: "from $50",  href: "https://www.fiverr.com/s/ljayrzb" },
+  { n: "05", title: "Bug Fixes & Debugging",          desc: "Python, JavaScript, React, and Next.js bugs fixed fast — 24h turnaround on simple ones.",                             from: "from $30",  href: "https://www.fiverr.com/s/99VW9BA" },
 ];
+
+const SERVICE_ICON_ACCENT: Record<string, string> = {
+  "01": "text-violet-300 bg-violet-400/10",
+  "02": "text-sky-300 bg-sky-400/10",
+  "03": "text-fuchsia-300 bg-fuchsia-400/10",
+  "04": "text-emerald-300 bg-emerald-400/10",
+  "05": "text-amber-300 bg-amber-400/10",
+};
+const SERVICE_FROM_ACCENT: Record<string, string> = {
+  "01": "text-violet-300",
+  "02": "text-sky-300",
+  "03": "text-fuchsia-300",
+  "04": "text-emerald-300",
+  "05": "text-amber-300",
+};
 
 type Project = {
   index: string; badge: string; badgeClass: string; title: string; tagline: string;
@@ -441,14 +466,14 @@ const projects: Project[] = [
 ];
 
 const steps = [
-  { n: "01", title: "Tell me what you need", desc: "Plain English works. Describe what you want the tool, bot, or app to do — I handle the technical side." },
-  { n: "02", title: "I build it and explain it", desc: "Working code delivered with instructions that make sense — how to run it, what each part does, how to change it later." },
-  { n: "03", title: "Revisions until it's right", desc: "Included in every order. If the software doesn't do what you hired it for, I fix it — no re-billing, no arguing." },
+  { n: "01", title: "Tell me what you need",       desc: "Plain English works. Describe what you want the tool, bot, or app to do — I handle the technical side." },
+  { n: "02", title: "I build it and explain it",   desc: "Working code delivered with instructions that make sense — how to run it, what each part does, how to change it later." },
+  { n: "03", title: "Revisions until it's right",  desc: "Included in every order. If the software doesn't do what you hired it for, I fix it — no re-billing, no arguing." },
 ];
 const guarantees = [
-  { title: "No outsourcing", desc: "Every line is written by me. The person you talk to is the person who builds it." },
+  { title: "No outsourcing",       desc: "Every line is written by me. The person you talk to is the person who builds it." },
   { title: "Price agreed upfront", desc: "We settle on the cost before I start. No surprise charges halfway through." },
-  { title: "Revisions included", desc: "If it doesn't do what you hired it for, I fix it — no re-billing." },
+  { title: "Revisions included",   desc: "If it doesn't do what you hired it for, I fix it — no re-billing." },
   { title: "Secure through Fiverr", desc: "Payment protection and delivery guarantees handled by the platform." },
 ];
 const skills = ["Python", "TypeScript", "React & Next.js", "OpenAI / Claude API", "FastAPI", "Discord.py", "Web Scraping", "REST APIs", "Supabase / PostgreSQL", "Tailwind CSS"];
@@ -462,14 +487,48 @@ const fadeV: Variants = {
   show: (i: number) => ({ opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.5 + i * 0.12 } }),
 };
 
+// ── Bento service card ────────────────────────────────────────────────────────
+
+function BentoServiceCard({ s, featured = false }: { s: ServiceData; featured?: boolean }) {
+  const iconAccent = SERVICE_ICON_ACCENT[s.n] ?? "text-violet-300 bg-violet-400/10";
+  const fromAccent = SERVICE_FROM_ACCENT[s.n]  ?? "text-violet-300";
+  return (
+    <a
+      href={s.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`v2-bento-card group p-6 sm:p-7 ${featured ? "min-h-[200px]" : "min-h-[170px]"}`}
+    >
+      <div>
+        <div className="flex items-start justify-between mb-5">
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconAccent}`}>
+            <ServiceIcon n={s.n} />
+          </div>
+          <span className="text-xs font-mono text-white/25">{s.n}</span>
+        </div>
+        <h3 className={`font-bold tracking-tight text-white/90 group-hover:text-white transition-colors mb-2 ${featured ? "text-2xl sm:text-3xl" : "text-xl"}`}>
+          {s.title}
+        </h3>
+        <p className="text-sm text-white/45 leading-relaxed">{s.desc}</p>
+      </div>
+      <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/[0.07]">
+        <span className={`text-sm font-semibold ${fromAccent}`}>{s.from}</span>
+        <span className={`${fromAccent} group-hover:rotate-45 transition-transform duration-300`}>
+          <ArrowUpRight className="w-5 h-5" />
+        </span>
+      </div>
+    </a>
+  );
+}
+
 // ── Project row (scroll parallax) ──────────────────────────────────────────────
 
 function ProjectRow({ p, i }: { p: Project; i: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["-12%", "12%"]);
+  const y     = useTransform(scrollYProgress, [0, 1], ["-12%", "12%"]);
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.12, 1, 1.12]);
-  const flip = i % 2 === 1;
+  const flip  = i % 2 === 1;
 
   return (
     <div ref={ref} className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
@@ -533,8 +592,8 @@ function ProjectRow({ p, i }: { p: Project; i: number }) {
 
 export default function V2Home() {
   const lenisRef = useRef<LenisType | null>(null);
-  const [ready, setReady] = useState(prefersReduced());
-  const [hidden, setHidden] = useState(false);
+  const [ready,    setReady]    = useState(prefersReduced());
+  const [hidden,   setHidden]   = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { scrollY } = useScroll();
@@ -551,10 +610,7 @@ export default function V2Home() {
       if (!mounted) return;
       const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
       lenisRef.current = lenis;
-      const loop = (t: number) => {
-        lenis.raf(t);
-        raf = requestAnimationFrame(loop);
-      };
+      const loop = (t: number) => { lenis.raf(t); raf = requestAnimationFrame(loop); };
       raf = requestAnimationFrame(loop);
     });
     return () => {
@@ -580,13 +636,28 @@ export default function V2Home() {
       {!ready && <Loader onDone={() => setReady(true)} />}
       <div className="v2-grain" aria-hidden />
 
-      {/* ── Nav ── */}
+      {/* Background ambient orbs */}
+      <div className="v2-bg-orb v2-bg-orb-1" aria-hidden />
+      <div className="v2-bg-orb v2-bg-orb-2" aria-hidden />
+      <div className="v2-bg-orb v2-bg-orb-3" aria-hidden />
+
+      {/* Click-outside backdrop to close menu */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-[39]"
+          onClick={() => setMenuOpen(false)}
+          aria-hidden
+        />
+      )}
+
+      {/* ── Nav + drop-sheet menu ── */}
       <motion.header
         className="fixed top-0 inset-x-0 z-50"
         animate={{ y: hidden ? "-130%" : "0%" }}
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="max-w-6xl mx-auto px-6 mt-4">
+          {/* Nav pill */}
           <div className="flex items-center justify-between h-14 px-5 rounded-2xl border border-white/10 bg-black/30 backdrop-blur-xl">
             <a href="#hero" onClick={(e) => goTo(e, "#hero")} className="font-semibold tracking-tight text-[15px]">
               shakti<span className="text-violet-400">builds</span>
@@ -603,71 +674,92 @@ export default function V2Home() {
                 onClick={() => setMenuOpen((v) => !v)}
                 className="flex items-center gap-2.5 text-sm font-medium text-white/80 hover:text-white transition-colors"
                 aria-label="Toggle menu"
+                aria-expanded={menuOpen}
               >
                 <span className="flex flex-col gap-1">
-                  <span className={`block h-px w-5 bg-current transition-transform ${menuOpen ? "translate-y-[3px] rotate-45" : ""}`} />
-                  <span className={`block h-px w-5 bg-current transition-transform ${menuOpen ? "-translate-y-[3px] -rotate-45" : ""}`} />
+                  <span className={`block h-px w-5 bg-current transition-transform origin-center ${menuOpen ? "translate-y-[3px] rotate-45" : ""}`} />
+                  <span className={`block h-px w-5 bg-current transition-transform origin-center ${menuOpen ? "-translate-y-[3px] -rotate-45" : ""}`} />
                 </span>
                 {menuOpen ? "Close" : "Menu"}
               </button>
             </div>
           </div>
+
+          {/* Drop-sheet menu */}
+          <AnimatePresence>
+            {menuOpen && (
+              <motion.div
+                className="mt-2 rounded-2xl border border-white/10 overflow-hidden"
+                style={{
+                  background: "rgba(6, 6, 8, 0.88)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  transformOrigin: "top",
+                }}
+                initial={{ opacity: 0, y: -8, scaleY: 0.96 }}
+                animate={{ opacity: 1, y: 0, scaleY: 1 }}
+                exit={{ opacity: 0, y: -8, scaleY: 0.96 }}
+                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <nav className="px-6 py-2">
+                  {navLinks.map((l, idx) => (
+                    <motion.a
+                      key={l.href}
+                      href={l.href}
+                      onClick={(e) => goTo(e, l.href)}
+                      className="group flex items-center gap-5 py-4 text-2xl sm:text-3xl font-bold tracking-tight text-white/55 hover:text-white transition-colors border-b border-white/[0.05] last:border-0"
+                      initial={{ opacity: 0, x: -14 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.08 + idx * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <span className="text-xs font-mono text-violet-400/55 w-7">0{idx + 1}</span>
+                      <span className="group-hover:translate-x-2 transition-transform duration-300">{l.label}</span>
+                      <span className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-violet-300">
+                        <ArrowUpRight className="w-5 h-5" />
+                      </span>
+                    </motion.a>
+                  ))}
+                </nav>
+                <div className="flex flex-wrap gap-x-8 gap-y-2 px-6 py-4 border-t border-white/[0.05] text-sm text-white/35">
+                  <a href={FIVERR_PROFILE} target="_blank" rel="noopener noreferrer" className="hover:text-violet-300 transition-colors">Fiverr ↗</a>
+                  <a href={GITHUB}         target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub ↗</a>
+                  <a href={`mailto:${EMAIL}`} className="hover:text-white transition-colors">{EMAIL}</a>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </motion.header>
 
-      {/* ── Fullscreen overlay menu ── */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            className="fixed inset-0 z-40 bg-[#0a0a0f]/95 backdrop-blur-xl flex flex-col justify-center"
-            initial={{ clipPath: "inset(0 0 100% 0)" }}
-            animate={{ clipPath: "inset(0 0 0% 0)" }}
-            exit={{ clipPath: "inset(0 0 100% 0)" }}
-            transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
-          >
-            <div className="max-w-6xl mx-auto px-6 w-full">
-              <nav className="flex flex-col gap-2">
-                {navLinks.map((l, idx) => (
-                  <motion.a
-                    key={l.href}
-                    href={l.href}
-                    onClick={(e) => goTo(e, l.href)}
-                    className="group flex items-center gap-6 text-5xl sm:text-7xl font-bold tracking-tight text-white/70 hover:text-white transition-colors"
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 + idx * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <span className="text-base font-mono text-violet-400/60">0{idx + 1}</span>
-                    {l.label}
-                    <span className="opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-violet-300"><ArrowUpRight className="w-8 h-8" /></span>
-                  </motion.a>
-                ))}
-              </nav>
-              <div className="flex flex-wrap gap-x-10 gap-y-3 mt-16 text-sm text-white/50">
-                <a href={FIVERR_PROFILE} target="_blank" rel="noopener noreferrer" className="hover:text-violet-300 transition-colors">Fiverr ↗</a>
-                <a href={GITHUB} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub ↗</a>
-                <a href={`mailto:${EMAIL}`} className="hover:text-white transition-colors">{EMAIL}</a>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <main>
+      <main className="relative z-[1]">
         {/* ── Hero ── */}
         <section id="hero" className="relative min-h-screen flex items-center overflow-hidden">
           <HeroCanvas />
           <div className="absolute inset-0 bg-gradient-to-b from-[#060608]/30 via-transparent to-[#060608]" aria-hidden />
 
           <div className="relative max-w-6xl mx-auto px-6 w-full pt-28 pb-20">
-            <motion.p variants={fadeV} initial="hide" animate={ready ? "show" : "hide"} custom={0} className="text-sm tracking-[0.3em] uppercase text-white/50 mb-8">
+            <motion.p
+              variants={fadeV}
+              initial="hide"
+              animate={ready ? "show" : "hide"}
+              custom={0}
+              className="text-sm tracking-[0.3em] uppercase text-white/70 mb-8"
+              style={{ textShadow: "0 2px 20px rgba(0,0,0,0.7)" }}
+            >
               Freelance developer &amp; designer
             </motion.p>
             <h1 className="text-[clamp(2.75rem,9vw,7rem)] font-bold leading-[0.95] tracking-tight">
               <span className="v2-line"><motion.span className="block" variants={lineV} initial="hide" animate={ready ? "show" : "hide"} custom={0}>I turn ideas into</motion.span></span>
               <span className="v2-line"><motion.span className="block v2-accent-text" variants={lineV} initial="hide" animate={ready ? "show" : "hide"} custom={1}>working software.</motion.span></span>
             </h1>
-            <motion.p variants={fadeV} initial="hide" animate={ready ? "show" : "hide"} custom={1} className="max-w-xl text-lg sm:text-xl text-white/60 mt-8 leading-relaxed">
+            <motion.p
+              variants={fadeV}
+              initial="hide"
+              animate={ready ? "show" : "hide"}
+              custom={1}
+              className="max-w-xl text-lg sm:text-xl text-white/75 mt-8 leading-relaxed"
+              style={{ textShadow: "0 2px 20px rgba(0,0,0,0.6)" }}
+            >
               Python automation, AI tools, web apps, and bots — built fast, explained in plain English, and revised until they do exactly what you need.
             </motion.p>
             <motion.div variants={fadeV} initial="hide" animate={ready ? "show" : "hide"} custom={2} className="flex flex-col sm:flex-row gap-4 mt-12">
@@ -680,8 +772,14 @@ export default function V2Home() {
             </motion.div>
           </div>
 
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: ready ? 1 : 0 }} transition={{ delay: 1 }} className="absolute bottom-10 right-6 sm:right-10 hidden sm:block">
-            <CircularBadge />
+          {/* Scroll indicator (replaces circular badge) */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: ready ? 1 : 0 }}
+            transition={{ delay: 1.2 }}
+            className="absolute bottom-10 right-8 sm:right-12 hidden sm:block"
+          >
+            <ScrollIndicator />
           </motion.div>
         </section>
 
@@ -727,34 +825,22 @@ export default function V2Home() {
           </div>
         </section>
 
-        {/* ── Services (interactive list) ── */}
+        {/* ── Services (bento grid) ── */}
         <section id="services" className="py-28 border-t border-white/10">
           <div className="max-w-6xl mx-auto px-6">
-            <div className="max-w-2xl mb-16">
+            <div className="max-w-2xl mb-14">
               <Reveal><h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-5">What I can build</h2></Reveal>
-              <Reveal delay={0.1}><p className="text-white/55 text-lg">Prices are starting points — message me for an exact quote. Hover a service to explore; click to open it on Fiverr.</p></Reveal>
+              <Reveal delay={0.1}><p className="text-white/55 text-lg">Starting prices — message me for an exact quote. Click any card to open it on Fiverr.</p></Reveal>
             </div>
-            <div>
-              {services.map((s) => (
-                <a key={s.n} href={s.href} target="_blank" rel="noopener noreferrer" className="v2-srow group block">
-                  <span className="v2-srow-fill" />
-                  <div className="relative flex items-center justify-between gap-6 py-8 px-2 sm:px-6">
-                    <div className="flex items-baseline gap-5 sm:gap-8 min-w-0">
-                      <span className="text-sm font-mono text-violet-400/60 shrink-0">{s.n}</span>
-                      <div className="min-w-0">
-                        <h3 className="v2-srow-title text-2xl sm:text-4xl font-bold tracking-tight group-hover:text-white text-white/85">{s.title}</h3>
-                        <p className="text-sm text-white/45 mt-2 max-w-xl">{s.desc}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4 sm:gap-8 shrink-0">
-                      <span className="hidden sm:inline text-sm text-white/40">{s.from}</span>
-                      <span className="text-violet-300 group-hover:rotate-45 transition-transform duration-300"><ArrowUpRight className="w-6 h-6" /></span>
-                    </div>
-                  </div>
-                </a>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="sm:col-span-2 lg:col-span-2">
+                <BentoServiceCard s={services[0]} featured />
+              </div>
+              {services.slice(1).map((s) => (
+                <BentoServiceCard key={s.n} s={s} />
               ))}
             </div>
-            <Reveal className="mt-12">
+            <Reveal className="mt-10">
               <p className="text-white/50">Something else in mind? <a href={`mailto:${EMAIL}`} className="text-violet-300 hover:text-violet-200 underline underline-offset-4">Email me</a> — if you can describe it in plain English, I can probably build it.</p>
             </Reveal>
           </div>
@@ -796,23 +882,40 @@ export default function V2Home() {
 
         {/* ── About ── */}
         <section id="about" className="py-28 border-t border-white/10">
-          <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-start">
-            <Reveal>
-              <h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-8">About me</h2>
-              <div className="space-y-5 text-white/60 leading-relaxed text-lg">
-                <p>I&apos;m a full-stack developer specialising in Python and JavaScript. I&apos;ve spent the last few years building things that actually get used — automation that runs every morning, AI tools that answer the questions support teams got tired of handling, and web apps that shops opened to real customers.</p>
-                <p>I work with founders and small businesses who need something built without hiring a full team. Every project is handled personally — no outsourcing, no templates, no copy-paste.</p>
-                <p className="text-white">If you can describe what you want in plain English, I can build it.</p>
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="grid lg:grid-cols-[1fr_1.5fr] gap-16 items-start">
+              {/* Photo */}
+              <Reveal>
+                <div className="relative aspect-[3/4] max-w-xs rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_60px_rgba(139,92,246,0.15)] ring-1 ring-violet-400/20">
+                  <Image
+                    src="/profile-photo.png"
+                    alt="Shakti M."
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
+              </Reveal>
+              {/* Bio + Skills */}
+              <div>
+                <Reveal>
+                  <h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-8">About me</h2>
+                  <div className="space-y-5 text-white/60 leading-relaxed text-lg">
+                    <p>I&apos;m a full-stack developer specialising in Python and JavaScript. I&apos;ve spent the last few years building things that actually get used — automation that runs every morning, AI tools that answer the questions support teams got tired of handling, and web apps that shops opened to real customers.</p>
+                    <p>I work with founders and small businesses who need something built without hiring a full team. Every project is handled personally — no outsourcing, no templates, no copy-paste.</p>
+                    <p className="text-white">If you can describe what you want in plain English, I can build it.</p>
+                  </div>
+                </Reveal>
+                <Reveal delay={0.15} className="mt-10">
+                  <h3 className="text-sm font-semibold uppercase tracking-widest text-white/40 mb-6">Skills &amp; tools</h3>
+                  <div className="flex flex-wrap gap-2.5">
+                    {skills.map((skill) => (
+                      <span key={skill} className="text-sm font-medium text-white/70 border border-white/12 bg-white/[0.03] px-4 py-2 rounded-full hover:border-violet-400/50 hover:text-violet-200 transition-colors">{skill}</span>
+                    ))}
+                  </div>
+                </Reveal>
               </div>
-            </Reveal>
-            <Reveal delay={0.15}>
-              <h3 className="text-sm font-semibold uppercase tracking-widest text-white/40 mb-6">Skills &amp; tools</h3>
-              <div className="flex flex-wrap gap-2.5">
-                {skills.map((skill) => (
-                  <span key={skill} className="text-sm font-medium text-white/70 border border-white/12 bg-white/[0.03] px-4 py-2 rounded-full hover:border-violet-400/50 hover:text-violet-200 transition-colors">{skill}</span>
-                ))}
-              </div>
-            </Reveal>
+            </div>
           </div>
         </section>
 
@@ -820,6 +923,18 @@ export default function V2Home() {
         <section id="contact" className="py-32 border-t border-white/10 relative overflow-hidden">
           <div className="absolute inset-0" aria-hidden style={{ background: "radial-gradient(60% 80% at 50% 120%, rgba(139,92,246,0.3), transparent 70%)" }} />
           <div className="max-w-6xl mx-auto px-6 text-center relative">
+            {/* Avatar */}
+            <Reveal className="flex justify-center mb-8">
+              <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-violet-400/40 ring-4 ring-violet-400/10 shadow-[0_0_30px_rgba(139,92,246,0.25)]">
+                <Image
+                  src="/profile-photo.png"
+                  alt="Shakti M."
+                  fill
+                  className="object-cover object-top"
+                  sizes="80px"
+                />
+              </div>
+            </Reveal>
             <Reveal><h2 className="text-[clamp(2.5rem,8vw,6rem)] font-bold tracking-tight leading-[1.02]">Let&apos;s build <span className="v2-accent-text">something.</span></h2></Reveal>
             <Reveal delay={0.1}><p className="text-white/55 text-lg max-w-md mx-auto mt-6">Order on Fiverr for secure payments and delivery guarantees, or email me to talk it through first.</p></Reveal>
             <Reveal delay={0.2} className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
@@ -830,7 +945,7 @@ export default function V2Home() {
         </section>
       </main>
 
-      <footer className="border-t border-white/10 py-10">
+      <footer className="border-t border-white/10 py-10 relative z-[1]">
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-white/40">
           <span>© 2026 Shakti M. All rights reserved.</span>
           <div className="flex items-center gap-6">
