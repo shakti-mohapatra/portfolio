@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,17 +14,45 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = "https://portfolio-xi-lilac-71.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Shakti M. — Python, AI & Web Developer",
   description:
-    "Freelance developer specializing in Python automation, AI tools, bug fixes, and Discord/Telegram bots. Fast delivery, affordable rates.",
+    "Freelance developer specializing in Python automation, AI tools, bug fixes, and Discord/Telegram bots. Fast delivery, plain-English explanations, revisions until it works.",
+  keywords: [
+    "freelance developer",
+    "Python automation",
+    "AI chatbot developer",
+    "web scraping",
+    "Discord bot developer",
+    "Next.js developer",
+    "bug fixing",
+    "Shakti Mohapatra",
+  ],
+  authors: [{ name: "Shakti M." }],
+  creator: "Shakti M.",
+  alternates: { canonical: SITE_URL },
   openGraph: {
     title: "Shakti M. — Python, AI & Web Developer",
     description:
-      "Python automation, AI chatbots, bug fixes, and Discord/Telegram bots. Hire me on Fiverr.",
-    url: "https://portfolio-xi-lilac-71.vercel.app",
+      "Python automation, AI chatbots, bug fixes, and Discord/Telegram bots. Built fast, explained in plain English, revised until they work.",
+    url: SITE_URL,
     siteName: "Shakti M. Portfolio",
+    locale: "en_US",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shakti M. — Python, AI & Web Developer",
+    description:
+      "Python automation, AI chatbots, bug fixes, and Discord/Telegram bots. Hire me on Fiverr.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
   },
 };
 
@@ -44,6 +73,7 @@ export default function RootLayout({
           (function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()
         `}</Script>
         {children}
+        <Analytics />
       </body>
     </html>
   );

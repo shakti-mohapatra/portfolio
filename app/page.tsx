@@ -78,9 +78,71 @@ function ThemeToggle() {
   );
 }
 
+// ── Avatar (real photo with monogram fallback) ───────────────────────────────
+
+function Avatar() {
+  const [errored, setErrored] = useState(false);
+
+  if (errored) {
+    return (
+      <div
+        className="w-36 h-36 rounded-2xl shrink-0 shadow-lg flex items-center justify-center
+                   bg-gradient-to-br from-indigo-500 to-violet-600 select-none"
+        aria-label="Shakti M."
+      >
+        <span className="text-4xl font-bold text-white tracking-tight">SM</span>
+      </div>
+    );
+  }
+
+  return (
+    <Image
+      src="/shakti.jpg"
+      alt="Shakti M."
+      width={144}
+      height={144}
+      onError={() => setErrored(true)}
+      className="w-36 h-36 rounded-2xl object-cover shrink-0 shadow-lg"
+    />
+  );
+}
+
 // ── Data ──────────────────────────────────────────────────────────────────────
 
 type Service = { icon: React.ReactNode; title: string; desc: string; price: string; url: string };
+
+const navLinks = [
+  { href: "#projects", label: "Work" },
+  { href: "#services", label: "Services" },
+  { href: "#about", label: "About" },
+  { href: "#contact", label: "Contact" },
+];
+
+const stats = [
+  { value: "24–48h", label: "Typical delivery" },
+  { value: "100%", label: "Built personally" },
+  { value: "∞", label: "Revisions until it works" },
+  { value: "4+", label: "Real projects shipped" },
+];
+
+const guarantees = [
+  {
+    title: "No outsourcing",
+    desc: "Every line is written by me. The person you talk to is the person who builds it.",
+  },
+  {
+    title: "Fixed price, agreed upfront",
+    desc: "You know the cost before I start. No surprise charges halfway through.",
+  },
+  {
+    title: "Revisions included",
+    desc: "If it doesn't do what you hired it for, I fix it — no re-billing, no arguing.",
+  },
+  {
+    title: "Secure through Fiverr",
+    desc: "Payment protection and delivery guarantees handled by the platform.",
+  },
+];
 
 const services: Service[] = [
   {
@@ -218,7 +280,20 @@ export default function Home() {
           <span className="font-semibold text-gray-900 dark:text-white tracking-tight">
             shaktibuilds
           </span>
-          <nav className="flex items-center gap-3">
+          <nav className="flex items-center gap-2 sm:gap-3">
+            <div className="hidden md:flex items-center gap-1 mr-1">
+              {navLinks.map((l) => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className="text-sm font-medium text-gray-500 dark:text-gray-400
+                             hover:text-gray-900 dark:hover:text-white px-3 py-1.5 rounded-lg
+                             hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  {l.label}
+                </a>
+              ))}
+            </div>
             <a
               href={GITHUB}
               target="_blank"
@@ -306,6 +381,18 @@ export default function Home() {
                 View Fiverr profile →
               </a>
             </div>
+          </div>
+        </section>
+
+        {/* ── Stats strip ── */}
+        <section className="bg-indigo-600 dark:bg-indigo-700 transition-colors duration-200">
+          <div className="max-w-5xl mx-auto px-6 py-10 grid grid-cols-2 sm:grid-cols-4 gap-8">
+            {stats.map((s) => (
+              <div key={s.label} className="text-center">
+                <div className="text-3xl sm:text-4xl font-bold text-white">{s.value}</div>
+                <div className="text-sm text-indigo-100 mt-1.5">{s.label}</div>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -473,34 +560,45 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── Guarantees ── */}
+        <section className="py-24 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700/50 transition-colors duration-200">
+          <div className="max-w-5xl mx-auto px-6">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-3 reveal">
+              What you can count on
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 text-center mb-14 max-w-lg mx-auto reveal" data-delay="100">
+              The things that matter most when you&apos;re hiring someone you haven&apos;t met.
+            </p>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {guarantees.map((g, i) => (
+                <div
+                  key={g.title}
+                  className="reveal flex flex-col gap-3 p-6 bg-gray-50 dark:bg-gray-800
+                             border border-gray-200 dark:border-gray-700 rounded-2xl"
+                  data-delay={String(i * 110)}
+                >
+                  <span className="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-5 h-5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </span>
+                  <h3 className="text-base font-semibold text-gray-900 dark:text-white">{g.title}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{g.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* ── About ── */}
-        <section id="about" className="py-24 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700/50 transition-colors duration-200">
+        <section id="about" className="py-24 bg-gray-50 dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700/50 transition-colors duration-200">
           <div className="max-w-5xl mx-auto px-6">
             <div className="grid sm:grid-cols-2 gap-16 items-start">
 
-              {/* Left: photo placeholder + bio */}
+              {/* Left: photo + bio */}
               <div className="reveal-left flex flex-col gap-6">
-                {/*
-                  PHOTO PLACEHOLDER — swap when you have a photo:
-                  1. Drop your photo into public/ as "shakti.jpg"
-                  2. Replace this <div> with:
-                     <Image src="/shakti.jpg" alt="Shakti M." width={144} height={144}
-                            className="w-36 h-36 rounded-2xl object-cover" />
-                */}
-                <div className="w-36 h-36 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-dashed
-                                border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center gap-2 shrink-0">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                    className="w-9 h-9 text-gray-300 dark:text-gray-600"
-                    aria-hidden
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                  </svg>
-                  <span className="text-xs text-gray-400 dark:text-gray-600 font-medium">Photo</span>
-                </div>
+                <Avatar />
 
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">About me</h2>
@@ -552,7 +650,7 @@ export default function Home() {
         </section>
 
         {/* ── Contact ── */}
-        <section id="contact" className="py-24 bg-gray-50 dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700/50 transition-colors duration-200">
+        <section id="contact" className="py-24 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700/50 transition-colors duration-200">
           <div className="max-w-5xl mx-auto px-6 text-center">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 reveal">Get in touch</h2>
             <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-10 leading-relaxed reveal" data-delay="120">
