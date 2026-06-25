@@ -97,7 +97,7 @@ function Avatar() {
 
   return (
     <Image
-      src="/shakti.jpg"
+      src="/shakti.png"
       alt="Shakti M."
       width={144}
       height={144}
