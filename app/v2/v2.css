@@ -1,14 +1,11 @@
 /* ──────────────────────────────────────────────────────────────────────────
-   v2 — "Creative studio" dark theme (isolated from the live design at /).
-   Everything is scoped under .v2-root so it can never touch the old page.
+   v2 — immersive redesign (isolated from the live design at /).
+   Scoped under .v2-root so it can never touch the old page.
    ────────────────────────────────────────────────────────────────────────── */
 
 .v2-root {
-  --v2-bg: #07070a;
-  --v2-surface: #101015;
-  --v2-surface-2: #16161d;
-  --v2-line: rgba(255, 255, 255, 0.08);
-  --v2-line-strong: rgba(255, 255, 255, 0.16);
+  --v2-bg: #060608;
+  --v2-surface: #0e0e13;
   --v2-text: #f7f6f3;
   --v2-muted: #9a9aa6;
   --v2-accent: #8b5cf6;
@@ -20,71 +17,79 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Film grain overlay ── */
+/* ── Film grain ── */
 .v2-grain {
   position: fixed;
   inset: 0;
-  z-index: 70;
+  z-index: 80;
   pointer-events: none;
-  opacity: 0.045;
+  opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 140px 140px;
-}
-
-/* ── Soft gradient orbs ── */
-.v2-orb {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(90px);
-  pointer-events: none;
-  will-change: transform;
 }
 
 /* ── Accent gradient text ── */
 .v2-accent-text {
   background: linear-gradient(102deg, #a78bfa 0%, #e879f9 55%, #a78bfa 100%);
-  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
-/* ── Custom cursor ── */
-.v2-cursor-dot,
-.v2-cursor-ring {
+/* ── Hero WebGL canvas ── */
+.v2-hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+/* Fallback background if WebGL is unavailable */
+.v2-hero-fallback {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 60% at 70% 30%, rgba(139, 92, 246, 0.5), transparent 70%),
+    radial-gradient(50% 50% at 25% 75%, rgba(232, 121, 249, 0.35), transparent 70%),
+    var(--v2-bg);
+}
+
+/* ── Intro loader ── */
+.v2-loader {
   position: fixed;
-  top: 0;
-  left: 0;
-  border-radius: 9999px;
-  pointer-events: none;
-  z-index: 90;
-  transform: translate3d(-50%, -50%, 0);
+  inset: 0;
+  z-index: 100;
+  background: var(--v2-bg);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 2.5rem;
+  transition: transform 1s cubic-bezier(0.76, 0, 0.24, 1);
 }
-.v2-cursor-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--v2-accent-2);
+.v2-loader.done {
+  transform: translateY(-100%);
 }
-.v2-cursor-ring {
-  width: 34px;
-  height: 34px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  transition: width 0.22s ease, height 0.22s ease, background 0.22s ease,
-    border-color 0.22s ease;
+.v2-loader-count {
+  font-size: clamp(4rem, 16vw, 11rem);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
 }
-.v2-cursor-ring.is-hover {
-  width: 58px;
-  height: 58px;
-  background: rgba(139, 92, 246, 0.14);
-  border-color: rgba(167, 139, 250, 0.65);
+
+/* ── Kinetic line-mask reveal ── */
+.v2-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
 }
-.v2-root.v2-cursor-active {
-  cursor: none;
+
+/* ── Rotating circular badge ── */
+@keyframes v2-spin {
+  to { transform: rotate(360deg); }
 }
-.v2-root.v2-cursor-active a,
-.v2-root.v2-cursor-active button {
-  cursor: none;
+.v2-badge-spin {
+  animation: v2-spin 18s linear infinite;
 }
 
 /* ── Marquee ── */
@@ -92,85 +97,46 @@
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-.v2-marquee {
-  overflow: hidden;
-  white-space: nowrap;
-}
+.v2-marquee { overflow: hidden; white-space: nowrap; }
 .v2-marquee-track {
   display: inline-flex;
   width: max-content;
-  animation: v2-marquee 28s linear infinite;
+  animation: v2-marquee 32s linear infinite;
 }
-.v2-marquee:hover .v2-marquee-track {
-  animation-play-state: paused;
-}
+.v2-marquee:hover .v2-marquee-track { animation-play-state: paused; }
 
-/* ── Scroll reveals ── */
-.v2-reveal {
-  opacity: 0;
-  transform: translateY(34px);
-  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: var(--v2-delay, 0ms);
+/* ── Services hover-reveal list ── */
+.v2-srow {
+  position: relative;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  transition: padding 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.v2-reveal.is-in {
-  opacity: 1;
-  transform: none;
+.v2-srow:last-child { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.v2-srow-title {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
+  will-change: transform;
 }
-
-/* ── Line-mask reveal (hero headline) ── */
-.v2-line {
-  display: block;
-  overflow: hidden;
-  padding-bottom: 0.08em;
+.v2-srow:hover .v2-srow-title { transform: translateX(28px); }
+.v2-srow-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(139, 92, 246, 0.16), rgba(232, 121, 249, 0.1));
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
 }
-.v2-line > span {
-  display: block;
-  transform: translateY(110%);
-  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: var(--v2-delay, 0ms);
-}
-.v2-line.is-in > span {
-  transform: translateY(0);
-}
-
-/* ── Reduced motion: turn everything calm ── */
-@media (prefers-reduced-motion: reduce) {
-  .v2-reveal,
-  .v2-line > span {
-    transition: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  .v2-marquee-track {
-    animation: none !important;
-  }
-}
+.v2-srow:hover .v2-srow-fill { transform: scaleY(1); }
 
 /* ── Lenis smooth scroll (overrides the root layout's scroll-smooth) ── */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
 
-/* ── Touch devices: no custom cursor, native pointer ── */
-@media (pointer: coarse) {
-  .v2-cursor-dot,
-  .v2-cursor-ring {
-    display: none !important;
-  }
-  .v2-root.v2-cursor-active,
-  .v2-root.v2-cursor-active a,
-  .v2-root.v2-cursor-active button {
-    cursor: auto;
-  }
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .v2-badge-spin,
+  .v2-marquee-track { animation: none !important; }
+  .v2-loader { display: none !important; }
 }
