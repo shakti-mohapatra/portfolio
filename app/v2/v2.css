@@ -1,0 +1,176 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   v2 — "Creative studio" dark theme (isolated from the live design at /).
+   Everything is scoped under .v2-root so it can never touch the old page.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.v2-root {
+  --v2-bg: #07070a;
+  --v2-surface: #101015;
+  --v2-surface-2: #16161d;
+  --v2-line: rgba(255, 255, 255, 0.08);
+  --v2-line-strong: rgba(255, 255, 255, 0.16);
+  --v2-text: #f7f6f3;
+  --v2-muted: #9a9aa6;
+  --v2-accent: #8b5cf6;
+  --v2-accent-2: #e879f9;
+
+  background: var(--v2-bg);
+  color: var(--v2-text);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Film grain overlay ── */
+.v2-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
+}
+
+/* ── Soft gradient orbs ── */
+.v2-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* ── Accent gradient text ── */
+.v2-accent-text {
+  background: linear-gradient(102deg, #a78bfa 0%, #e879f9 55%, #a78bfa 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ── Custom cursor ── */
+.v2-cursor-dot,
+.v2-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 90;
+  transform: translate3d(-50%, -50%, 0);
+}
+.v2-cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--v2-accent-2);
+}
+.v2-cursor-ring {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transition: width 0.22s ease, height 0.22s ease, background 0.22s ease,
+    border-color 0.22s ease;
+}
+.v2-cursor-ring.is-hover {
+  width: 58px;
+  height: 58px;
+  background: rgba(139, 92, 246, 0.14);
+  border-color: rgba(167, 139, 250, 0.65);
+}
+.v2-root.v2-cursor-active {
+  cursor: none;
+}
+.v2-root.v2-cursor-active a,
+.v2-root.v2-cursor-active button {
+  cursor: none;
+}
+
+/* ── Marquee ── */
+@keyframes v2-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.v2-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.v2-marquee-track {
+  display: inline-flex;
+  width: max-content;
+  animation: v2-marquee 28s linear infinite;
+}
+.v2-marquee:hover .v2-marquee-track {
+  animation-play-state: paused;
+}
+
+/* ── Scroll reveals ── */
+.v2-reveal {
+  opacity: 0;
+  transform: translateY(34px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--v2-delay, 0ms);
+}
+.v2-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Line-mask reveal (hero headline) ── */
+.v2-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+.v2-line > span {
+  display: block;
+  transform: translateY(110%);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--v2-delay, 0ms);
+}
+.v2-line.is-in > span {
+  transform: translateY(0);
+}
+
+/* ── Reduced motion: turn everything calm ── */
+@media (prefers-reduced-motion: reduce) {
+  .v2-reveal,
+  .v2-line > span {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .v2-marquee-track {
+    animation: none !important;
+  }
+}
+
+/* ── Lenis smooth scroll (overrides the root layout's scroll-smooth) ── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ── Touch devices: no custom cursor, native pointer ── */
+@media (pointer: coarse) {
+  .v2-cursor-dot,
+  .v2-cursor-ring {
+    display: none !important;
+  }
+  .v2-root.v2-cursor-active,
+  .v2-root.v2-cursor-active a,
+  .v2-root.v2-cursor-active button {
+    cursor: auto;
+  }
+}
