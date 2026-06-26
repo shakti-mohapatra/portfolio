@@ -324,13 +324,13 @@ export default function Home() {
           className="relative min-h-[calc(100vh-56px)] flex items-center overflow-hidden bg-white dark:bg-gray-900 transition-colors duration-200"
         >
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute -top-40 -right-40 w-[650px] h-[650px] rounded-full bg-indigo-100 dark:bg-indigo-900/40 blur-3xl opacity-70 anim-float" />
+            <div className="hero-blob absolute -top-40 -right-40 w-[650px] h-[650px] rounded-full bg-indigo-100 dark:bg-indigo-900/40 blur-3xl opacity-70 anim-float" />
             <div
-              className="absolute -bottom-40 -left-40 w-[550px] h-[550px] rounded-full bg-violet-100 dark:bg-violet-900/40 blur-3xl opacity-60"
+              className="hero-blob absolute -bottom-40 -left-40 w-[550px] h-[550px] rounded-full bg-violet-100 dark:bg-violet-900/40 blur-3xl opacity-60"
               style={{ animation: "floatBob 10s ease-in-out infinite 2.5s" }}
             />
             <div
-              className="absolute top-1/2 left-1/3 w-[350px] h-[350px] rounded-full bg-sky-50 dark:bg-sky-900/30 blur-2xl opacity-50"
+              className="hero-blob absolute top-1/2 left-1/3 w-[350px] h-[350px] rounded-full bg-sky-50 dark:bg-sky-900/30 blur-2xl opacity-50"
               style={{ animation: "floatBob 13s ease-in-out infinite 5s" }}
             />
           </div>

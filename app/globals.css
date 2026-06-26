@@ -115,6 +115,31 @@ body {
 .reveal-right.visible .skill-tag:nth-child(7)  { animation-delay: 360ms; }
 .reveal-right.visible .skill-tag:nth-child(8)  { animation-delay: 420ms; }
 
+/* ── Reduced-motion: kill all decorative animations ── */
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-in,
+  .anim-fade-in-up,
+  .anim-float { animation: none !important; opacity: 1 !important; transform: none !important; }
+
+  .reveal, .reveal-left, .reveal-right {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .text-shimmer { animation: none !important; }
+}
+
+/* ── Mobile: reduce GPU-heavy hero blobs ── */
+@media (max-width: 767px) {
+  .hero-blob {
+    animation: none !important;
+    opacity: 0.35 !important;
+    filter: blur(48px) !important;
+    transform: scale(0.6) !important;
+  }
+}
+
 /* Gradient text shimmer on hero */
 .text-shimmer {
   background: linear-gradient(
