@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// TODO: update SITE_URL to your custom domain once it's set up on Vercel
 const SITE_URL = "https://portfolio-xi-lilac-71.vercel.app";
 
 export const metadata: Metadata = {
