@@ -222,65 +222,6 @@ function HeroCanvas() {
   );
 }
 
-// ── Intro loader — split reveal ───────────────────────────────────────────────
-
-function Loader({ onDone }: { onDone: () => void }) {
-  const [count, setCount] = useState(0);
-  const [slide, setSlide] = useState(false);
-  const [gone,  setGone]  = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    const start = Date.now();
-    const dur = 1500;
-    let finished = false;
-    const finish = () => {
-      if (finished) return;
-      finished = true;
-      setCount(100);
-      setSlide(true);
-      onDone();
-      window.setTimeout(() => {
-        setGone(true);
-        document.body.style.overflow = "";
-      }, 1050);
-    };
-    const id = window.setInterval(() => {
-      const p = Math.min((Date.now() - start) / dur, 1);
-      setCount(Math.floor(p * 100));
-      if (p >= 1) { window.clearInterval(id); finish(); }
-    }, 30);
-    const safety = window.setTimeout(() => { window.clearInterval(id); finish(); }, dur + 400);
-    return () => {
-      window.clearInterval(id);
-      window.clearTimeout(safety);
-      document.body.style.overflow = "";
-    };
-  }, [onDone]);
-
-  if (gone) return null;
-  return (
-    <div className={`v2-loader-wrap ${slide ? "done" : ""}`} aria-hidden>
-      <div className="v2-loader-half v2-loader-left" />
-      <div className="v2-loader-half v2-loader-right" />
-      <div className="v2-loader-content">
-        <div className="v2-loader-top">
-          <span className="text-sm uppercase tracking-[0.4em] text-white/45">Shakti M.</span>
-        </div>
-        <div className="v2-loader-bottom">
-          <span className="v2-loader-count v2-accent-text">{String(count).padStart(3, "0")}</span>
-          <span className="text-xs uppercase tracking-[0.35em] text-white/35 mb-3">
-            building experience
-          </span>
-        </div>
-        <div className="v2-loader-bar">
-          <div className="v2-loader-bar-fill" style={{ width: `${count}%` }} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ── Scroll indicator (replaces circular badge) ────────────────────────────────
 
 function ScrollIndicator() {
@@ -493,11 +434,13 @@ function BentoServiceCard({ s, featured = false }: { s: ServiceData; featured?: 
   const iconAccent = SERVICE_ICON_ACCENT[s.n] ?? "text-violet-300 bg-violet-400/10";
   const fromAccent = SERVICE_FROM_ACCENT[s.n]  ?? "text-violet-300";
   return (
-    <a
+    <motion.a
       href={s.href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`v2-bento-card group p-6 sm:p-7 ${featured ? "min-h-[200px]" : "min-h-[170px]"}`}
+      className={`v2-bento-card group p-6 sm:p-7 h-full ${featured ? "min-h-[200px]" : "min-h-[170px]"}`}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
     >
       <div>
         <div className="flex items-start justify-between mb-5">
@@ -517,7 +460,7 @@ function BentoServiceCard({ s, featured = false }: { s: ServiceData; featured?: 
           <ArrowUpRight className="w-5 h-5" />
         </span>
       </div>
-    </a>
+    </motion.a>
   );
 }
 
@@ -592,7 +535,7 @@ function ProjectRow({ p, i }: { p: Project; i: number }) {
 
 export default function V2Home() {
   const lenisRef = useRef<LenisType | null>(null);
-  const [ready,    setReady]    = useState(prefersReduced());
+  const [ready]    = useState(true);
   const [hidden,   setHidden]   = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -633,13 +576,7 @@ export default function V2Home() {
 
   return (
     <div className="v2-root relative min-h-screen overflow-x-clip">
-      {!ready && <Loader onDone={() => setReady(true)} />}
       <div className="v2-grain" aria-hidden />
-
-      {/* Background ambient orbs */}
-      <div className="v2-bg-orb v2-bg-orb-1" aria-hidden />
-      <div className="v2-bg-orb v2-bg-orb-2" aria-hidden />
-      <div className="v2-bg-orb v2-bg-orb-3" aria-hidden />
 
       {/* Click-outside backdrop to close menu */}
       {menuOpen && (
@@ -691,9 +628,9 @@ export default function V2Home() {
               <motion.div
                 className="mt-2 rounded-2xl border border-white/10 overflow-hidden"
                 style={{
-                  background: "rgba(6, 6, 8, 0.88)",
-                  backdropFilter: "blur(24px)",
-                  WebkitBackdropFilter: "blur(24px)",
+                  background: "rgba(6, 6, 8, 0.92)",
+                  backdropFilter: "blur(28px)",
+                  WebkitBackdropFilter: "blur(28px)",
                   transformOrigin: "top",
                 }}
                 initial={{ opacity: 0, y: -8, scaleY: 0.96 }}
@@ -701,29 +638,73 @@ export default function V2Home() {
                 exit={{ opacity: 0, y: -8, scaleY: 0.96 }}
                 transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
               >
-                <nav className="px-6 py-2">
-                  {navLinks.map((l, idx) => (
-                    <motion.a
-                      key={l.href}
-                      href={l.href}
-                      onClick={(e) => goTo(e, l.href)}
-                      className="group flex items-center gap-5 py-4 text-2xl sm:text-3xl font-bold tracking-tight text-white/55 hover:text-white transition-colors border-b border-white/[0.05] last:border-0"
-                      initial={{ opacity: 0, x: -14 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.08 + idx * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      <span className="text-xs font-mono text-violet-400/55 w-7">0{idx + 1}</span>
-                      <span className="group-hover:translate-x-2 transition-transform duration-300">{l.label}</span>
-                      <span className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-violet-300">
-                        <ArrowUpRight className="w-5 h-5" />
-                      </span>
-                    </motion.a>
-                  ))}
-                </nav>
-                <div className="flex flex-wrap gap-x-8 gap-y-2 px-6 py-4 border-t border-white/[0.05] text-sm text-white/35">
-                  <a href={FIVERR_PROFILE} target="_blank" rel="noopener noreferrer" className="hover:text-violet-300 transition-colors">Fiverr ↗</a>
-                  <a href={GITHUB}         target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub ↗</a>
-                  <a href={`mailto:${EMAIL}`} className="hover:text-white transition-colors">{EMAIL}</a>
+                {/* Gradient bleed at top matching nav pill accent */}
+                <div className="h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(139,92,246,0.35), transparent)" }} aria-hidden />
+
+                <div className="grid grid-cols-1 sm:grid-cols-[1.3fr_1fr]">
+                  {/* Left: large numbered nav links */}
+                  <nav className="p-7">
+                    {navLinks.map((l, idx) => (
+                      <motion.a
+                        key={l.href}
+                        href={l.href}
+                        onClick={(e) => goTo(e, l.href)}
+                        className="group flex items-center gap-4 py-3.5 border-b border-white/[0.05] last:border-0"
+                        initial={{ opacity: 0, x: -16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.06 + idx * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        <span className="text-[10px] font-mono text-violet-400/40 w-5 shrink-0 select-none">0{idx + 1}</span>
+                        <span className="text-3xl sm:text-[2.6rem] font-bold tracking-tight text-white/50 group-hover:text-white transition-colors duration-200">
+                          <span className="inline-block group-hover:translate-x-1.5 transition-transform duration-300">{l.label}</span>
+                        </span>
+                        <span className="ml-auto text-violet-300 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                          <ArrowUpRight className="w-5 h-5" />
+                        </span>
+                      </motion.a>
+                    ))}
+                  </nav>
+
+                  {/* Right: availability + socials */}
+                  <motion.div
+                    className="border-t sm:border-t-0 sm:border-l border-white/[0.06] p-7 flex flex-col justify-between gap-8"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2, duration: 0.35 }}
+                  >
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2.5">
+                        <span className="relative flex h-2 w-2 shrink-0">
+                          <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                        </span>
+                        <span className="text-xs uppercase tracking-[0.28em] text-emerald-400/80">Available</span>
+                      </div>
+                      <p className="text-sm text-white/35 leading-relaxed">
+                        Python, AI tools, web apps &amp; bots — built fast, explained clearly.
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.28em] text-white/20 mb-3">Links</p>
+                      {[
+                        { label: "Fiverr",   href: FIVERR_PROFILE,      external: true  },
+                        { label: "GitHub",   href: GITHUB,              external: true  },
+                        { label: "Email me", href: `mailto:${EMAIL}`,   external: false },
+                      ].map((link) => (
+                        <a
+                          key={link.href}
+                          href={link.href}
+                          target={link.external ? "_blank" : undefined}
+                          rel={link.external ? "noopener noreferrer" : undefined}
+                          className="group flex items-center justify-between py-2.5 border-b border-white/[0.05] last:border-0 text-sm text-white/40 hover:text-white transition-colors"
+                        >
+                          <span>{link.label}</span>
+                          <ArrowUpRight className="w-3.5 h-3.5 ml-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </a>
+                      ))}
+                    </div>
+                  </motion.div>
                 </div>
               </motion.div>
             )}
@@ -732,6 +713,13 @@ export default function V2Home() {
       </motion.header>
 
       <main className="relative z-[1]">
+        {/* Scrolling ambient orbs — position: absolute inside relative main,
+            so they travel with page content (no viewport-scroll disconnect) */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <div className="absolute rounded-full" style={{ top: "22%", left: "-18%", width: "55vw", height: "55vw", background: "radial-gradient(circle, rgba(139,92,246,0.11) 0%, transparent 70%)", filter: "blur(120px)" }} />
+          <div className="absolute rounded-full" style={{ top: "54%", right: "-18%", width: "50vw", height: "50vw", background: "radial-gradient(circle, rgba(232,121,249,0.08) 0%, transparent 70%)", filter: "blur(120px)" }} />
+          <div className="absolute rounded-full" style={{ top: "80%", left: "12%", width: "48vw", height: "48vw", background: "radial-gradient(circle, rgba(139,92,246,0.09) 0%, transparent 70%)", filter: "blur(120px)" }} />
+        </div>
         {/* ── Hero ── */}
         <section id="hero" className="relative min-h-screen flex items-center overflow-hidden">
           <HeroCanvas />
@@ -813,7 +801,7 @@ export default function V2Home() {
         </section>
 
         {/* ── Work ── */}
-        <section id="work" className="py-28">
+        <section id="work" className="py-28 relative">
           <div className="max-w-6xl mx-auto px-6">
             <div className="flex items-end justify-between mb-20">
               <Reveal><h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Selected<br />work</h2></Reveal>
@@ -826,18 +814,20 @@ export default function V2Home() {
         </section>
 
         {/* ── Services (bento grid) ── */}
-        <section id="services" className="py-28 border-t border-white/10">
+        <section id="services" className="py-28 border-t border-white/10 relative">
           <div className="max-w-6xl mx-auto px-6">
             <div className="max-w-2xl mb-14">
               <Reveal><h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-5">What I can build</h2></Reveal>
               <Reveal delay={0.1}><p className="text-white/55 text-lg">Starting prices — message me for an exact quote. Click any card to open it on Fiverr.</p></Reveal>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="sm:col-span-2 lg:col-span-2">
+              <Reveal className="sm:col-span-2 lg:col-span-2" delay={0}>
                 <BentoServiceCard s={services[0]} featured />
-              </div>
-              {services.slice(1).map((s) => (
-                <BentoServiceCard key={s.n} s={s} />
+              </Reveal>
+              {services.slice(1).map((s, idx) => (
+                <Reveal key={s.n} delay={(idx + 1) * 0.08}>
+                  <BentoServiceCard s={s} />
+                </Reveal>
               ))}
             </div>
             <Reveal className="mt-10">
@@ -881,7 +871,7 @@ export default function V2Home() {
         </section>
 
         {/* ── About ── */}
-        <section id="about" className="py-28 border-t border-white/10">
+        <section id="about" className="py-28 border-t border-white/10 relative">
           <div className="max-w-6xl mx-auto px-6">
             <div className="grid lg:grid-cols-[1fr_1.5fr] gap-16 items-start">
               {/* Photo */}
