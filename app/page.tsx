@@ -519,63 +519,86 @@ export default function Home() {
           id="hero"
           className="relative min-h-[calc(100vh-56px)] flex items-center overflow-hidden bg-white dark:bg-gray-900 transition-colors duration-200"
         >
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="hero-blob absolute -top-40 -right-40 w-[650px] h-[650px] rounded-full bg-indigo-100 dark:bg-indigo-900/40 blur-3xl opacity-70 anim-float" />
-            <div
-              className="hero-blob absolute -bottom-40 -left-40 w-[550px] h-[550px] rounded-full bg-violet-100 dark:bg-violet-900/40 blur-3xl opacity-60"
-              style={{ animation: "floatBob 10s ease-in-out infinite 2.5s" }}
-            />
-            <div
-              className="hero-blob absolute top-1/2 left-1/3 w-[350px] h-[350px] rounded-full bg-sky-50 dark:bg-sky-900/30 blur-2xl opacity-50"
-              style={{ animation: "floatBob 13s ease-in-out infinite 5s" }}
-            />
+          {/* B2: static radial gradient wash + SVG fractal noise — no GPU blur */}
+          <div className="absolute inset-0 pointer-events-none" aria-hidden>
+            <div className="hero-gradient absolute inset-0" />
+            <div className="hero-noise absolute inset-0" />
           </div>
 
-          <div className="relative max-w-5xl mx-auto px-6 py-24 text-center">
-            <p
-              className="text-indigo-600 dark:text-indigo-400 font-medium text-sm tracking-widest uppercase mb-5 anim-fade-in"
-              style={{ animationDelay: "80ms" }}
-            >
-              Freelance Developer
-            </p>
-            <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
-              <span className="block anim-fade-in-up" style={{ animationDelay: "200ms" }}>
-                Hi, I&apos;m Shakti.
-              </span>
-              <span className="block text-shimmer anim-fade-in-up" style={{ animationDelay: "380ms" }}>
-                I make Python and AI do the work.
-              </span>
-            </h1>
-            <p
-              className="text-xl text-gray-500 dark:text-gray-400 max-w-xl mx-auto mb-10 leading-relaxed anim-fade-in-up"
-              style={{ animationDelay: "540ms" }}
-            >
-              Automation tools, AI chatbots, and web apps — built fast,
-              explained in plain English, revised until they work exactly as you need.
-            </p>
-            <div
-              className="flex flex-col sm:flex-row gap-4 justify-center anim-fade-in-up"
-              style={{ animationDelay: "700ms" }}
-            >
-              <a
-                href="#projects"
-                className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-full
-                           hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all
-                           shadow-lg shadow-indigo-200 dark:shadow-indigo-900/50"
+          <div className="relative max-w-5xl mx-auto px-6 py-20 w-full">
+            {/* A1: left text / right avatar split */}
+            <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+              {/* Left: text block — left-aligned */}
+              <div>
+                <p
+                  className="text-indigo-600 dark:text-indigo-400 font-medium text-sm tracking-widest uppercase mb-5 anim-fade-in"
+                  style={{ animationDelay: "80ms" }}
+                >
+                  Freelance Developer
+                </p>
+                <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
+                  <span className="block anim-fade-in-up" style={{ animationDelay: "200ms" }}>
+                    Hi, I&apos;m Shakti.
+                  </span>
+                  <span className="block text-shimmer anim-fade-in-up" style={{ animationDelay: "380ms" }}>
+                    I make Python and AI do the work.
+                  </span>
+                </h1>
+                <p
+                  className="text-xl text-gray-500 dark:text-gray-400 max-w-lg mb-10 leading-relaxed anim-fade-in-up"
+                  style={{ animationDelay: "540ms" }}
+                >
+                  Automation tools, AI chatbots, and web apps — built fast,
+                  explained in plain English, revised until they work exactly as you need.
+                </p>
+                <div
+                  className="flex flex-col sm:flex-row gap-4 anim-fade-in-up"
+                  style={{ animationDelay: "700ms" }}
+                >
+                  <a
+                    href="#projects"
+                    className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-full
+                               hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all
+                               shadow-lg shadow-indigo-200 dark:shadow-indigo-900/50"
+                  >
+                    See my work
+                  </a>
+                  <a
+                    href={FIVERR_PROFILE}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-8 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300
+                               font-semibold rounded-full hover:bg-gray-50 dark:hover:bg-gray-800
+                               hover:border-gray-400 dark:hover:border-gray-500
+                               hover:scale-105 active:scale-95 transition-all"
+                  >
+                    View Fiverr profile →
+                  </a>
+                </div>
+              </div>
+
+              {/* Right: photo with indigo glow ring */}
+              <div
+                className="flex justify-center md:justify-end anim-fade-in"
+                style={{ animationDelay: "400ms" }}
               >
-                See my work
-              </a>
-              <a
-                href={FIVERR_PROFILE}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-8 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300
-                           font-semibold rounded-full hover:bg-gray-50 dark:hover:bg-gray-800
-                           hover:border-gray-400 dark:hover:border-gray-500
-                           hover:scale-105 active:scale-95 transition-all"
-              >
-                View Fiverr profile →
-              </a>
+                <div className="relative">
+                  <div className="absolute -inset-6 rounded-[2.5rem] bg-indigo-400/15 dark:bg-indigo-500/20 blur-3xl" />
+                  <div className="relative rounded-[2rem] overflow-hidden ring-1 ring-indigo-200 dark:ring-indigo-700/50 shadow-2xl shadow-indigo-200/40 dark:shadow-indigo-900/50">
+                    <Image
+                      src="/shakti.png"
+                      alt="Shakti Mohapatra"
+                      width={300}
+                      height={300}
+                      priority
+                      className="block object-cover object-top w-44 h-44 sm:w-64 sm:h-64 md:w-[300px] md:h-[300px]"
+                      sizes="(max-width: 640px) 176px, (max-width: 768px) 256px, 300px"
+                    />
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </section>
