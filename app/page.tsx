@@ -146,7 +146,7 @@ const stats = [
   { value: "24–48h", label: "Typical delivery" },
   { value: "100%", label: "Built personally" },
   { value: "∞", label: "Revisions until it works" },
-  { value: "2", label: "Real projects shipped" },
+  { value: "4+", label: "Real projects shipped" },
 ];
 
 const guarantees = [
