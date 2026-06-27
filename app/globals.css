@@ -115,6 +115,49 @@ body {
 .reveal-right.visible .skill-tag:nth-child(7)  { animation-delay: 360ms; }
 .reveal-right.visible .skill-tag:nth-child(8)  { animation-delay: 420ms; }
 
+/* ── Hero background: B2 noise + radial gradient ── */
+.hero-gradient {
+  background:
+    radial-gradient(60% 70% at 80% 8%,  rgba(99, 102, 241, 0.12) 0%, transparent 65%),
+    radial-gradient(45% 55% at 15% 92%, rgba(139, 92, 246, 0.07) 0%, transparent 65%);
+}
+.dark .hero-gradient {
+  background:
+    radial-gradient(60% 70% at 80% 8%,  rgba(99, 102, 241, 0.24) 0%, transparent 65%),
+    radial-gradient(45% 55% at 15% 92%, rgba(139, 92, 246, 0.14) 0%, transparent 65%);
+}
+.hero-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.032;
+}
+.dark .hero-noise { opacity: 0.055; }
+
+/* ── Reduced-motion: kill all decorative animations ── */
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-in,
+  .anim-fade-in-up,
+  .anim-float { animation: none !important; opacity: 1 !important; transform: none !important; }
+
+  .reveal, .reveal-left, .reveal-right {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .text-shimmer { animation: none !important; }
+}
+
+/* ── Mobile: reduce GPU-heavy hero blobs ── */
+@media (max-width: 767px) {
+  .hero-blob {
+    animation: none !important;
+    opacity: 0.35 !important;
+    filter: blur(48px) !important;
+    transform: scale(0.6) !important;
+  }
+}
+
 /* Gradient text shimmer on hero */
 .text-shimmer {
   background: linear-gradient(
