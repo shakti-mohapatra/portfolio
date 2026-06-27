@@ -14,13 +14,23 @@ import Image from "next/image";
 
 const FIVERR_PROFILE = "https://www.fiverr.com/shaktibuilds";
 const GITHUB = "https://github.com/shakti-mohapatra";
+const LINKEDIN = "https://www.linkedin.com/in/shakti-mohapatra/";
 const EMAIL = "shaktidev.work@gmail.com";
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeebgngl";
 
 const prefersReduced = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // ── Icons ──────────────────────────────────────────────────────────────────
+
+function LinkedInIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5" aria-hidden>
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+    </svg>
+  );
+}
 
 function GitHubIcon() {
   return (
@@ -531,6 +541,85 @@ function ProjectRow({ p, i }: { p: Project; i: number }) {
   );
 }
 
+// ── Contact form ─────────────────────────────────────────────────────────────
+
+type FormStatus = "idle" | "submitting" | "success" | "error";
+
+function V2ContactForm() {
+  const [name,    setName]    = useState("");
+  const [email,   setEmail]   = useState("");
+  const [message, setMessage] = useState("");
+  const [status,  setStatus]  = useState<FormStatus>("idle");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("submitting");
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ name, email, message }),
+      });
+      if (res.ok) {
+        setStatus("success");
+        setName(""); setEmail(""); setMessage("");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  const inputCls = `w-full px-4 py-3 rounded-xl text-sm
+    bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-white/30
+    focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30
+    transition-all`;
+
+  if (status === "success") {
+    return (
+      <div className="flex flex-col items-center gap-3 p-8 rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.06] text-center">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-10 h-10 text-emerald-400" aria-hidden>
+          <circle cx="12" cy="12" r="10" /><polyline points="20 6 9 17 4 12" />
+        </svg>
+        <p className="font-semibold text-emerald-300">Message sent!</p>
+        <p className="text-sm text-emerald-400/70">I&apos;ll get back to you within 24 hours.</p>
+        <button onClick={() => setStatus("idle")} className="mt-1 text-xs text-emerald-400/60 underline underline-offset-2 hover:no-underline">
+          Send another
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-left">
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="v2-name" className="block text-[10px] font-medium text-white/35 uppercase tracking-widest mb-2">Name</label>
+          <input id="v2-name" type="text" required placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} className={inputCls} />
+        </div>
+        <div>
+          <label htmlFor="v2-email" className="block text-[10px] font-medium text-white/35 uppercase tracking-widest mb-2">Email</label>
+          <input id="v2-email" type="email" required placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} />
+        </div>
+      </div>
+      <div>
+        <label htmlFor="v2-message" className="block text-[10px] font-medium text-white/35 uppercase tracking-widest mb-2">Message</label>
+        <textarea id="v2-message" required rows={5} placeholder="Tell me about your project…" value={message} onChange={(e) => setMessage(e.target.value)} className={`${inputCls} resize-none`} />
+      </div>
+      {status === "error" && (
+        <p className="text-sm text-red-400">Something went wrong — please try again or email me directly.</p>
+      )}
+      <button type="submit" disabled={status === "submitting"}
+        className="w-full py-3.5 rounded-full bg-white text-black font-semibold
+                   hover:bg-white/90 active:scale-95 transition-all
+                   disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100">
+        {status === "submitting" ? "Sending…" : "Send message"}
+      </button>
+    </form>
+  );
+}
+
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export default function V2Home() {
@@ -688,9 +777,10 @@ export default function V2Home() {
                     <div>
                       <p className="text-[10px] uppercase tracking-[0.28em] text-white/20 mb-3">Links</p>
                       {[
-                        { label: "Fiverr",   href: FIVERR_PROFILE,      external: true  },
-                        { label: "GitHub",   href: GITHUB,              external: true  },
-                        { label: "Email me", href: `mailto:${EMAIL}`,   external: false },
+                        { label: "Fiverr",    href: FIVERR_PROFILE,    external: true  },
+                        { label: "LinkedIn",  href: LINKEDIN,          external: true  },
+                        { label: "GitHub",    href: GITHUB,            external: true  },
+                        { label: "Email me",  href: `mailto:${EMAIL}`, external: false },
                       ].map((link) => (
                         <a
                           key={link.href}
@@ -870,6 +960,50 @@ export default function V2Home() {
           </div>
         </section>
 
+        {/* ── Testimonials ── */}
+        <section className="py-28 border-t border-white/10">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal><h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-16">What clients say</h2></Reveal>
+            <div className="grid md:grid-cols-3 gap-5">
+              {[
+                {
+                  quote: "Delivered exactly what I asked for, faster than expected. The code was clean and came with a clear explanation of how to update it myself.",
+                  name: "Arjun P.",
+                  role: "Founder, logistics startup",
+                  delay: 0,
+                },
+                {
+                  quote: "I needed a Telegram bot that synced with our internal spreadsheet. Shakti built it in two days, explained every part, and fixed a small edge case I found for free.",
+                  name: "Meera S.",
+                  role: "Operations manager",
+                  delay: 0.08,
+                },
+                {
+                  quote: "No back-and-forth, no surprise charges. I described what I wanted, he built it, I tested it, done. Will hire again.",
+                  name: "James W.",
+                  role: "Small business owner",
+                  delay: 0.16,
+                },
+              ].map((t) => (
+                <Reveal key={t.name} delay={t.delay} className="flex flex-col gap-5 p-6 rounded-2xl border border-white/[0.08] bg-[var(--v2-surface)] h-full">
+                  <div className="flex gap-0.5" aria-label="5 stars">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <svg key={i} viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-amber-400" aria-hidden>
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-white/55 leading-relaxed text-sm flex-1">&ldquo;{t.quote}&rdquo;</p>
+                  <div>
+                    <p className="font-semibold text-white/90 text-sm">{t.name}</p>
+                    <p className="text-white/35 text-xs mt-0.5">{t.role}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* ── About ── */}
         <section id="about" className="py-28 border-t border-white/10 relative">
           <div className="max-w-6xl mx-auto px-6">
@@ -912,25 +1046,70 @@ export default function V2Home() {
         {/* ── Contact ── */}
         <section id="contact" className="py-32 border-t border-white/10 relative overflow-hidden">
           <div className="absolute inset-0" aria-hidden style={{ background: "radial-gradient(60% 80% at 50% 120%, rgba(139,92,246,0.3), transparent 70%)" }} />
-          <div className="max-w-6xl mx-auto px-6 text-center relative">
-            {/* Avatar */}
-            <Reveal className="flex justify-center mb-8">
-              <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-violet-400/40 ring-4 ring-violet-400/10 shadow-[0_0_30px_rgba(139,92,246,0.25)]">
-                <Image
-                  src="/profile-photo.png"
-                  alt="Shakti M."
-                  fill
-                  className="object-cover object-top"
-                  sizes="80px"
-                />
-              </div>
-            </Reveal>
-            <Reveal><h2 className="text-[clamp(2.5rem,8vw,6rem)] font-bold tracking-tight leading-[1.02]">Let&apos;s build <span className="v2-accent-text">something.</span></h2></Reveal>
-            <Reveal delay={0.1}><p className="text-white/55 text-lg max-w-md mx-auto mt-6">Order on Fiverr for secure payments and delivery guarantees, or email me to talk it through first.</p></Reveal>
-            <Reveal delay={0.2} className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-              <Magnetic strength={0.35}><a href={FIVERR_PROFILE} target="_blank" rel="noopener noreferrer" className="px-8 py-3.5 rounded-full bg-white text-black font-semibold hover:bg-white/90 transition-colors">Hire me on Fiverr</a></Magnetic>
-              <Magnetic strength={0.35}><a href={`mailto:${EMAIL}`} className="px-8 py-3.5 rounded-full border border-white/25 text-white font-semibold hover:bg-white/5 transition-colors">{EMAIL}</a></Magnetic>
-            </Reveal>
+          <div className="max-w-6xl mx-auto px-6 relative">
+
+            {/* Header */}
+            <div className="text-center mb-16">
+              <Reveal className="flex justify-center mb-8">
+                <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-violet-400/40 ring-4 ring-violet-400/10 shadow-[0_0_30px_rgba(139,92,246,0.25)]">
+                  <Image src="/profile-photo.png" alt="Shakti M." fill className="object-cover object-top" sizes="80px" />
+                </div>
+              </Reveal>
+              <Reveal>
+                <h2 className="text-[clamp(2.5rem,8vw,6rem)] font-bold tracking-tight leading-[1.02]">
+                  Let&apos;s build <span className="v2-accent-text">something.</span>
+                </h2>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <p className="text-white/55 text-lg max-w-md mx-auto mt-6">
+                  Drop me a message and I&apos;ll reply within 24 hours with a clear quote.
+                </p>
+              </Reveal>
+            </div>
+
+            {/* Two-column: form + alternatives */}
+            <div className="grid lg:grid-cols-[1fr_auto] gap-12 items-start max-w-4xl mx-auto">
+
+              {/* Contact form */}
+              <Reveal>
+                <V2ContactForm />
+              </Reveal>
+
+              {/* Alternative ways */}
+              <Reveal delay={0.1} className="lg:w-64 flex flex-col gap-8">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.28em] text-white/25 mb-4">Or reach me via</p>
+                  <div className="flex flex-col gap-3">
+                    <Magnetic strength={0.25}>
+                      <a href={FIVERR_PROFILE} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 w-full px-5 py-3 rounded-full bg-white text-black text-sm font-semibold hover:bg-white/90 transition-colors">
+                        Hire me on Fiverr
+                      </a>
+                    </Magnetic>
+                    <Magnetic strength={0.25}>
+                      <a href={`mailto:${EMAIL}`}
+                        className="flex items-center justify-center w-full px-5 py-3 rounded-full border border-white/20 text-white/80 text-sm font-medium hover:bg-white/5 transition-colors truncate">
+                        {EMAIL}
+                      </a>
+                    </Magnetic>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.28em] text-white/25 mb-4">Find me on</p>
+                  <div className="flex flex-col gap-2.5">
+                    <a href={LINKEDIN} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-2.5 text-sm text-white/45 hover:text-white transition-colors">
+                      <LinkedInIcon /> LinkedIn
+                    </a>
+                    <a href={GITHUB} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-2.5 text-sm text-white/45 hover:text-white transition-colors">
+                      <GitHubIcon /> GitHub
+                    </a>
+                  </div>
+                </div>
+              </Reveal>
+
+            </div>
           </div>
         </section>
       </main>
@@ -939,6 +1118,7 @@ export default function V2Home() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-white/40">
           <span>© 2026 Shakti M. All rights reserved.</span>
           <div className="flex items-center gap-6">
+            <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-white transition-colors"><LinkedInIcon /> LinkedIn</a>
             <a href={GITHUB} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-white transition-colors"><GitHubIcon /> GitHub</a>
             <a href={FIVERR_PROFILE} target="_blank" rel="noopener noreferrer" className="hover:text-violet-300 transition-colors">fiverr.com/shaktibuilds</a>
           </div>
