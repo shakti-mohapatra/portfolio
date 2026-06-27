@@ -611,8 +611,8 @@ function V2ContactForm() {
         <p className="text-sm text-red-400">Something went wrong — please try again or email me directly.</p>
       )}
       <button type="submit" disabled={status === "submitting"}
-        className="w-full py-3.5 rounded-full bg-white text-black font-semibold
-                   hover:bg-white/90 active:scale-95 transition-all
+        className="w-full py-3.5 rounded-full bg-gradient-to-r from-violet-600 to-purple-500 text-white font-semibold
+                   hover:brightness-110 active:scale-95 transition-all
                    disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100">
         {status === "submitting" ? "Sending…" : "Send message"}
       </button>
@@ -1012,7 +1012,7 @@ export default function V2Home() {
               <Reveal>
                 <div className="relative aspect-[3/4] max-w-xs rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_60px_rgba(139,92,246,0.15)] ring-1 ring-violet-400/20">
                   <Image
-                    src="/profile-photo.png"
+                    src="/profile-photo.jpg"
                     alt="Shakti M."
                     fill
                     className="object-cover object-top"
@@ -1050,10 +1050,11 @@ export default function V2Home() {
 
             {/* Header */}
             <div className="text-center mb-16">
-              <Reveal className="flex justify-center mb-8">
-                <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-violet-400/40 ring-4 ring-violet-400/10 shadow-[0_0_30px_rgba(139,92,246,0.25)]">
-                  <Image src="/profile-photo.png" alt="Shakti M." fill className="object-cover object-top" sizes="80px" />
-                </div>
+              <Reveal className="flex justify-center mb-6">
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/[0.07] text-emerald-300 text-xs font-medium tracking-[0.2em] uppercase">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Available for new projects
+                </span>
               </Reveal>
               <Reveal>
                 <h2 className="text-[clamp(2.5rem,8vw,6rem)] font-bold tracking-tight leading-[1.02]">
@@ -1061,51 +1062,91 @@ export default function V2Home() {
                 </h2>
               </Reveal>
               <Reveal delay={0.1}>
-                <p className="text-white/55 text-lg max-w-md mx-auto mt-6">
-                  Drop me a message and I&apos;ll reply within 24 hours with a clear quote.
+                <p className="text-white/50 text-lg max-w-md mx-auto mt-4">
+                  Tell me about your project and I&apos;ll get back to you within 24 hours.
                 </p>
               </Reveal>
             </div>
 
-            {/* Two-column: form + alternatives */}
-            <div className="grid lg:grid-cols-[1fr_auto] gap-12 items-start max-w-4xl mx-auto">
+            {/* Two-column: form card + info card */}
+            <div className="grid lg:grid-cols-[1fr_268px] gap-5 max-w-4xl mx-auto">
 
-              {/* Contact form */}
+              {/* Form card */}
               <Reveal>
-                <V2ContactForm />
+                <div className="p-8 rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+                  <V2ContactForm />
+                </div>
               </Reveal>
 
-              {/* Alternative ways */}
-              <Reveal delay={0.1} className="lg:w-64 flex flex-col gap-8">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-white/25 mb-4">Or reach me via</p>
-                  <div className="flex flex-col gap-3">
-                    <Magnetic strength={0.25}>
+              {/* Info card */}
+              <Reveal delay={0.12}>
+                <div className="p-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] flex flex-col gap-5 h-full">
+
+                  {/* Avatar + name */}
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-11 h-11 flex-shrink-0 rounded-full overflow-hidden border border-violet-400/30 ring-2 ring-violet-400/10">
+                      <Image src="/profile-photo.jpg" alt="Shakti M." fill className="object-cover object-top" sizes="44px" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-white text-sm leading-tight">Shakti M.</p>
+                      <p className="text-white/40 text-xs mt-0.5">Full-stack Developer</p>
+                    </div>
+                  </div>
+
+                  {/* Promise tiles */}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04]">
+                      <div className="w-7 h-7 rounded-lg bg-violet-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-violet-400" aria-hidden>
+                          <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1ZM7.5 4.5a.5.5 0 0 1 1 0v3.793l2.146 2.147a.5.5 0 0 1-.707.707l-2.293-2.293A.5.5 0 0 1 7.5 8.5V4.5Z"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-white/80 text-xs font-medium">Replies within 24 hrs</p>
+                        <p className="text-white/35 text-[11px] mt-0.5">Usually same day</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04]">
+                      <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-emerald-400" aria-hidden>
+                          <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022Z"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-white/80 text-xs font-medium">Free quote included</p>
+                        <p className="text-white/35 text-[11px] mt-0.5">No commitment needed</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex-1" />
+
+                  {/* CTAs */}
+                  <div className="flex flex-col gap-2">
+                    <Magnetic strength={0.2}>
                       <a href={FIVERR_PROFILE} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 w-full px-5 py-3 rounded-full bg-white text-black text-sm font-semibold hover:bg-white/90 transition-colors">
+                        className="flex items-center justify-center w-full px-4 py-2.5 rounded-full bg-white text-black text-xs font-semibold hover:bg-white/90 transition-colors">
                         Hire me on Fiverr
                       </a>
                     </Magnetic>
-                    <Magnetic strength={0.25}>
-                      <a href={`mailto:${EMAIL}`}
-                        className="flex items-center justify-center w-full px-5 py-3 rounded-full border border-white/20 text-white/80 text-sm font-medium hover:bg-white/5 transition-colors truncate">
-                        {EMAIL}
-                      </a>
-                    </Magnetic>
+                    <a href={`mailto:${EMAIL}`}
+                      className="flex items-center justify-center w-full px-4 py-2.5 rounded-full border border-white/15 text-white/60 text-xs font-medium hover:bg-white/5 hover:text-white/90 transition-colors truncate">
+                      {EMAIL}
+                    </a>
                   </div>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-white/25 mb-4">Find me on</p>
-                  <div className="flex flex-col gap-2.5">
+
+                  {/* Socials */}
+                  <div className="flex items-center gap-4 pt-4 border-t border-white/[0.07]">
                     <a href={LINKEDIN} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-2.5 text-sm text-white/45 hover:text-white transition-colors">
+                      className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white transition-colors">
                       <LinkedInIcon /> LinkedIn
                     </a>
                     <a href={GITHUB} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-2.5 text-sm text-white/45 hover:text-white transition-colors">
+                      className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white transition-colors">
                       <GitHubIcon /> GitHub
                     </a>
                   </div>
+
                 </div>
               </Reveal>
 
