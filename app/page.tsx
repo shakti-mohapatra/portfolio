@@ -8,7 +8,7 @@ const GITHUB = "https://github.com/shakti-mohapatra";
 const LINKEDIN = "https://www.linkedin.com/in/shakti-mohapatra/";
 const EMAIL = "shaktidev.work@gmail.com";
 // TODO: replace with your Formspree form ID — sign up at formspree.io, create a form for shaktidev.work@gmail.com
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/xrgvbken";
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeebgngl";
 
 // ── Icons ────────────────────────────────────────────────────────────────────
 
