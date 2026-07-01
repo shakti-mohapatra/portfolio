@@ -1,24 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  useMotionValueEvent,
+  type Variants,
+} from "motion/react";
+import type LenisType from "lenis";
 import Image from "next/image";
 
 const FIVERR_PROFILE = "https://www.fiverr.com/shaktibuilds";
 const GITHUB = "https://github.com/shakti-mohapatra";
 const LINKEDIN = "https://www.linkedin.com/in/shakti-mohapatra/";
 const EMAIL = "shaktidev.work@gmail.com";
-// TODO: replace with your Formspree form ID — sign up at formspree.io, create a form for shaktidev.work@gmail.com
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeebgngl";
 
-// ── Icons ────────────────────────────────────────────────────────────────────
+const prefersReduced = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-function GitHubIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5" aria-hidden>
-      <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-    </svg>
-  );
-}
+// ── Icons ──────────────────────────────────────────────────────────────────
 
 function LinkedInIcon() {
   return (
@@ -28,260 +32,660 @@ function LinkedInIcon() {
   );
 }
 
-function MoonIcon() {
+function GitHubIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" aria-hidden>
-      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5" aria-hidden>
+      <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
     </svg>
   );
 }
 
-function SunIcon() {
+function ArrowUpRight({ className = "w-4 h-4" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" aria-hidden>
-      <circle cx="12" cy="12" r="5" />
-      <line x1="12" y1="1" x2="12" y2="3" />
-      <line x1="12" y1="21" x2="12" y2="23" />
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-      <line x1="1" y1="12" x2="3" y2="12" />
-      <line x1="21" y1="12" x2="23" y2="12" />
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-    </svg>
-  );
-}
-
-function ArrowUpRightIcon() {
-  return (
-    <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4" aria-hidden>
+    <svg viewBox="0 0 20 20" fill="currentColor" className={className} aria-hidden>
       <path fillRule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clipRule="evenodd" />
     </svg>
   );
 }
 
-// ── Hamburger icon ────────────────────────────────────────────────────────────
+// ── Mode toggle (day job / side practice) ───────────────────────────────────
 
-function HamburgerIcon({ open }: { open: boolean }) {
+function ModeToggle({ mode, onChange, className = "inline-flex" }: { mode: "side" | "day"; onChange: (m: "side" | "day") => void; className?: string }) {
   return (
-    <span className="flex flex-col gap-[5px] w-5" aria-hidden>
-      <span className={`block h-px w-full bg-current transition-transform origin-center duration-200 ${open ? "translate-y-[6px] rotate-45" : ""}`} />
-      <span className={`block h-px w-full bg-current transition-opacity duration-200 ${open ? "opacity-0" : ""}`} />
-      <span className={`block h-px w-full bg-current transition-transform origin-center duration-200 ${open ? "-translate-y-[6px] -rotate-45" : ""}`} />
-    </span>
-  );
-}
-
-// ── Theme toggle ──────────────────────────────────────────────────────────────
-
-function ThemeToggle() {
-  const [dark, setDark] = useState(false);
-
-  useEffect(() => {
-    setDark(document.documentElement.classList.contains("dark"));
-  }, []);
-
-  function toggle() {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  }
-
-  return (
-    <button
-      onClick={toggle}
-      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-      className="w-8 h-8 flex items-center justify-center rounded-lg
-                 text-gray-400 hover:text-gray-700 hover:bg-gray-100
-                 dark:text-gray-500 dark:hover:text-gray-200 dark:hover:bg-gray-800
-                 transition-colors"
-    >
-      {dark ? <SunIcon /> : <MoonIcon />}
-    </button>
-  );
-}
-
-// ── Avatar (real photo with monogram fallback) ───────────────────────────────
-
-function Avatar() {
-  const [errored, setErrored] = useState(false);
-
-  if (errored) {
-    return (
-      <div
-        className="w-36 h-36 rounded-2xl shrink-0 shadow-lg flex items-center justify-center
-                   bg-gradient-to-br from-indigo-500 to-violet-600 select-none"
-        aria-label="Shakti M."
+    <div className={`items-center gap-0.5 rounded-full border border-white/10 bg-white/[0.04] p-0.5 text-[11px] font-medium ${className}`}>
+      <button
+        type="button"
+        onClick={() => onChange("side")}
+        aria-pressed={mode === "side"}
+        className={`px-3 py-1.5 rounded-full transition-colors ${mode === "side" ? "bg-white text-black" : "text-white/50 hover:text-white"}`}
       >
-        <span className="text-4xl font-bold text-white tracking-tight">SM</span>
-      </div>
-    );
-  }
+        Side practice
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange("day")}
+        aria-pressed={mode === "day"}
+        className={`px-3 py-1.5 rounded-full transition-colors ${mode === "day" ? "bg-white text-black" : "text-white/50 hover:text-white"}`}
+      >
+        Day job
+      </button>
+    </div>
+  );
+}
 
+// ── Service icons ────────────────────────────────────────────────────────────
+
+function ServiceIcon({ n }: { n: string }) {
+  const cls = "w-5 h-5";
+  if (n === "01") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <polyline points="16 18 22 12 16 6" />
+      <polyline points="8 6 2 12 8 18" />
+    </svg>
+  );
+  if (n === "02") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <rect x="2" y="3" width="20" height="14" rx="2" />
+      <path d="M8 21h8M12 17v4" />
+    </svg>
+  );
+  if (n === "03") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+    </svg>
+  );
+  if (n === "04") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+    </svg>
+  );
   return (
-    <Image
-      src="/shakti.png"
-      alt="Shakti M."
-      width={144}
-      height={144}
-      onError={() => setErrored(true)}
-      className="w-36 h-36 rounded-2xl object-cover shrink-0 shadow-lg"
-    />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <polyline points="4 17 10 11 4 5" />
+      <line x1="12" y1="19" x2="20" y2="19" />
+    </svg>
+  );
+}
+
+// ── WebGL hero shader ────────────────────────────────────────────────────────
+
+const VERT = `attribute vec2 a_pos; void main(){ gl_Position = vec4(a_pos,0.0,1.0); }`;
+
+const FRAG = `precision highp float;
+uniform float u_time; uniform vec2 u_res; uniform vec2 u_mouse;
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec2 mod289(vec2 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec3 permute(vec3 x){return mod289(((x*34.0)+1.0)*x);}
+float snoise(vec2 v){
+  const vec4 C=vec4(0.211324865405187,0.366025403784439,-0.577350269189626,0.024390243902439);
+  vec2 i=floor(v+dot(v,C.yy)); vec2 x0=v-i+dot(i,C.xx);
+  vec2 i1=(x0.x>x0.y)?vec2(1.0,0.0):vec2(0.0,1.0);
+  vec4 x12=x0.xyxy+C.xxzz; x12.xy-=i1; i=mod289(i);
+  vec3 p=permute(permute(i.y+vec3(0.0,i1.y,1.0))+i.x+vec3(0.0,i1.x,1.0));
+  vec3 m=max(0.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.0);
+  m=m*m; m=m*m; vec3 x=2.0*fract(p*C.www)-1.0; vec3 h=abs(x)-0.5;
+  vec3 ox=floor(x+0.5); vec3 a0=x-ox;
+  m*=1.79284291400159-0.85373472095314*(a0*a0+h*h);
+  vec3 g; g.x=a0.x*x0.x+h.x*x0.y; g.yz=a0.yz*x12.xz+h.yz*x12.yw;
+  return 130.0*dot(m,g);
+}
+float fbm(vec2 p){ float s=0.0,a=0.5; for(int i=0;i<5;i++){ s+=a*snoise(p); p*=2.0; a*=0.5; } return s; }
+void main(){
+  vec2 uv=gl_FragCoord.xy/u_res; vec2 p=uv-0.5; p.x*=u_res.x/u_res.y;
+  vec2 mo=u_mouse/u_res-0.5; mo.x*=u_res.x/u_res.y;
+  float t=u_time*0.05;
+  vec2 q=vec2(fbm(p+t),fbm(p+vec2(5.2,1.3)-t));
+  vec2 r=vec2(fbm(p+1.6*q+vec2(1.7,9.2)+0.25*mo),fbm(p+1.6*q+vec2(8.3,2.8)-0.25*mo));
+  float f=fbm(p+1.9*r+t); f=0.5+0.5*f;
+  vec3 c1=vec3(0.024,0.024,0.031);
+  vec3 c2=vec3(0.16,0.10,0.42);
+  vec3 c3=vec3(0.55,0.36,0.96);
+  vec3 c4=vec3(0.91,0.47,0.98);
+  vec3 col=mix(c1,c2,smoothstep(0.0,0.55,f));
+  col=mix(col,c3,smoothstep(0.45,0.85,f));
+  col=mix(col,c4,smoothstep(0.78,1.05,f)*(0.5+0.5*length(r)));
+  col*=1.0-0.55*dot(p,p);
+  gl_FragColor=vec4(col,1.0);
+}`;
+
+function initHeroGL(canvas: HTMLCanvasElement): (() => void) | null {
+  const gl =
+    (canvas.getContext("webgl") as WebGLRenderingContext | null) ||
+    (canvas.getContext("experimental-webgl") as WebGLRenderingContext | null);
+  if (!gl) return null;
+
+  const compile = (type: number, src: string) => {
+    const s = gl.createShader(type);
+    if (!s) return null;
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { gl.deleteShader(s); return null; }
+    return s;
+  };
+
+  const vs = compile(gl.VERTEX_SHADER, VERT);
+  const fs = compile(gl.FRAGMENT_SHADER, FRAG);
+  if (!vs || !fs) return null;
+  const prog = gl.createProgram();
+  if (!prog) return null;
+  gl.attachShader(prog, vs);
+  gl.attachShader(prog, fs);
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const aPos = gl.getAttribLocation(prog, "a_pos");
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+  const uTime  = gl.getUniformLocation(prog, "u_time");
+  const uRes   = gl.getUniformLocation(prog, "u_res");
+  const uMouse = gl.getUniformLocation(prog, "u_mouse");
+
+  const mouse  = { x: 0.5, y: 0.5 };
+  const target = { x: 0.5, y: 0.5 };
+  let raf = 0;
+  let visible = true;
+  const start = performance.now();
+
+  const resize = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    canvas.width  = Math.floor(canvas.clientWidth  * dpr);
+    canvas.height = Math.floor(canvas.clientHeight * dpr);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  };
+  const onMove = (e: MouseEvent) => {
+    target.x = e.clientX / window.innerWidth;
+    target.y = 1 - e.clientY / window.innerHeight;
+  };
+  const loop = () => {
+    if (!visible) { raf = 0; return; }
+    // Slowed from 0.05 → 0.02 for a dreamlike drift instead of snap
+    mouse.x += (target.x - mouse.x) * 0.02;
+    mouse.y += (target.y - mouse.y) * 0.02;
+    const t = (performance.now() - start) / 1000;
+    gl.uniform1f(uTime, t);
+    gl.uniform2f(uRes,   canvas.width, canvas.height);
+    gl.uniform2f(uMouse, mouse.x * canvas.width, mouse.y * canvas.height);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    raf = requestAnimationFrame(loop);
+  };
+  const io = new IntersectionObserver(
+    (entries) => {
+      visible = entries[0].isIntersecting;
+      if (visible && !raf) loop();
+    },
+    { threshold: 0 }
+  );
+  io.observe(canvas);
+
+  resize();
+  window.addEventListener("resize",    resize);
+  window.addEventListener("mousemove", onMove);
+  loop();
+
+  return () => {
+    cancelAnimationFrame(raf);
+    window.removeEventListener("resize",    resize);
+    window.removeEventListener("mousemove", onMove);
+    io.disconnect();
+  };
+}
+
+function HeroCanvas() {
+  const ref = useRef<HTMLCanvasElement>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    if (!ref.current) return;
+    const cleanup = initHeroGL(ref.current);
+    if (!cleanup) { setFailed(true); return; }
+    return cleanup;
+  }, []);
+  return (
+    <>
+      {failed && <div className="v2-hero-fallback" />}
+      <canvas
+        ref={ref}
+        className="v2-hero-canvas"
+        style={{ display: failed ? "none" : "block" }}
+        aria-hidden
+      />
+    </>
+  );
+}
+
+// ── Scroll indicator (replaces circular badge) ────────────────────────────────
+
+function ScrollIndicator() {
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <div className="v2-scroll-line">
+        <div className="v2-scroll-line-fill" />
+      </div>
+      <span
+        className="text-[10px] uppercase tracking-[0.3em] text-white/35"
+        style={{ writingMode: "vertical-rl", transform: "rotate(180deg)", letterSpacing: "0.25em" }}
+      >
+        scroll
+      </span>
+    </div>
+  );
+}
+
+// ── Magnetic wrapper ─────────────────────────────────────────────────────────
+
+function Magnetic({
+  children,
+  strength = 0.4,
+  className = "",
+}: {
+  children: React.ReactNode;
+  strength?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  function onMove(e: React.MouseEvent) {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.transform = `translate(${(e.clientX - (r.left + r.width / 2)) * strength}px, ${
+      (e.clientY - (r.top + r.height / 2)) * strength
+    }px)`;
+  }
+  function onLeave() {
+    if (ref.current) ref.current.style.transform = "translate(0,0)";
+  }
+  return (
+    <div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      className={`inline-flex ${className}`}
+      style={{ transition: "transform 0.3s cubic-bezier(0.22,1,0.36,1)" }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// ── Count-up ─────────────────────────────────────────────────────────────────
+
+function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (prefersReduced()) { setVal(to); return; }
+    let raf = 0;
+    let started = false;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !started) {
+          started = true;
+          const t0 = performance.now();
+          const tick = (now: number) => {
+            const p = Math.min((now - t0) / 1300, 1);
+            setVal(Math.round(to * (1 - Math.pow(1 - p, 3))));
+            if (p < 1) raf = requestAnimationFrame(tick);
+          };
+          raf = requestAnimationFrame(tick);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(el);
+    return () => { io.disconnect(); cancelAnimationFrame(raf); };
+  }, [to]);
+  return <span ref={ref}>{val}{suffix}</span>;
+}
+
+// ── Reveal ─────────────────────────────────────────────────────────────────
+
+function Reveal({
+  children,
+  className = "",
+  delay = 0,
+  y = 36,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  y?: number;
+}) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay }}
+    >
+      {children}
+    </motion.div>
   );
 }
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
-type Service = { icon: React.ReactNode; title: string; desc: string; price: string; url: string };
-
 const navLinks = [
-  { href: "#projects", label: "Work" },
+  { href: "#work",     label: "Work"     },
   { href: "#services", label: "Services" },
-  { href: "#about", label: "About" },
-  { href: "#contact", label: "Contact" },
+  { href: "#about",    label: "About"    },
+  { href: "#contact",  label: "Contact"  },
 ];
 
-const stats = [
-  { value: "24–48h", label: "Typical delivery" },
-  { value: "100%", label: "Built personally" },
-  { value: "∞", label: "Revisions until it works" },
-  { value: "4+", label: "Real projects shipped" },
+type Stat = { label: string } & ({ to: number; suffix: string } | { display: string });
+
+type ServiceData = { n: string; title: string; desc: string; from: string; href: string };
+const services: ServiceData[] = [
+  { n: "01", title: "Python Automation & AI Tools",  desc: "Web scrapers, automation scripts, AI tools (OpenAI/Claude), and data pipelines — ready to run.",                   from: "from $50",  href: "https://www.fiverr.com/shaktibuilds/build-a-python-automation-script-web-scraper-or-ai-tool-for-business" },
+  { n: "02", title: "Website & Web App Design",       desc: "For anyone, anything. Landing pages, portfolios, business sites, and full web apps — designed and built end to end.", from: "from $120", href: FIVERR_PROFILE },
+  { n: "03", title: "Custom AI Chatbot",              desc: "GPT-powered chatbots trained on your data and embedded anywhere on your site.",                                        from: "from $60",  href: "https://www.fiverr.com/s/kLQWx2W" },
+  { n: "04", title: "Discord & Telegram Bots",        desc: "Commands, moderation, role assignment, notifications, and API integrations.",                                         from: "from $50",  href: "https://www.fiverr.com/s/ljayrzb" },
+  { n: "05", title: "Bug Fixes & Debugging",          desc: "Python, JavaScript, React, and Next.js bugs fixed fast — 24h turnaround on simple ones.",                             from: "from $30",  href: "https://www.fiverr.com/s/99VW9BA" },
 ];
 
-const guarantees = [
-  {
-    title: "No outsourcing",
-    desc: "Every line is written by me. The person you talk to is the person who builds it.",
-  },
-  {
-    title: "Fixed price, agreed upfront",
-    desc: "You know the cost before I start. No surprise charges halfway through.",
-  },
-  {
-    title: "Revisions included",
-    desc: "If it doesn't do what you hired it for, I fix it — no re-billing, no arguing.",
-  },
-  {
-    title: "Secure through Fiverr",
-    desc: "Payment protection and delivery guarantees handled by the platform.",
-  },
-];
+const SERVICE_ICON_ACCENT: Record<string, string> = {
+  "01": "text-violet-300 bg-violet-400/10",
+  "02": "text-sky-300 bg-sky-400/10",
+  "03": "text-fuchsia-300 bg-fuchsia-400/10",
+  "04": "text-emerald-300 bg-emerald-400/10",
+  "05": "text-amber-300 bg-amber-400/10",
+};
+const SERVICE_FROM_ACCENT: Record<string, string> = {
+  "01": "text-violet-300",
+  "02": "text-sky-300",
+  "03": "text-fuchsia-300",
+  "04": "text-emerald-300",
+  "05": "text-amber-300",
+};
 
-const services: Service[] = [
+type Project = {
+  index: string; badge: string; badgeClass: string; title: string; tagline: string;
+  desc: string; tags: string[]; image?: string; mockup?: "mission-control" | "ai-kb"; link: string; linkLabel: string;
+};
+const projects: Project[] = [
   {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
-      </svg>
-    ),
-    title: "Python Automation & AI Tools",
-    desc: "Web scrapers, automation scripts, AI-powered tools using OpenAI/Claude, and data pipelines — ready to run.",
-    price: "From $50",
-    url: "https://www.fiverr.com/shaktibuilds/build-a-python-automation-script-web-scraper-or-ai-tool-for-business",
+    index: "01", badge: "Client project", badgeClass: "text-emerald-300 border-emerald-400/30 bg-emerald-400/10",
+    title: "SS BAZAR", tagline: "Reserve & Collect store for a local fashion & grocery shop",
+    desc: "Customers browse the catalogue, bag items, choose store pickup or home delivery, and get an order code. The merchant checks them out at the counter — stock updates automatically on collection. No online payment; the whole experience is built around in-person transactions.",
+    tags: ["Next.js", "Supabase", "TypeScript", "Tailwind", "Vercel"],
+    image: "/projects/cs-2.png", link: "https://clothing-store-steel-kappa.vercel.app", linkLabel: "View live",
   },
   {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5">
-        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-      </svg>
-    ),
-    title: "Custom AI Chatbot",
-    desc: "AI chatbots for websites and businesses — powered by GPT-4, trained on your data, embedded anywhere.",
-    price: "From $60",
-    url: "https://www.fiverr.com/s/kLQWx2W",
+    index: "02", badge: "Personal tool", badgeClass: "text-sky-300 border-sky-400/30 bg-sky-400/10",
+    title: "Mission Control", tagline: "A local work tracker that replaced a mess of scattered files",
+    desc: "Kanban board, sprint planning, bug tracker, and GitHub Issues sync — running offline as a local web app. A Ctrl+K command palette, dark mode, and an insights dashboard with velocity charts.",
+    tags: ["Next.js", "SQLite", "TypeScript", "Tailwind"],
+    mockup: "mission-control", link: "https://github.com/shakti-mohapatra/mission-control", linkLabel: "View on GitHub",
   },
   {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5">
-        <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
-      </svg>
-    ),
-    title: "Bug Fixes & Debugging",
-    desc: "Python, JavaScript, React, and Next.js bugs fixed fast. 24-hour turnaround on simple fixes.",
-    price: "From $30",
-    url: "https://www.fiverr.com/s/99VW9BA",
-  },
-  {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5">
-        <polyline points="4 17 10 11 4 5" />
-        <line x1="12" y1="19" x2="20" y2="19" />
-      </svg>
-    ),
-    title: "Discord & Telegram Bots",
-    desc: "Custom bots with commands, moderation, role assignment, notifications, and API integrations.",
-    price: "From $50",
-    url: "https://www.fiverr.com/s/ljayrzb",
-  },
-];
-
-const projects = [
-  {
-    badge: "Client project",
-    badgeStyle: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/50",
-    title: "SS BAZAR — Reserve & Collect Store",
-    tagline: "Full storefront + admin system for a local fashion & grocery shop",
-    desc: "Customers browse the catalogue, bag items, choose store pickup or home delivery, and get an order code. The merchant checks them out at the counter using the Store Dashboard — stock updates automatically on collection. No online payment; the whole experience is built around in-person transactions.",
-    tags: ["Next.js", "Supabase", "TypeScript", "Tailwind CSS", "Vercel"],
-    mainImage: "/projects/cs-2.png",
-    thumbs: ["/projects/cs-preview.png", "/projects/cs-3.png"],
-    link: "https://clothing-store-steel-kappa.vercel.app",
-    linkLabel: "View live",
-  },
-  {
-    badge: "Personal tool",
-    badgeStyle: "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-900/20 dark:text-sky-400 dark:border-sky-800/50",
-    title: "Mission Control — Project Tracker",
-    tagline: "Local work tracker that replaced a mess of scattered markdown files",
-    desc: "Kanban board, sprint planning, bug tracker, and GitHub Issues sync — all running offline as a local web app. Built to manage multiple client projects in one place without the overhead of Jira or Notion. Includes a Ctrl+K command palette, dark mode, and an insights dashboard with velocity charts.",
-    tags: ["Next.js", "SQLite", "TypeScript", "Tailwind CSS"],
-    mainImage: "/projects/mc-1.png",
-    thumbs: ["/projects/mc-2.png", "/projects/mc-3.png"],
-    link: "https://github.com/shakti-mohapatra/mission-control",
-    linkLabel: "View on GitHub",
+    index: "03", badge: "In progress", badgeClass: "text-amber-300 border-amber-400/30 bg-amber-400/10",
+    title: "AI Knowledge Base", tagline: "A team's documents, turned into an AI assistant they can query",
+    desc: "A multi-tenant SaaS where organisations upload documents and get an AI assistant trained on them. Roles and invitations, document ingestion and chunking, API keys and webhooks, and a complete audit log. Built with FastAPI, Postgres, and React.",
+    tags: ["FastAPI", "PostgreSQL", "React", "TanStack Query", "Alembic"],
+    mockup: "ai-kb", link: GITHUB, linkLabel: "Case study coming soon",
   },
 ];
 
 const steps = [
-  {
-    n: "01",
-    title: "Tell me what you need",
-    desc: "Plain English works. Describe what you want the tool, bot, or app to do — I handle the technical side.",
-  },
-  {
-    n: "02",
-    title: "I build it and explain it",
-    desc: "Working code delivered with instructions that make sense — how to run it, what each part does, and how to change it later.",
-  },
-  {
-    n: "03",
-    title: "Revisions until it's right",
-    desc: "Included in every order. If the software doesn't do what you hired it for, I fix it — no re-billing, no arguing.",
-  },
+  { n: "01", title: "Tell me what you need",       desc: "Plain English works. Describe what you want the tool, bot, or app to do — I handle the technical side." },
+  { n: "02", title: "I build it and explain it",   desc: "Working code delivered with instructions that make sense — how to run it, what each part does, how to change it later." },
+  { n: "03", title: "Revisions until it's right",  desc: "Included in every order. If the software doesn't do what you hired it for, I fix it — no re-billing, no arguing." },
 ];
-
-const skills = [
-  "Python",
-  "JavaScript / TypeScript",
-  "React & Next.js",
-  "OpenAI / Claude API",
-  "Discord.py / python-telegram-bot",
-  "Web Scraping",
-  "REST APIs",
-  "Supabase / PostgreSQL",
+const guarantees = [
+  { title: "No outsourcing",       desc: "Every line is written by me. The person you talk to is the person who builds it." },
+  { title: "Price agreed upfront", desc: "We settle on the cost before I start. No surprise charges halfway through." },
+  { title: "Revisions included",   desc: "If it doesn't do what you hired it for, I fix it — no re-billing." },
+  { title: "Secure through Fiverr", desc: "Payment protection and delivery guarantees handled by the platform." },
 ];
+// ── Day job / Side practice content ─────────────────────────────────────────
+// Same person, two audiences: clients looking to hire vs. recruiters/peers
+// who found this through LinkedIn. Toggle swaps copy; "Selected work" below
+// stays identical since the projects are relevant to both.
 
-// ── Contact form (Formspree) ──────────────────────────────────────────────────
+type Mode = "side" | "day";
+
+type ModeContent = {
+  eyebrow: string;
+  heroLine1: string;
+  heroLine2: string;
+  heroSub: string;
+  secondaryCta: { label: string; href: string };
+  navTagline: string;
+  marquee: string[];
+  stats: Stat[];
+  aboutBio: string[];
+  aboutClosing: string;
+  skills: string[];
+  contactRole: string;
+  contactHeading1: string;
+  contactHeading2: string;
+  contactSub: string;
+  contactBadge: string;
+  contactPrimaryCta: { label: string; href: string };
+  contactTile2: { title: string; sub: string };
+  contactMessagePlaceholder: string;
+};
+
+const modeContent: Record<Mode, ModeContent> = {
+  side: {
+    eyebrow: "Freelance developer & designer",
+    heroLine1: "I turn ideas into",
+    heroLine2: "working software.",
+    heroSub: "Python automation, AI tools, web apps, and bots — built fast, explained in plain English, and revised until they do exactly what you need.",
+    secondaryCta: { label: "Hire me on Fiverr", href: FIVERR_PROFILE },
+    navTagline: "Python, AI tools, web apps & bots — built fast, explained clearly.",
+    marquee: ["Python automation", "AI tools", "Web apps", "Chatbots", "Discord & Telegram bots", "Bug fixing", "Web design"],
+    stats: [
+      { display: "24–48h", label: "Typical delivery" },
+      { to: 100, suffix: "%", label: "Built personally" },
+      { display: "∞", label: "Revisions until it works" },
+      { to: 4, suffix: "+", label: "Real projects shipped" },
+    ],
+    aboutBio: [
+      "I'm a full-stack developer specialising in Python and JavaScript. I've spent the last few years building things that actually get used — automation that runs every morning, AI tools that answer the questions support teams got tired of handling, and web apps that shops opened to real customers.",
+      "I work with founders and small businesses who need something built without hiring a full team. Every project is handled personally — no outsourcing, no templates, no copy-paste.",
+    ],
+    aboutClosing: "If you can describe what you want in plain English, I can build it.",
+    skills: ["Python", "TypeScript", "React & Next.js", "OpenAI / Claude API", "FastAPI", "Discord.py", "Web Scraping", "REST APIs", "Supabase / PostgreSQL", "Tailwind CSS"],
+    contactRole: "Full-stack Developer",
+    contactHeading1: "Let's build",
+    contactHeading2: "something.",
+    contactSub: "Tell me about your project and I'll get back to you within 24 hours.",
+    contactBadge: "Available for new projects",
+    contactPrimaryCta: { label: "Hire me on Fiverr", href: FIVERR_PROFILE },
+    contactTile2: { title: "Free quote included", sub: "No commitment needed" },
+    contactMessagePlaceholder: "Tell me about your project…",
+  },
+  day: {
+    eyebrow: "QA Engineer — Payments & FinTech · building AI on the side",
+    heroLine1: "Fintech QA precision,",
+    heroLine2: "now building AI.",
+    heroSub: "4+ years testing production payments systems — defect detection, compliance, fraud monitoring. Currently learning GenAI & Agentic AI (LearnBay, 2026–27) and shipping real AI-powered tools on the side.",
+    secondaryCta: { label: "Connect on LinkedIn", href: LINKEDIN },
+    navTagline: "QA engineer in payments/fintech, building AI on the side.",
+    marquee: ["QA & Test Automation", "Payments & FinTech", "Compliance & Fraud Monitoring", "GenAI & Agentic AI", "LLM Evaluation", "Python & Automation"],
+    stats: [
+      { to: 4, suffix: "+", label: "Years in QA — Payments & FinTech" },
+      { to: 3, suffix: "", label: "Personal projects shipped" },
+      { display: "GenAI", label: "Now learning — Agentic AI, LearnBay 2026–27" },
+    ],
+    aboutBio: [
+      "I'm a QA engineer with 4+ years in payments and fintech — testing, defect detection, quality gates, compliance, and fraud monitoring in production systems.",
+      "I'm extending that discipline into AI: learning GenAI & Agentic AI through a Master's program, and building real AI-powered tools — a multi-tenant SaaS knowledge base, automation, chatbots — on the side to apply it hands-on.",
+    ],
+    aboutClosing: "QA taught me how things break. Now I'm learning to build and evaluate AI systems that don't.",
+    skills: ["QA & Test Automation", "Payments & FinTech Domain", "Compliance & Fraud Monitoring", "Python", "GenAI / LLMs", "Agentic AI (learning)", "REST APIs", "SQL", "React & Next.js"],
+    contactRole: "QA Engineer → AI/Automation",
+    contactHeading1: "Let's",
+    contactHeading2: "connect.",
+    contactSub: "Open to conversations about AI/Automation roles — or just talking shop.",
+    contactBadge: "Open to AI/Automation conversations",
+    contactPrimaryCta: { label: "Connect on LinkedIn", href: LINKEDIN },
+    contactTile2: { title: "Open to a conversation", sub: "No pitch, just a chat" },
+    contactMessagePlaceholder: "Say hello, ask a question, or just connect…",
+  },
+};
+
+const lineV: Variants = {
+  hide: { y: "115%" },
+  show: (i: number) => ({ y: "0%", transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.1 + i * 0.12 } }),
+};
+const fadeV: Variants = {
+  hide: { opacity: 0, y: 20 },
+  show: (i: number) => ({ opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.5 + i * 0.12 } }),
+};
+
+// ── Bento service card ────────────────────────────────────────────────────────
+
+function BentoServiceCard({ s, featured = false }: { s: ServiceData; featured?: boolean }) {
+  const iconAccent = SERVICE_ICON_ACCENT[s.n] ?? "text-violet-300 bg-violet-400/10";
+  const fromAccent = SERVICE_FROM_ACCENT[s.n]  ?? "text-violet-300";
+  return (
+    <motion.a
+      href={s.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`v2-bento-card group p-6 sm:p-7 h-full ${featured ? "min-h-[200px]" : "min-h-[170px]"}`}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div>
+        <div className="flex items-start justify-between mb-5">
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconAccent}`}>
+            <ServiceIcon n={s.n} />
+          </div>
+          <span className="text-xs font-mono text-white/25">{s.n}</span>
+        </div>
+        <h3 className={`font-bold tracking-tight text-white/90 group-hover:text-white transition-colors mb-2 ${featured ? "text-2xl sm:text-3xl" : "text-xl"}`}>
+          {s.title}
+        </h3>
+        <p className="text-sm text-white/45 leading-relaxed">{s.desc}</p>
+      </div>
+      <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/[0.07]">
+        <span className={`text-sm font-semibold ${fromAccent}`}>{s.from}</span>
+        <span className={`${fromAccent} group-hover:rotate-45 transition-transform duration-300`}>
+          <ArrowUpRight className="w-5 h-5" />
+        </span>
+      </div>
+    </motion.a>
+  );
+}
+
+// ── Project row (scroll parallax) ──────────────────────────────────────────────
+
+function ProjectRow({ p, i }: { p: Project; i: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y     = useTransform(scrollYProgress, [0, 1], ["-12%", "12%"]);
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.12, 1, 1.12]);
+  const flip  = i % 2 === 1;
+
+  return (
+    <div ref={ref} className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <Reveal className={`flex flex-col gap-6 ${flip ? "lg:order-2" : ""}`}>
+        <div className="flex items-center gap-4">
+          <span className="text-7xl font-bold text-white/[0.08] leading-none select-none">{p.index}</span>
+          <span className={`text-xs font-semibold px-3 py-1 rounded-full border ${p.badgeClass}`}>{p.badge}</span>
+        </div>
+        <div>
+          <h3 className="text-4xl sm:text-5xl font-bold tracking-tight mb-3">{p.title}</h3>
+          <p className="text-violet-300 font-medium mb-4">{p.tagline}</p>
+          <p className="text-white/55 leading-relaxed">{p.desc}</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {p.tags.map((t) => (
+            <span key={t} className="text-xs font-medium text-white/60 border border-white/12 bg-white/[0.03] px-3 py-1.5 rounded-full">{t}</span>
+          ))}
+        </div>
+        <a href={p.link} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-violet-300 transition-colors self-start">
+          {p.linkLabel}
+          <span className="group-hover:translate-x-1 transition-transform"><ArrowUpRight /></span>
+        </a>
+      </Reveal>
+
+      <div className={flip ? "lg:order-1" : ""}>
+        <motion.div style={{ y }} className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/12 bg-[var(--v2-surface)]">
+          {p.mockup === "ai-kb" ? (
+            <div className="absolute inset-0 p-6 font-mono text-[13px]">
+              <div className="flex items-center gap-2 mb-5">
+                <span className="w-3 h-3 rounded-full bg-red-400/70" />
+                <span className="w-3 h-3 rounded-full bg-amber-400/70" />
+                <span className="w-3 h-3 rounded-full bg-emerald-400/70" />
+                <span className="ml-3 text-white/30">ai-kb · ingest</span>
+              </div>
+              <div className="space-y-2 text-white/55">
+                <p><span className="text-emerald-300">POST</span> /orgs/acme/documents</p>
+                <p className="text-white/35">→ uploaded handbook.pdf (2.4 MB)</p>
+                <p className="text-white/35">→ chunking… <span className="text-violet-300">1,248 chunks</span></p>
+                <p className="text-white/35">→ embedding… <span className="text-violet-300">done</span></p>
+                <p><span className="text-sky-300">audit_log</span> document.uploaded ✓</p>
+              </div>
+              <div className="absolute bottom-6 left-6 right-6">
+                <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-full w-[85%] bg-gradient-to-r from-violet-500 to-fuchsia-400" />
+                </div>
+                <p className="text-white/30 mt-2 text-xs">56 sprints shipped · 73 routes · 68 tests passing</p>
+              </div>
+            </div>
+          ) : p.mockup === "mission-control" ? (
+            <div className="absolute inset-0 p-6 font-mono text-[13px]">
+              <div className="flex items-center gap-2 mb-5">
+                <span className="w-3 h-3 rounded-full bg-red-400/70" />
+                <span className="w-3 h-3 rounded-full bg-amber-400/70" />
+                <span className="w-3 h-3 rounded-full bg-emerald-400/70" />
+                <span className="ml-3 text-white/30">mission-control · ⌘K</span>
+              </div>
+              <div className="grid grid-cols-3 gap-3 text-[11px]">
+                {[
+                  { label: "Todo", accent: "bg-white/25", items: ["Sync GitHub Issues", "Insights charts"] },
+                  { label: "Doing", accent: "bg-sky-400/70", items: ["Sprint board drag"] },
+                  { label: "Done", accent: "bg-emerald-400/70", items: ["Command palette", "Dark mode", "Bug tracker"] },
+                ].map((col) => (
+                  <div key={col.label} className="space-y-2">
+                    <div className="flex items-center gap-1.5 text-white/40 uppercase tracking-wide text-[10px]">
+                      <span className={`w-1.5 h-1.5 rounded-full ${col.accent}`} />
+                      {col.label}
+                    </div>
+                    {col.items.map((it) => (
+                      <div key={it} className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1.5 text-white/55 leading-snug">{it}</div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+              <div className="absolute bottom-6 left-6 right-6">
+                <div className="h-1.5 rounded-full bg-white/10 overflow-hidden flex gap-[2px]">
+                  <div className="h-full w-[60%] bg-gradient-to-r from-sky-400 to-emerald-400" />
+                </div>
+                <p className="text-white/30 mt-2 text-xs">Local-first · SQLite · velocity ▲ this sprint</p>
+              </div>
+            </div>
+          ) : (
+            <motion.div style={{ scale }} className="absolute inset-0">
+              <Image src={p.image as string} alt={p.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover object-top" priority={i === 0} />
+            </motion.div>
+          )}
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+// ── Contact form ─────────────────────────────────────────────────────────────
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
-function ContactForm() {
-  const [name, setName]       = useState("");
-  const [email, setEmail]     = useState("");
+function V2ContactForm({ messagePlaceholder = "Tell me about your project…" }: { messagePlaceholder?: string }) {
+  const [name,    setName]    = useState("");
+  const [email,   setEmail]   = useState("");
   const [message, setMessage] = useState("");
-  const [status, setStatus]   = useState<FormStatus>("idle");
+  const [status,  setStatus]  = useState<FormStatus>("idle");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -303,29 +707,20 @@ function ContactForm() {
     }
   }
 
-  const inputCls = `w-full px-4 py-2.5 rounded-xl text-sm
-    bg-white dark:bg-gray-900
-    border border-gray-200 dark:border-gray-700
-    text-gray-900 dark:text-white
-    placeholder-gray-400 dark:placeholder-gray-500
-    focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-500
-    focus:border-transparent transition-all`;
+  const inputCls = `w-full px-4 py-3 rounded-xl text-sm
+    bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-white/30
+    focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30
+    transition-all`;
 
   if (status === "success") {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 p-8 rounded-2xl
-                      bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50
-                      text-center h-full">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-10 h-10 text-emerald-500">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="20 6 9 17 4 12" />
+      <div className="flex flex-col items-center gap-3 p-8 rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.06] text-center">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-10 h-10 text-emerald-400" aria-hidden>
+          <circle cx="12" cy="12" r="10" /><polyline points="20 6 9 17 4 12" />
         </svg>
-        <p className="font-semibold text-emerald-700 dark:text-emerald-400">Message sent!</p>
-        <p className="text-sm text-emerald-600 dark:text-emerald-500">I&apos;ll get back to you within 24 hours.</p>
-        <button
-          onClick={() => setStatus("idle")}
-          className="mt-2 text-xs text-emerald-600 dark:text-emerald-500 underline underline-offset-2 hover:no-underline"
-        >
+        <p className="font-semibold text-emerald-300">Message sent!</p>
+        <p className="text-sm text-emerald-400/70">I&apos;ll get back to you within 24 hours.</p>
+        <button onClick={() => setStatus("idle")} className="mt-1 text-xs text-emerald-400/60 underline underline-offset-2 hover:no-underline">
           Send another
         </button>
       </div>
@@ -333,494 +728,398 @@ function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-left">
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="cf-name" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Name</label>
-          <input
-            id="cf-name"
-            type="text"
-            required
-            placeholder="Your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className={inputCls}
-          />
+          <label htmlFor="v2-name" className="block text-[10px] font-medium text-white/35 uppercase tracking-widest mb-2">Name</label>
+          <input id="v2-name" type="text" required placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} className={inputCls} />
         </div>
         <div>
-          <label htmlFor="cf-email" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Email</label>
-          <input
-            id="cf-email"
-            type="email"
-            required
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className={inputCls}
-          />
+          <label htmlFor="v2-email" className="block text-[10px] font-medium text-white/35 uppercase tracking-widest mb-2">Email</label>
+          <input id="v2-email" type="email" required placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} />
         </div>
       </div>
       <div>
-        <label htmlFor="cf-message" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Message</label>
-        <textarea
-          id="cf-message"
-          required
-          rows={5}
-          placeholder="Tell me about your project…"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className={`${inputCls} resize-none`}
-        />
+        <label htmlFor="v2-message" className="block text-[10px] font-medium text-white/35 uppercase tracking-widest mb-2">Message</label>
+        <textarea id="v2-message" required rows={5} placeholder={messagePlaceholder} value={message} onChange={(e) => setMessage(e.target.value)} className={`${inputCls} resize-none`} />
       </div>
       {status === "error" && (
-        <p className="text-sm text-red-500 dark:text-red-400">
-          Something went wrong — please try again or email me directly.
-        </p>
+        <p className="text-sm text-red-400">Something went wrong — please try again or email me directly.</p>
       )}
-      <button
-        type="submit"
-        disabled={status === "submitting"}
-        className="w-full py-3 bg-indigo-600 text-white font-semibold rounded-full
-                   hover:bg-indigo-700 active:scale-95 transition-all
-                   shadow-lg shadow-indigo-200 dark:shadow-indigo-900/50
-                   disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100"
-      >
+      <button type="submit" disabled={status === "submitting"}
+        className="w-full py-3.5 rounded-full bg-gradient-to-r from-violet-600 to-purple-500 text-white font-semibold
+                   hover:brightness-110 active:scale-95 transition-all
+                   disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100">
         {status === "submitting" ? "Sending…" : "Send message"}
       </button>
     </form>
   );
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// ── Page ────────────────────────────────────────────────────────────────────
 
-export default function Home() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+export default function V2Home() {
+  const lenisRef = useRef<LenisType | null>(null);
+  const [ready]    = useState(true);
+  const [hidden,   setHidden]   = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [mode, setMode] = useState<Mode>("side");
+  const content = modeContent[mode];
+
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const prev = scrollY.getPrevious() ?? 0;
+    setHidden(y > prev && y > 140 && !menuOpen);
+  });
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const el = entry.target as HTMLElement;
-            const delay = parseInt(el.dataset.delay ?? "0", 10);
-            setTimeout(() => el.classList.add("visible"), delay);
-            observer.unobserve(el);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    document
-      .querySelectorAll(".reveal, .reveal-left, .reveal-right")
-      .forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    const fromQuery = new URLSearchParams(window.location.search).get("view");
+    if (fromQuery === "day" || fromQuery === "recruiter") { setMode("day"); return; }
+    if (fromQuery === "side" || fromQuery === "freelance") { setMode("side"); return; }
+    const saved = window.localStorage.getItem("v2-mode");
+    if (saved === "day" || saved === "side") setMode(saved as Mode);
   }, []);
 
+  function switchMode(next: Mode) {
+    setMode(next);
+    window.localStorage.setItem("v2-mode", next);
+  }
+
+  useEffect(() => {
+    if (prefersReduced()) return;
+    let raf = 0;
+    let mounted = true;
+    import("lenis").then(({ default: Lenis }) => {
+      if (!mounted) return;
+      const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+      lenisRef.current = lenis;
+      const loop = (t: number) => { lenis.raf(t); raf = requestAnimationFrame(loop); };
+      raf = requestAnimationFrame(loop);
+    });
+    return () => {
+      mounted = false;
+      cancelAnimationFrame(raf);
+      lenisRef.current?.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
+
+  function goTo(e: React.MouseEvent, href: string) {
+    if (!href.startsWith("#")) return;
+    e.preventDefault();
+    setMenuOpen(false);
+    const el = document.querySelector(href);
+    if (!el) return;
+    if (lenisRef.current) lenisRef.current.scrollTo(el as HTMLElement, { offset: -40 });
+    else el.scrollIntoView({ behavior: "smooth" });
+  }
+
   return (
-    <>
-      {/* ── Nav ── */}
-      <header className="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b border-gray-100 dark:border-gray-700/50 anim-fade-in transition-colors duration-200">
-        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-          <span className="font-semibold text-gray-900 dark:text-white tracking-tight">
-            shaktibuilds
-          </span>
-          <nav className="flex items-center gap-2 sm:gap-3">
-            {/* Desktop links */}
-            <div className="hidden md:flex items-center gap-1 mr-1">
-              {navLinks.map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  className="text-sm font-medium text-gray-500 dark:text-gray-400
-                             hover:text-gray-900 dark:hover:text-white px-3 py-1.5 rounded-lg
-                             hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                >
-                  {l.label}
-                </a>
-              ))}
-            </div>
-            <a
-              href={LINKEDIN}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-400 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 transition-colors"
-              aria-label="LinkedIn profile"
-            >
-              <LinkedInIcon />
-            </a>
-            <a
-              href={GITHUB}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-400 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 transition-colors"
-              aria-label="GitHub profile"
-            >
-              <GitHubIcon />
-            </a>
-            <ThemeToggle />
-            <a
-              href={FIVERR_PROFILE}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:inline-flex text-sm font-medium bg-indigo-600 text-white px-4 py-1.5 rounded-full
-                         hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all duration-200"
-            >
-              Hire me on Fiverr
-            </a>
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setMobileMenuOpen((v) => !v)}
-              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={mobileMenuOpen}
-              className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg
-                         text-gray-500 dark:text-gray-400
-                         hover:text-gray-900 dark:hover:text-white
-                         hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              <HamburgerIcon open={mobileMenuOpen} />
-            </button>
-          </nav>
-        </div>
+    <div className="v2-root relative min-h-screen overflow-x-clip">
+      <div className="v2-grain" aria-hidden />
 
-        {/* Mobile dropdown menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-100 dark:border-gray-700/50 bg-white dark:bg-gray-900 px-4 py-3 space-y-1">
-            {navLinks.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-sm font-medium text-gray-600 dark:text-gray-300
-                           hover:text-indigo-600 dark:hover:text-indigo-400
-                           px-3 py-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+      {/* Click-outside backdrop to close menu */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-[39]"
+          onClick={() => setMenuOpen(false)}
+          aria-hidden
+        />
+      )}
+
+      {/* ── Nav + drop-sheet menu ── */}
+      <motion.header
+        className="fixed top-0 inset-x-0 z-50"
+        animate={{ y: hidden ? "-130%" : "0%" }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="max-w-6xl mx-auto px-6 mt-4">
+          {/* Nav pill */}
+          <div className="flex items-center justify-between h-14 px-5 rounded-2xl border border-white/10 bg-black/30 backdrop-blur-xl">
+            <a href="#hero" onClick={(e) => goTo(e, "#hero")} className="font-semibold tracking-tight text-[15px]">
+              shakti<span className="text-violet-400">builds</span>
+            </a>
+            <div className="flex items-center gap-4">
+              <ModeToggle mode={mode} onChange={switchMode} className="hidden sm:inline-flex" />
+              <span className="hidden lg:flex items-center gap-2 text-xs text-white/55">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                </span>
+                Available
+              </span>
+              <button
+                onClick={() => setMenuOpen((v) => !v)}
+                className="flex items-center gap-2.5 text-sm font-medium text-white/80 hover:text-white transition-colors"
+                aria-label="Toggle menu"
+                aria-expanded={menuOpen}
               >
-                {l.label}
-              </a>
-            ))}
-            <div className="pt-2 pb-1">
-              <a
-                href={FIVERR_PROFILE}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block w-full text-center text-sm font-semibold bg-indigo-600 text-white px-4 py-2.5 rounded-full
-                           hover:bg-indigo-700 transition-colors"
-              >
-                Hire me on Fiverr
-              </a>
+                <span className="flex flex-col gap-1">
+                  <span className={`block h-px w-5 bg-current transition-transform origin-center ${menuOpen ? "translate-y-[3px] rotate-45" : ""}`} />
+                  <span className={`block h-px w-5 bg-current transition-transform origin-center ${menuOpen ? "-translate-y-[3px] -rotate-45" : ""}`} />
+                </span>
+                {menuOpen ? "Close" : "Menu"}
+              </button>
             </div>
           </div>
-        )}
-      </header>
 
-      <main>
-        {/* ── Hero ── */}
-        <section
-          id="hero"
-          className="relative min-h-[calc(100vh-56px)] flex items-center overflow-hidden bg-white dark:bg-gray-900 transition-colors duration-200"
-        >
-          {/* B2: static radial gradient wash + SVG fractal noise — no GPU blur */}
-          <div className="absolute inset-0 pointer-events-none" aria-hidden>
-            <div className="hero-gradient absolute inset-0" />
-            <div className="hero-noise absolute inset-0" />
-          </div>
-
-          <div className="relative max-w-5xl mx-auto px-6 py-20 w-full">
-            {/* A1: left text / right avatar split */}
-            <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-
-              {/* Left: text block — left-aligned */}
-              <div>
-                <p
-                  className="text-indigo-600 dark:text-indigo-400 font-medium text-sm tracking-widest uppercase mb-5 anim-fade-in"
-                  style={{ animationDelay: "80ms" }}
-                >
-                  Freelance Developer
-                </p>
-                <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
-                  <span className="block anim-fade-in-up" style={{ animationDelay: "200ms" }}>
-                    Hi, I&apos;m Shakti.
-                  </span>
-                  <span className="block text-shimmer anim-fade-in-up" style={{ animationDelay: "380ms" }}>
-                    I make Python and AI do the work.
-                  </span>
-                </h1>
-                <p
-                  className="text-xl text-gray-500 dark:text-gray-400 max-w-lg mb-10 leading-relaxed anim-fade-in-up"
-                  style={{ animationDelay: "540ms" }}
-                >
-                  Automation tools, AI chatbots, and web apps — built fast,
-                  explained in plain English, revised until they work exactly as you need.
-                </p>
-                <div
-                  className="flex flex-col sm:flex-row gap-4 anim-fade-in-up"
-                  style={{ animationDelay: "700ms" }}
-                >
-                  <a
-                    href="#projects"
-                    className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-full
-                               hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all
-                               shadow-lg shadow-indigo-200 dark:shadow-indigo-900/50"
-                  >
-                    See my work
-                  </a>
-                  <a
-                    href={FIVERR_PROFILE}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-8 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300
-                               font-semibold rounded-full hover:bg-gray-50 dark:hover:bg-gray-800
-                               hover:border-gray-400 dark:hover:border-gray-500
-                               hover:scale-105 active:scale-95 transition-all"
-                  >
-                    View Fiverr profile →
-                  </a>
-                </div>
-              </div>
-
-              {/* Right: photo with indigo glow ring */}
-              <div
-                className="flex justify-center md:justify-end anim-fade-in"
-                style={{ animationDelay: "400ms" }}
+          {/* Drop-sheet menu */}
+          <AnimatePresence>
+            {menuOpen && (
+              <motion.div
+                className="mt-2 rounded-2xl border border-white/10 overflow-hidden"
+                style={{
+                  background: "rgba(6, 6, 8, 0.92)",
+                  backdropFilter: "blur(28px)",
+                  WebkitBackdropFilter: "blur(28px)",
+                  transformOrigin: "top",
+                }}
+                initial={{ opacity: 0, y: -8, scaleY: 0.96 }}
+                animate={{ opacity: 1, y: 0, scaleY: 1 }}
+                exit={{ opacity: 0, y: -8, scaleY: 0.96 }}
+                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className="relative">
-                  <div className="absolute -inset-6 rounded-[2.5rem] bg-indigo-400/15 dark:bg-indigo-500/20 blur-3xl" />
-                  <div className="relative rounded-[2rem] overflow-hidden ring-1 ring-indigo-200 dark:ring-indigo-700/50 shadow-2xl shadow-indigo-200/40 dark:shadow-indigo-900/50">
-                    <Image
-                      src="/shakti.png"
-                      alt="Shakti Mohapatra"
-                      width={300}
-                      height={300}
-                      priority
-                      className="block object-cover object-top w-44 h-44 sm:w-64 sm:h-64 md:w-[300px] md:h-[300px]"
-                      sizes="(max-width: 640px) 176px, (max-width: 768px) 256px, 300px"
-                    />
-                  </div>
-                </div>
-              </div>
+                {/* Gradient bleed at top matching nav pill accent */}
+                <div className="h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(139,92,246,0.35), transparent)" }} aria-hidden />
 
-            </div>
-          </div>
-        </section>
-
-        {/* ── Stats strip ── */}
-        <section className="bg-indigo-600 dark:bg-indigo-700 transition-colors duration-200">
-          <div className="max-w-5xl mx-auto px-6 py-10 grid grid-cols-2 sm:grid-cols-4 gap-8">
-            {stats.map((s) => (
-              <div key={s.label} className="text-center">
-                <div className="text-3xl sm:text-4xl font-bold text-white">{s.value}</div>
-                <div className="text-sm text-indigo-100 mt-1.5">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── Projects ── */}
-        <section id="projects" className="py-24 bg-gray-50 dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700/50 transition-colors duration-200">
-          <div className="max-w-5xl mx-auto px-6">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-3 reveal">
-              Work I&apos;ve shipped
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400 text-center mb-20 max-w-lg mx-auto reveal" data-delay="120">
-              Real projects built for real use — not demos, not mockups.
-            </p>
-
-            <div className="space-y-24">
-              {projects.map((p, i) => (
-                <div
-                  key={p.title}
-                  className="reveal grid sm:grid-cols-2 gap-12 items-center"
-                  data-delay={String(i * 80)}
-                >
-                  {/* Text */}
-                  <div className={`flex flex-col gap-5 ${i % 2 === 1 ? "sm:order-2" : ""}`}>
-                    <span className={`inline-block self-start text-xs font-semibold px-3 py-1 rounded-full border ${p.badgeStyle}`}>
-                      {p.badge}
-                    </span>
-                    <div>
-                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{p.title}</h3>
-                      <p className="text-indigo-600 dark:text-indigo-400 font-medium text-sm mb-4">{p.tagline}</p>
-                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">{p.desc}</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {p.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-xs font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900
-                                     border border-gray-200 dark:border-gray-700 px-2.5 py-1 rounded-md"
-                        >
-                          {tag}
+                <div className="grid grid-cols-1 sm:grid-cols-[1.3fr_1fr]">
+                  {/* Left: large numbered nav links */}
+                  <nav className="p-7">
+                    {navLinks.filter((l) => mode === "side" || l.href !== "#services").map((l, idx) => (
+                      <motion.a
+                        key={l.href}
+                        href={l.href}
+                        onClick={(e) => goTo(e, l.href)}
+                        className="group flex items-center gap-4 py-3.5 border-b border-white/[0.05] last:border-0"
+                        initial={{ opacity: 0, x: -16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.06 + idx * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        <span className="text-[10px] font-mono text-violet-400/40 w-5 shrink-0 select-none">0{idx + 1}</span>
+                        <span className="text-3xl sm:text-[2.6rem] font-bold tracking-tight text-white/50 group-hover:text-white transition-colors duration-200">
+                          <span className="inline-block group-hover:translate-x-1.5 transition-transform duration-300">{l.label}</span>
                         </span>
-                      ))}
-                    </div>
-                    <a
-                      href={p.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600
-                                 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300
-                                 transition-colors self-start"
-                    >
-                      {p.linkLabel}
-                      <ArrowUpRightIcon />
-                    </a>
-                  </div>
+                        <span className="ml-auto text-violet-300 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                          <ArrowUpRight className="w-5 h-5" />
+                        </span>
+                      </motion.a>
+                    ))}
+                  </nav>
 
-                  {/* Screenshots */}
-                  <div className={`flex flex-col gap-3 ${i % 2 === 1 ? "sm:order-1" : ""}`}>
-                    <div className="relative aspect-video rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-xl shadow-gray-200/60 dark:shadow-black/30">
-                      <Image
-                        src={p.mainImage}
-                        alt={p.title}
-                        fill
-                        sizes="(max-width: 640px) 100vw, 50vw"
-                        className="object-cover object-top"
-                        priority={i === 0}
-                      />
+                  {/* Right: availability + socials */}
+                  <motion.div
+                    className="border-t sm:border-t-0 sm:border-l border-white/[0.06] p-7 flex flex-col justify-between gap-8"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2, duration: 0.35 }}
+                  >
+                    <div className="space-y-4">
+                      <ModeToggle mode={mode} onChange={switchMode} className="flex sm:hidden" />
+                      <div className="flex items-center gap-2.5">
+                        <span className="relative flex h-2 w-2 shrink-0">
+                          <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                        </span>
+                        <span className="text-xs uppercase tracking-[0.28em] text-emerald-400/80">Available</span>
+                      </div>
+                      <p className="text-sm text-white/35 leading-relaxed">
+                        {content.navTagline}
+                      </p>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      {p.thumbs.map((thumb, j) => (
-                        <div
-                          key={j}
-                          className="relative aspect-video rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm"
+
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.28em] text-white/20 mb-3">Links</p>
+                      {[
+                        { label: "Fiverr",    href: FIVERR_PROFILE,    external: true  },
+                        { label: "LinkedIn",  href: LINKEDIN,          external: true  },
+                        { label: "GitHub",    href: GITHUB,            external: true  },
+                        { label: "Email me",  href: `mailto:${EMAIL}`, external: false },
+                      ].map((link) => (
+                        <a
+                          key={link.href}
+                          href={link.href}
+                          target={link.external ? "_blank" : undefined}
+                          rel={link.external ? "noopener noreferrer" : undefined}
+                          className="group flex items-center justify-between py-2.5 border-b border-white/[0.05] last:border-0 text-sm text-white/40 hover:text-white transition-colors"
                         >
-                          <Image
-                            src={thumb}
-                            alt={`${p.title} screenshot ${j + 2}`}
-                            fill
-                            sizes="(max-width: 640px) 50vw, 25vw"
-                            className="object-cover object-top"
-                          />
-                        </div>
+                          <span>{link.label}</span>
+                          <ArrowUpRight className="w-3.5 h-3.5 ml-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </a>
                       ))}
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
-              ))}
-            </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.header>
+
+      <main className="relative z-[1]">
+        {/* Scrolling ambient orbs — position: absolute inside relative main,
+            so they travel with page content (no viewport-scroll disconnect) */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <div className="absolute rounded-full" style={{ top: "22%", left: "-18%", width: "55vw", height: "55vw", background: "radial-gradient(circle, rgba(139,92,246,0.11) 0%, transparent 70%)", filter: "blur(120px)" }} />
+          <div className="absolute rounded-full" style={{ top: "54%", right: "-18%", width: "50vw", height: "50vw", background: "radial-gradient(circle, rgba(232,121,249,0.08) 0%, transparent 70%)", filter: "blur(120px)" }} />
+          <div className="absolute rounded-full" style={{ top: "80%", left: "12%", width: "48vw", height: "48vw", background: "radial-gradient(circle, rgba(139,92,246,0.09) 0%, transparent 70%)", filter: "blur(120px)" }} />
+        </div>
+        {/* ── Hero ── */}
+        <section id="hero" className="relative min-h-screen flex items-center overflow-hidden">
+          <HeroCanvas />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#060608]/30 via-transparent to-[#060608]" aria-hidden />
+
+          <div className="relative max-w-6xl mx-auto px-6 w-full pt-28 pb-20">
+            <motion.p
+              variants={fadeV}
+              initial="hide"
+              animate={ready ? "show" : "hide"}
+              custom={0}
+              className="text-sm tracking-[0.3em] uppercase text-white/70 mb-8"
+              style={{ textShadow: "0 2px 20px rgba(0,0,0,0.7)" }}
+            >
+              {content.eyebrow}
+            </motion.p>
+            <h1 className="text-[clamp(2.75rem,9vw,7rem)] font-bold leading-[0.95] tracking-tight">
+              <span className="v2-line"><motion.span className="block" variants={lineV} initial="hide" animate={ready ? "show" : "hide"} custom={0}>{content.heroLine1}</motion.span></span>
+              <span className="v2-line"><motion.span className="block v2-accent-text" variants={lineV} initial="hide" animate={ready ? "show" : "hide"} custom={1}>{content.heroLine2}</motion.span></span>
+            </h1>
+            <motion.p
+              variants={fadeV}
+              initial="hide"
+              animate={ready ? "show" : "hide"}
+              custom={1}
+              className="max-w-xl text-lg sm:text-xl text-white/75 mt-8 leading-relaxed"
+              style={{ textShadow: "0 2px 20px rgba(0,0,0,0.6)" }}
+            >
+              {content.heroSub}
+            </motion.p>
+            <motion.div variants={fadeV} initial="hide" animate={ready ? "show" : "hide"} custom={2} className="flex flex-col sm:flex-row gap-4 mt-12">
+              <Magnetic strength={0.35}>
+                <a href="#work" onClick={(e) => goTo(e, "#work")} className="px-8 py-3.5 rounded-full bg-white text-black font-semibold hover:bg-white/90 transition-colors">See my work</a>
+              </Magnetic>
+              <Magnetic strength={0.35}>
+                <a href={content.secondaryCta.href} target="_blank" rel="noopener noreferrer" className="px-8 py-3.5 rounded-full border border-white/25 text-white font-semibold hover:bg-white/5 transition-colors inline-flex items-center gap-2">{content.secondaryCta.label} <ArrowUpRight /></a>
+              </Magnetic>
+            </motion.div>
           </div>
+
+          {/* Scroll indicator (replaces circular badge) */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: ready ? 1 : 0 }}
+            transition={{ delay: 1.2 }}
+            className="absolute bottom-10 right-8 sm:right-12 hidden sm:block"
+          >
+            <ScrollIndicator />
+          </motion.div>
         </section>
 
-        {/* ── Services ── */}
-        <section id="services" className="py-24 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700/50 transition-colors duration-200">
-          <div className="max-w-5xl mx-auto px-6">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-3 reveal">
-              What I can build for you
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400 text-center mb-14 max-w-lg mx-auto reveal" data-delay="120">
-              Every order is handled personally — you get the work, an explanation,
-              and revisions until it&apos;s right.
-            </p>
-
-            <div className="grid sm:grid-cols-2 gap-6">
-              {services.map((s, i) => (
-                <a
-                  key={s.title}
-                  href={s.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-delay={String(i * 130)}
-                  className="reveal group flex flex-col gap-3 p-6 bg-white dark:bg-gray-800
-                             border border-gray-200 dark:border-gray-700 rounded-2xl
-                             hover:border-indigo-300 dark:hover:border-indigo-600
-                             hover:shadow-xl dark:hover:shadow-black/30 hover:-translate-y-1.5
-                             transition-all duration-300"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 flex items-center justify-center
-                                     text-indigo-600 dark:text-indigo-400
-                                     group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/60 transition-colors">
-                      {s.icon}
-                    </span>
-                    <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/40 px-3 py-1 rounded-full">
-                      {s.price}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                    {s.title}
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed flex-1">{s.desc}</p>
-                  <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1.5 transition-transform duration-200 inline-block">
-                    Order on Fiverr →
+        {/* ── Marquee ── */}
+        <section className="v2-marquee border-y border-white/10 py-6 bg-[#060608]" aria-hidden>
+          <div className="v2-marquee-track">
+            {[0, 1].map((dup) => (
+              <div key={dup} className="flex items-center">
+                {content.marquee.map((w) => (
+                  <span key={dup + w} className="flex items-center text-2xl sm:text-3xl font-semibold text-white/25 mx-8">
+                    {w}<span className="mx-8 text-violet-500">✦</span>
                   </span>
-                </a>
-              ))}
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Stats ── */}
+        <section className="border-b border-white/10">
+          <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6">
+            {content.stats.map((s) => (
+              <Reveal key={s.label} className="text-center md:text-left">
+                <div className="text-4xl sm:text-5xl font-bold tracking-tight">
+                  {"to" in s ? <CountUp to={s.to} suffix={s.suffix} /> : s.display}
+                </div>
+                <div className="text-sm text-white/45 mt-2">{s.label}</div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Work ── */}
+        <section id="work" className="py-28 relative">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="flex items-end justify-between mb-20">
+              <Reveal><h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Selected<br />work</h2></Reveal>
+              <Reveal className="hidden sm:block" delay={0.1}><p className="text-white/45 max-w-xs text-right">Real projects built for real use — not demos, not mockups.</p></Reveal>
+            </div>
+            <div className="space-y-28">
+              {projects.map((p, i) => <ProjectRow key={p.title} p={p} i={i} />)}
             </div>
           </div>
         </section>
 
-        {/* ── How I work ── */}
-        <section id="process" className="py-24 bg-gray-50 dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700/50 transition-colors duration-200">
-          <div className="max-w-5xl mx-auto px-6">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-3 reveal">
-              How I work
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400 text-center mb-16 max-w-lg mx-auto reveal" data-delay="100">
-              Simple process, no surprises.
-            </p>
+        {mode === "side" && (
+        <>
+        {/* ── Services (bento grid) ── */}
+        <section id="services" className="py-28 border-t border-white/10 relative">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="max-w-2xl mb-14">
+              <Reveal><h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-5">What I can build</h2></Reveal>
+              <Reveal delay={0.1}><p className="text-white/55 text-lg">Starting prices — message me for an exact quote. Click any card to open it on Fiverr.</p></Reveal>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Reveal className="sm:col-span-2 lg:col-span-2" delay={0}>
+                <BentoServiceCard s={services[0]} featured />
+              </Reveal>
+              {services.slice(1).map((s, idx) => (
+                <Reveal key={s.n} delay={(idx + 1) * 0.08}>
+                  <BentoServiceCard s={s} />
+                </Reveal>
+              ))}
+            </div>
+            <Reveal className="mt-10">
+              <p className="text-white/50">Something else in mind? <a href={`mailto:${EMAIL}`} className="text-violet-300 hover:text-violet-200 underline underline-offset-4">Email me</a> — if you can describe it in plain English, I can probably build it.</p>
+            </Reveal>
+          </div>
+        </section>
 
-            <div className="grid sm:grid-cols-3 gap-10">
+        {/* ── Process ── */}
+        <section className="py-28 border-t border-white/10">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal><h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-16">How I work</h2></Reveal>
+            <div className="grid md:grid-cols-3 gap-12">
               {steps.map((step, i) => (
-                <div
-                  key={step.n}
-                  className="reveal flex flex-col gap-4"
-                  data-delay={String(i * 150)}
-                >
-                  <span className="text-5xl font-bold text-indigo-100 dark:text-indigo-900/80 leading-none select-none">
-                    {step.n}
-                  </span>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{step.title}</h3>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">{step.desc}</p>
-                  </div>
-                </div>
+                <Reveal key={step.n} delay={i * 0.1} className="flex flex-col gap-5">
+                  <span className="text-6xl font-bold v2-accent-text leading-none select-none">{step.n}</span>
+                  <h3 className="text-xl font-semibold">{step.title}</h3>
+                  <p className="text-white/55 leading-relaxed">{step.desc}</p>
+                </Reveal>
               ))}
             </div>
           </div>
         </section>
 
         {/* ── Guarantees ── */}
-        <section className="py-24 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700/50 transition-colors duration-200">
-          <div className="max-w-5xl mx-auto px-6">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-3 reveal">
-              What you can count on
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400 text-center mb-14 max-w-lg mx-auto reveal" data-delay="100">
-              The things that matter most when you&apos;re hiring someone you haven&apos;t met.
-            </p>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <section className="py-28 border-t border-white/10">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal><h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-16">What you can count on</h2></Reveal>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {guarantees.map((g, i) => (
-                <div
-                  key={g.title}
-                  className="reveal flex flex-col gap-3 p-6 bg-gray-50 dark:bg-gray-800
-                             border border-gray-200 dark:border-gray-700 rounded-2xl"
-                  data-delay={String(i * 110)}
-                >
-                  <span className="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-5 h-5">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
+                <Reveal key={g.title} delay={i * 0.08} className="flex flex-col gap-3 p-6 rounded-2xl border border-white/10 bg-[var(--v2-surface)] h-full">
+                  <span className="w-9 h-9 rounded-lg bg-emerald-400/10 text-emerald-300 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" className="w-5 h-5"><polyline points="20 6 9 17 4 12" /></svg>
                   </span>
-                  <h3 className="text-base font-semibold text-gray-900 dark:text-white">{g.title}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{g.desc}</p>
-                </div>
+                  <h3 className="font-semibold">{g.title}</h3>
+                  <p className="text-sm text-white/55 leading-relaxed">{g.desc}</p>
+                </Reveal>
               ))}
             </div>
           </div>
         </section>
 
         {/* ── Testimonials ── */}
-        <section className="py-24 bg-gray-50 dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700/50 transition-colors duration-200">
-          <div className="max-w-5xl mx-auto px-6">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-3 reveal">
-              What clients say
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400 text-center mb-14 max-w-lg mx-auto reveal" data-delay="100">
-              Real feedback from people I&apos;ve built for.
-            </p>
-
-            <div className="grid sm:grid-cols-3 gap-6">
+        <section className="py-28 border-t border-white/10">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal><h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-16">What clients say</h2></Reveal>
+            <div className="grid md:grid-cols-3 gap-5">
               {[
                 {
                   quote: "Delivered exactly what I asked for, faster than expected. The code was clean and came with a clear explanation of how to update it myself.",
@@ -832,206 +1131,198 @@ export default function Home() {
                   quote: "I needed a Telegram bot that synced with our internal spreadsheet. Shakti built it in two days, explained every part, and fixed a small edge case I found for free.",
                   name: "Meera S.",
                   role: "Operations manager",
-                  delay: 130,
+                  delay: 0.08,
                 },
                 {
                   quote: "No back-and-forth, no surprise charges. I described what I wanted, he built it, I tested it, done. Will hire again.",
                   name: "James W.",
                   role: "Small business owner",
-                  delay: 260,
+                  delay: 0.16,
                 },
               ].map((t) => (
-                <div
-                  key={t.name}
-                  className="reveal flex flex-col gap-4 p-6 bg-white dark:bg-gray-900
-                             border border-gray-200 dark:border-gray-700 rounded-2xl"
-                  data-delay={String(t.delay)}
-                >
-                  {/* 5 stars */}
+                <Reveal key={t.name} delay={t.delay} className="flex flex-col gap-5 p-6 rounded-2xl border border-white/[0.08] bg-[var(--v2-surface)] h-full">
                   <div className="flex gap-0.5" aria-label="5 stars">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <svg key={i} viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-amber-400">
+                      <svg key={i} viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-amber-400" aria-hidden>
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
                     ))}
                   </div>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed flex-1">
-                    &ldquo;{t.quote}&rdquo;
-                  </p>
+                  <p className="text-white/55 leading-relaxed text-sm flex-1">&ldquo;{t.quote}&rdquo;</p>
                   <div>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white">{t.name}</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500">{t.role}</p>
+                    <p className="font-semibold text-white/90 text-sm">{t.name}</p>
+                    <p className="text-white/35 text-xs mt-0.5">{t.role}</p>
                   </div>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
         </section>
+        </>
+        )}
 
         {/* ── About ── */}
-        <section id="about" className="py-24 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700/50 transition-colors duration-200">
-
-          <div className="max-w-5xl mx-auto px-6">
-            <div className="grid sm:grid-cols-2 gap-16 items-start">
-
-              {/* Left: photo + bio */}
-              <div className="reveal-left flex flex-col gap-6">
-                <Avatar />
-
-                <div>
-                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">About me</h2>
-                  <div className="space-y-4 text-gray-600 dark:text-gray-300 leading-relaxed">
-                    <p>
-                      I&apos;m a full-stack developer specialising in Python and
-                      JavaScript. I&apos;ve spent the last few years building things
-                      that actually get used — automation scripts that run every
-                      morning, AI tools that answer the questions support teams got
-                      tired of handling, and web apps that shops opened to real
-                      customers.
-                    </p>
-                    <p>
-                      I work with founders and small businesses who need something
-                      built without hiring a full team. Every project is handled
-                      personally — no outsourcing, no templates, no copy-paste.
-                    </p>
-                    <p>
-                      If you can describe what you want in plain English, I can
-                      build it.
-                    </p>
+        <section id="about" className="py-28 border-t border-white/10 relative">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="grid lg:grid-cols-[1fr_1.5fr] gap-16 items-start">
+              {/* Photo */}
+              <Reveal>
+                <div className="relative aspect-[3/4] max-w-xs rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_60px_rgba(139,92,246,0.15)] ring-1 ring-violet-400/20">
+                  <Image
+                    src="/profile-photo.jpg"
+                    alt="Shakti M."
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
+              </Reveal>
+              {/* Bio + Skills */}
+              <div>
+                <Reveal>
+                  <h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-8">About me</h2>
+                  <div className="space-y-5 text-white/60 leading-relaxed text-lg">
+                    {content.aboutBio.map((para) => (
+                      <p key={para.slice(0, 24)}>{para}</p>
+                    ))}
+                    <p className="text-white">{content.aboutClosing}</p>
                   </div>
-                </div>
-              </div>
-
-              {/* Right: skills */}
-              <div className="reveal-right" data-delay="150">
-                <h3 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-5">
-                  Skills & Tools
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="skill-tag text-sm font-medium text-gray-700 dark:text-gray-300
-                                 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
-                                 px-3 py-1.5 rounded-full
-                                 hover:border-indigo-300 dark:hover:border-indigo-600
-                                 hover:text-indigo-600 dark:hover:text-indigo-400
-                                 hover:scale-105 transition-all duration-200 cursor-default"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
+                </Reveal>
+                <Reveal delay={0.15} className="mt-10">
+                  <h3 className="text-sm font-semibold uppercase tracking-widest text-white/40 mb-6">Skills &amp; tools</h3>
+                  <div className="flex flex-wrap gap-2.5">
+                    {content.skills.map((skill) => (
+                      <span key={skill} className="text-sm font-medium text-white/70 border border-white/12 bg-white/[0.03] px-4 py-2 rounded-full hover:border-violet-400/50 hover:text-violet-200 transition-colors">{skill}</span>
+                    ))}
+                  </div>
+                </Reveal>
               </div>
             </div>
           </div>
         </section>
 
         {/* ── Contact ── */}
-        <section id="contact" className="py-24 bg-gray-50 dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700/50 transition-colors duration-200">
-          <div className="max-w-5xl mx-auto px-6">
-            <div className="grid lg:grid-cols-2 gap-16 items-start">
-              {/* Left: heading + form */}
-              <div className="reveal-left">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">Get in touch</h2>
-                <p className="text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
-                  Describe your project in plain English — I&apos;ll reply within 24 hours with a clear quote.
-                </p>
-                <ContactForm />
-              </div>
+        <section id="contact" className="py-32 border-t border-white/10 relative overflow-hidden">
+          <div className="absolute inset-0" aria-hidden style={{ background: "radial-gradient(60% 80% at 50% 120%, rgba(139,92,246,0.3), transparent 70%)" }} />
+          <div className="max-w-6xl mx-auto px-6 relative">
 
-              {/* Right: other ways to reach me */}
-              <div className="reveal-right flex flex-col gap-6" data-delay="150">
-                <div>
-                  <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
-                    Or reach me directly
-                  </p>
-                  <div className="flex flex-col gap-3">
-                    <a
-                      href={FIVERR_PROFILE}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 px-5 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl
-                                 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all
-                                 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/50"
-                    >
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 shrink-0" aria-hidden>
-                        <path d="M16.25 0A7.75 7.75 0 0024 7.75v2.563a.687.687 0 01-.688.687h-2.374a.687.687 0 01-.688-.687V7.75a3.5 3.5 0 00-3.5-3.5V7.5a.75.75 0 01-.75.75h-2.625A.375.375 0 0113 7.875V4.25A4.25 4.25 0 0116.25 0zM0 7.563C0 5.38 1.63 3.563 3.75 3.563c1.657 0 3.095.993 3.707 2.425L9 10.5H6.75a.75.75 0 000 1.5H9v8.25a.75.75 0 001.5 0V12H13a.75.75 0 000-1.5h-2.5L8.837 5.313A5.25 5.25 0 000 7.563z" />
-                      </svg>
-                      Hire me on Fiverr
-                    </a>
-                    <a
-                      href={`mailto:${EMAIL}`}
-                      className="flex items-center gap-3 px-5 py-3.5 border border-gray-300 dark:border-gray-600
-                                 text-gray-700 dark:text-gray-300 font-semibold rounded-xl
-                                 hover:bg-white dark:hover:bg-gray-800
-                                 hover:border-gray-400 dark:hover:border-gray-500
-                                 hover:scale-[1.02] active:scale-95 transition-all"
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5 shrink-0" aria-hidden>
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                        <polyline points="22,6 12,13 2,6" />
-                      </svg>
+            {/* Header */}
+            <div className="text-center mb-16">
+              <Reveal className="flex justify-center mb-6">
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/[0.07] text-emerald-300 text-xs font-medium tracking-[0.2em] uppercase">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  {content.contactBadge}
+                </span>
+              </Reveal>
+              <Reveal>
+                <h2 className="text-[clamp(2.5rem,8vw,6rem)] font-bold tracking-tight leading-[1.02]">
+                  {content.contactHeading1} <span className="v2-accent-text">{content.contactHeading2}</span>
+                </h2>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <p className="text-white/50 text-lg max-w-md mx-auto mt-4">
+                  {content.contactSub}
+                </p>
+              </Reveal>
+            </div>
+
+            {/* Two-column: form card + info card */}
+            <div className="grid lg:grid-cols-[1fr_268px] gap-5 max-w-4xl mx-auto">
+
+              {/* Form card */}
+              <Reveal>
+                <div className="p-8 rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+                  <V2ContactForm messagePlaceholder={content.contactMessagePlaceholder} />
+                </div>
+              </Reveal>
+
+              {/* Info card */}
+              <Reveal delay={0.12}>
+                <div className="p-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] flex flex-col gap-5 h-full">
+
+                  {/* Avatar + name */}
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-11 h-11 flex-shrink-0 rounded-full overflow-hidden border border-violet-400/30 ring-2 ring-violet-400/10">
+                      <Image src="/profile-photo.jpg" alt="Shakti M." fill className="object-cover object-top" sizes="44px" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-white text-sm leading-tight">Shakti M.</p>
+                      <p className="text-white/40 text-xs mt-0.5">{content.contactRole}</p>
+                    </div>
+                  </div>
+
+                  {/* Promise tiles */}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04]">
+                      <div className="w-7 h-7 rounded-lg bg-violet-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-violet-400" aria-hidden>
+                          <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1ZM7.5 4.5a.5.5 0 0 1 1 0v3.793l2.146 2.147a.5.5 0 0 1-.707.707l-2.293-2.293A.5.5 0 0 1 7.5 8.5V4.5Z"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-white/80 text-xs font-medium">Replies within 24 hrs</p>
+                        <p className="text-white/35 text-[11px] mt-0.5">Usually same day</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04]">
+                      <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-emerald-400" aria-hidden>
+                          <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022Z"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-white/80 text-xs font-medium">{content.contactTile2.title}</p>
+                        <p className="text-white/35 text-[11px] mt-0.5">{content.contactTile2.sub}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex-1" />
+
+                  {/* CTAs */}
+                  <div className="flex flex-col gap-2">
+                    <Magnetic strength={0.2}>
+                      <a href={content.contactPrimaryCta.href} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center justify-center w-full px-4 py-2.5 rounded-full bg-white text-black text-xs font-semibold hover:bg-white/90 transition-colors">
+                        {content.contactPrimaryCta.label}
+                      </a>
+                    </Magnetic>
+                    <a href={`mailto:${EMAIL}`}
+                      className="flex items-center justify-center w-full px-4 py-2.5 rounded-full border border-white/15 text-white/60 text-xs font-medium hover:bg-white/5 hover:text-white/90 transition-colors truncate">
                       {EMAIL}
                     </a>
                   </div>
-                </div>
 
-                <div className="pt-2">
-                  <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
-                    Find me on
-                  </p>
-                  <div className="flex gap-4">
+                  {/* Socials */}
+                  <div className="flex items-center gap-4 pt-4 border-t border-white/[0.07]">
                     <a href={LINKEDIN} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                      className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white transition-colors">
                       <LinkedInIcon /> LinkedIn
                     </a>
                     <a href={GITHUB} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                      className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white transition-colors">
                       <GitHubIcon /> GitHub
                     </a>
                   </div>
+
                 </div>
-              </div>
+              </Reveal>
+
             </div>
           </div>
         </section>
       </main>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-gray-100 dark:border-gray-700/50 py-8 bg-white dark:bg-gray-900 transition-colors duration-200">
-        <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400 dark:text-gray-500">
+      <footer className="border-t border-white/10 py-10 relative z-[1]">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-white/40">
           <span>© 2026 Shakti M. All rights reserved.</span>
           <div className="flex items-center gap-6">
-            <a
-              href={LINKEDIN}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-            >
-              <LinkedInIcon />
-              LinkedIn
-            </a>
-            <a
-              href={GITHUB}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-            >
-              <GitHubIcon />
-              GitHub
-            </a>
-            <a
-              href={FIVERR_PROFILE}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-            >
-              fiverr.com/shaktibuilds
-            </a>
+            <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-white transition-colors"><LinkedInIcon /> LinkedIn</a>
+            <a href={GITHUB} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-white transition-colors"><GitHubIcon /> GitHub</a>
+            <a href={FIVERR_PROFILE} target="_blank" rel="noopener noreferrer" className="hover:text-violet-300 transition-colors">fiverr.com/shaktibuilds</a>
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
