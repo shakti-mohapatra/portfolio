@@ -17,6 +17,12 @@ const GITHUB = "https://github.com/shakti-mohapatra";
 const LINKEDIN = "https://www.linkedin.com/in/shakti-mohapatra/";
 const EMAIL = "shaktidev.work@gmail.com";
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeebgngl";
+const RESUME_PDF = "/resume-shakti-mohapatra.pdf";
+// Resume contact details (recruiter mode only) — kept separate from the Fiverr-facing
+// EMAIL constant above so the two audiences see the identity that matches their context.
+const RESUME_EMAIL = "shakti0946@gmail.com";
+const PHONE_DISPLAY = "+91 87637 04542";
+const PHONE_TEL = "+918763704542";
 
 const prefersReduced = () =>
   typeof window !== "undefined" &&
@@ -24,18 +30,35 @@ const prefersReduced = () =>
 
 // ── Icons ──────────────────────────────────────────────────────────────────
 
-function LinkedInIcon() {
+function LinkedInIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5" aria-hidden>
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
     </svg>
   );
 }
 
-function GitHubIcon() {
+function GitHubIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5" aria-hidden>
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
       <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+    </svg>
+  );
+}
+
+function MailIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className} aria-hidden>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M3 7l9 6 9-6" />
+    </svg>
+  );
+}
+
+function PhoneIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className} aria-hidden>
+      <path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1L6.6 10.8z" />
     </svg>
   );
 }
@@ -59,7 +82,7 @@ function ModeToggle({ mode, onChange, className = "inline-flex" }: { mode: "side
         aria-pressed={mode === "side"}
         className={`px-3 py-1.5 rounded-full transition-colors ${mode === "side" ? "bg-white text-black" : "text-white/50 hover:text-white"}`}
       >
-        Side practice
+        For Clients
       </button>
       <button
         type="button"
@@ -67,7 +90,7 @@ function ModeToggle({ mode, onChange, className = "inline-flex" }: { mode: "side
         aria-pressed={mode === "day"}
         className={`px-3 py-1.5 rounded-full transition-colors ${mode === "day" ? "bg-white text-black" : "text-white/50 hover:text-white"}`}
       >
-        Day job
+        For Recruiters
       </button>
     </div>
   );
@@ -107,12 +130,59 @@ function ServiceIcon({ n }: { n: string }) {
   );
 }
 
+// ── Skill category icons (recruiter Skills section) ─────────────────────────
+
+type SkillIconKind = "shield" | "chip" | "terminal" | "clipboard" | "database" | "spark";
+
+function SkillIcon({ kind }: { kind: SkillIconKind }) {
+  const cls = "w-5 h-5";
+  if (kind === "shield") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <path d="M12 3l7 3v5c0 5-3 8.5-7 10-4-1.5-7-5-7-10V6l7-3z" />
+      <polyline points="9 12 11 14 15 10" />
+    </svg>
+  );
+  if (kind === "chip") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <rect x="6" y="6" width="12" height="12" rx="2" />
+      <path d="M6 10H3M6 14H3M18 10h3M18 14h3M10 6V3M14 6V3M10 21v-3M14 21v-3" />
+    </svg>
+  );
+  if (kind === "terminal") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <polyline points="7 9 10 12 7 15" />
+      <line x1="12" y1="15" x2="16" y2="15" />
+    </svg>
+  );
+  if (kind === "clipboard") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <rect x="5" y="5" width="14" height="16" rx="2" />
+      <path d="M9 4h6a1 1 0 011 1v1H8V5a1 1 0 011-1z" />
+      <polyline points="9 13 11 15 15 11" />
+    </svg>
+  );
+  if (kind === "database") return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <ellipse cx="12" cy="5" rx="7" ry="3" />
+      <path d="M5 5v14c0 1.7 3.1 3 7 3s7-1.3 7-3V5" />
+      <path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3" />
+    </svg>
+  );
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={cls} aria-hidden>
+      <path d="M12 3l1.6 4.9L18 9.5l-4.4 1.6L12 16l-1.6-4.9L6 9.5l4.4-1.6L12 3z" />
+      <path d="M19 14.5l.6 1.8 1.8.7-1.8.7-.6 1.8-.6-1.8-1.8-.7 1.8-.7z" />
+    </svg>
+  );
+}
+
 // ── WebGL hero shader ────────────────────────────────────────────────────────
 
 const VERT = `attribute vec2 a_pos; void main(){ gl_Position = vec4(a_pos,0.0,1.0); }`;
 
 const FRAG = `precision highp float;
-uniform float u_time; uniform vec2 u_res; uniform vec2 u_mouse;
+uniform float u_time; uniform vec2 u_res; uniform vec2 u_mouse; uniform float u_mode;
 vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
 vec2 mod289(vec2 x){return x-floor(x*(1.0/289.0))*289.0;}
 vec3 permute(vec3 x){return mod289(((x*34.0)+1.0)*x);}
@@ -137,10 +207,10 @@ void main(){
   vec2 q=vec2(fbm(p+t),fbm(p+vec2(5.2,1.3)-t));
   vec2 r=vec2(fbm(p+1.6*q+vec2(1.7,9.2)+0.25*mo),fbm(p+1.6*q+vec2(8.3,2.8)-0.25*mo));
   float f=fbm(p+1.9*r+t); f=0.5+0.5*f;
-  vec3 c1=vec3(0.024,0.024,0.031);
-  vec3 c2=vec3(0.16,0.10,0.42);
-  vec3 c3=vec3(0.55,0.36,0.96);
-  vec3 c4=vec3(0.91,0.47,0.98);
+  vec3 c1=mix(vec3(0.024,0.024,0.031),vec3(0.018,0.026,0.036),u_mode);
+  vec3 c2=mix(vec3(0.16,0.10,0.42),vec3(0.07,0.15,0.40),u_mode);
+  vec3 c3=mix(vec3(0.55,0.36,0.96),vec3(0.18,0.48,0.92),u_mode);
+  vec3 c4=mix(vec3(0.91,0.47,0.98),vec3(0.28,0.86,0.86),u_mode);
   vec3 col=mix(c1,c2,smoothstep(0.0,0.55,f));
   col=mix(col,c3,smoothstep(0.45,0.85,f));
   col=mix(col,c4,smoothstep(0.78,1.05,f)*(0.5+0.5*length(r)));
@@ -148,7 +218,7 @@ void main(){
   gl_FragColor=vec4(col,1.0);
 }`;
 
-function initHeroGL(canvas: HTMLCanvasElement): (() => void) | null {
+function initHeroGL(canvas: HTMLCanvasElement): { cleanup: () => void; setMode: (v: number) => void } | null {
   const gl =
     (canvas.getContext("webgl") as WebGLRenderingContext | null) ||
     (canvas.getContext("experimental-webgl") as WebGLRenderingContext | null);
@@ -184,9 +254,11 @@ function initHeroGL(canvas: HTMLCanvasElement): (() => void) | null {
   const uTime  = gl.getUniformLocation(prog, "u_time");
   const uRes   = gl.getUniformLocation(prog, "u_res");
   const uMouse = gl.getUniformLocation(prog, "u_mouse");
+  const uMode  = gl.getUniformLocation(prog, "u_mode");
 
   const mouse  = { x: 0.5, y: 0.5 };
   const target = { x: 0.5, y: 0.5 };
+  const modeState = { current: 0, target: 0 };
   let raf = 0;
   let visible = true;
   const start = performance.now();
@@ -206,10 +278,12 @@ function initHeroGL(canvas: HTMLCanvasElement): (() => void) | null {
     // Slowed from 0.05 → 0.02 for a dreamlike drift instead of snap
     mouse.x += (target.x - mouse.x) * 0.02;
     mouse.y += (target.y - mouse.y) * 0.02;
+    modeState.current += (modeState.target - modeState.current) * 0.025;
     const t = (performance.now() - start) / 1000;
     gl.uniform1f(uTime, t);
     gl.uniform2f(uRes,   canvas.width, canvas.height);
     gl.uniform2f(uMouse, mouse.x * canvas.width, mouse.y * canvas.height);
+    gl.uniform1f(uMode,  modeState.current);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     raf = requestAnimationFrame(loop);
   };
@@ -227,26 +301,44 @@ function initHeroGL(canvas: HTMLCanvasElement): (() => void) | null {
   window.addEventListener("mousemove", onMove);
   loop();
 
-  return () => {
-    cancelAnimationFrame(raf);
-    window.removeEventListener("resize",    resize);
-    window.removeEventListener("mousemove", onMove);
-    io.disconnect();
+  return {
+    cleanup: () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize",    resize);
+      window.removeEventListener("mousemove", onMove);
+      io.disconnect();
+    },
+    setMode: (v: number) => { modeState.target = v; },
   };
 }
 
-function HeroCanvas() {
+function HeroCanvas({ mode }: { mode: Mode }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const apiRef = useRef<{ setMode: (v: number) => void } | null>(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
     if (!ref.current) return;
-    const cleanup = initHeroGL(ref.current);
-    if (!cleanup) { setFailed(true); return; }
-    return cleanup;
+    const api = initHeroGL(ref.current);
+    if (!api) { setFailed(true); return; }
+    apiRef.current = api;
+    api.setMode(mode === "day" ? 1 : 0);
+    return () => { apiRef.current = null; api.cleanup(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    apiRef.current?.setMode(mode === "day" ? 1 : 0);
+  }, [mode]);
   return (
     <>
-      {failed && <div className="v2-hero-fallback" />}
+      {failed && (
+        <div
+          className="v2-hero-fallback"
+          style={mode === "day" ? {
+            background:
+              "radial-gradient(60% 60% at 70% 30%, rgba(56,132,255,0.45), transparent 70%), radial-gradient(50% 50% at 25% 75%, rgba(45,212,191,0.32), transparent 70%), var(--v2-bg)",
+          } : undefined}
+        />
+      )}
       <canvas
         ref={ref}
         className="v2-hero-canvas"
@@ -373,10 +465,12 @@ function Reveal({
 // ── Data ──────────────────────────────────────────────────────────────────────
 
 const navLinks = [
-  { href: "#work",     label: "Work"     },
-  { href: "#services", label: "Services" },
-  { href: "#about",    label: "About"    },
-  { href: "#contact",  label: "Contact"  },
+  { href: "#work",       label: "Work"       },
+  { href: "#experience", label: "Experience" },
+  { href: "#skills",     label: "Skills"     },
+  { href: "#services",   label: "Services"   },
+  { href: "#about",      label: "About"      },
+  { href: "#contact",    label: "Contact"    },
 ];
 
 type Stat = { label: string } & ({ to: number; suffix: string } | { display: string });
@@ -407,7 +501,7 @@ const SERVICE_FROM_ACCENT: Record<string, string> = {
 
 type Project = {
   index: string; badge: string; badgeClass: string; title: string; tagline: string;
-  desc: string; tags: string[]; image?: string; mockup?: "mission-control" | "ai-kb"; link: string; linkLabel: string;
+  desc: string; tags: string[]; image: string; link: string; linkLabel: string;
 };
 const projects: Project[] = [
   {
@@ -444,10 +538,102 @@ const guarantees = [
   { title: "Revisions included",   desc: "If it doesn't do what you hired it for, I fix it — no re-billing." },
   { title: "Secure through Fiverr", desc: "Payment protection and delivery guarantees handled by the platform." },
 ];
+
+// ── Experience (recruiter mode only) ────────────────────────────────────────
+// Sourced from resume — Girmiti Softwares Pvt Ltd (Mar 2022–present) is the
+// sole employer; the entries below are client engagements delivered under it.
+const experience = {
+  company: "Girmiti Softwares Pvt Ltd",
+  role: "Software QA Engineer — Payments & FinTech Domain",
+  dates: "March 2022 – Present",
+  location: "Bangalore, India",
+  engagements: [
+    {
+      org: "Gilbarco Veeder-Root",
+      scope: "AFD Payment Systems · Client: Costco (North America)",
+      bullets: [
+        "Smoke, regression & sanity testing across 500+ Costco fueling stations with zero critical-defect escapes to production.",
+        "Root-caused SmartCRIND production bugs via multi-layer log analysis, cutting average defect resolution time by 35%.",
+        "Validated 15+ payment & loyalty workflows — fueling, deferred payments, QR payments, ShopCards, coupon redemptions.",
+      ],
+    },
+    {
+      org: "Sensei Sigma",
+      scope: "Mobile Trading Platform, In-App Payments · Client: USA",
+      bullets: [
+        "Led a QA team of 4 across the full SDLC for a B2C trading app shipped on Google Play & the App Store.",
+        "Owned QA strategy across Android/iOS, a React admin portal, and the backend API layer.",
+        "Automated payment & user-journey API tests in Python + Selenium; validated card tokenization and balance reconciliation.",
+      ],
+    },
+    {
+      org: "Geidea",
+      scope: "Settlement, Reconciliation & Merchant Onboarding · Client: Saudi Arabia",
+      bullets: [
+        "Owned QA for the settlement & reconciliation platform, tracking 1,000+ simulated daily transactions end-to-end.",
+        "Validated merchant onboarding — MID/TID provisioning — across 20+ partnered banking institutions.",
+        "Built REST API test suites in Postman covering all transaction types at 98%+ scenario coverage.",
+      ],
+    },
+    {
+      org: "L2 Kernel & L3 Card Certifications",
+      scope: "Multi-scheme terminal certification",
+      bullets: [
+        "Delivered L3 certifications for Visa, Mastercard, Amex, UnionPay & Diners Club — first or second submission on every scheme.",
+        "Led L2 Kernel certification for internal SPOS applications, passing EMV compliance on the first attempt.",
+        "Took the Lavego POS through NEXO pre-certification, achieving Visa & Mastercard certification.",
+      ],
+    },
+    {
+      org: "Verifone",
+      scope: "POS Applications & Backend Payment Systems",
+      bullets: [
+        "Tested the full transaction spectrum — purchase, refund, pre-auth, settlement, reversal, batch upload — including offline terminal scenarios.",
+        "Ran Terminal Management System testing end-to-end across 200+ deployed terminals.",
+        "Traced authorization flows through backend logs via Postman to validate processor integration.",
+      ],
+    },
+  ],
+  education: { degree: "B.Tech (Bachelor of Technology)", school: "Parala Maharaja Engineering College, BPUT University, Odisha", year: "2020" },
+};
+
+const skillCategories: { icon: SkillIconKind; title: string; items: string[] }[] = [
+  {
+    icon: "shield",
+    title: "Payment & Compliance Standards",
+    items: ["EMV (Contact/Contactless/Mag-Stripe)", "ISO-8583", "NEXO Protocol", "PCI DSS Awareness", "3DS Authentication"],
+  },
+  {
+    icon: "chip",
+    title: "Terminal & Hardware Platforms",
+    items: ["Verifone", "Geidea", "Lavego", "Pine Labs", "Gilbarco SmartCRIND"],
+  },
+  {
+    icon: "terminal",
+    title: "Test Automation & Tooling",
+    items: ["Python", "Selenium WebDriver", "REST API / Postman", "Shell Scripting (Linux CLI)", "Git & GitHub"],
+  },
+  {
+    icon: "clipboard",
+    title: "QA Process & Management",
+    items: ["JIRA", "Zephyr", "TestRail", "Confluence", "Agile / Scrum", "Defect Lifecycle Mgmt"],
+  },
+  {
+    icon: "database",
+    title: "Data & Infrastructure",
+    items: ["SQL / DBeaver", "Jenkins CI/CD", "Mobile QA (Android/iOS)", "Multi-layer Log Analysis"],
+  },
+  {
+    icon: "spark",
+    title: "Now Learning — GenAI & Agentic AI",
+    items: ["LLMs & Prompting", "RAG Pipelines", "LangChain / LangGraph", "Agentic Systems", "LLM Evaluation"],
+  },
+];
+
 // ── Day job / Side practice content ─────────────────────────────────────────
 // Same person, two audiences: clients looking to hire vs. recruiters/peers
-// who found this through LinkedIn. Toggle swaps copy; "Selected work" below
-// stays identical since the projects are relevant to both.
+// who found this through LinkedIn. Toggle swaps copy; "Selected work" is
+// side-only (recruiters get the dedicated Experience/Skills sections instead).
 
 type Mode = "side" | "day";
 
@@ -471,6 +657,7 @@ type ModeContent = {
   contactPrimaryCta: { label: string; href: string };
   contactTile2: { title: string; sub: string };
   contactMessagePlaceholder: string;
+  resumeCta?: { label: string; href: string };
 };
 
 const modeContent: Record<Mode, ModeContent> = {
@@ -507,29 +694,31 @@ const modeContent: Record<Mode, ModeContent> = {
     eyebrow: "QA Engineer — Payments & FinTech · building AI on the side",
     heroLine1: "Fintech QA precision,",
     heroLine2: "now building AI.",
-    heroSub: "4+ years testing production payments systems — defect detection, compliance, fraud monitoring. Currently learning GenAI & Agentic AI (LearnBay, 2026–27) and shipping real AI-powered tools on the side.",
+    heroSub: "4+ years testing production payment systems for tier-1 clients — Verifone, Geidea, and Gilbarco (Costco North America). EMV, ISO-8583, PCI DSS, fraud & compliance. Now learning GenAI & Agentic AI (LearnBay, 2026–27) and shipping real AI tools on the side.",
     secondaryCta: { label: "Connect on LinkedIn", href: LINKEDIN },
     navTagline: "QA engineer in payments/fintech, building AI on the side.",
-    marquee: ["QA & Test Automation", "Payments & FinTech", "Compliance & Fraud Monitoring", "GenAI & Agentic AI", "LLM Evaluation", "Python & Automation"],
+    marquee: ["QA & Test Automation", "Payments & FinTech", "EMV & ISO-8583", "Compliance & Fraud Monitoring", "GenAI & Agentic AI", "LLM Evaluation"],
     stats: [
-      { to: 4, suffix: "+", label: "Years in QA — Payments & FinTech" },
-      { to: 3, suffix: "", label: "Personal projects shipped" },
+      { to: 4, suffix: "+", label: "Years in Payments & FinTech QA" },
+      { to: 3, suffix: "", label: "Tier-1 clients — Verifone, Geidea, Gilbarco" },
+      { to: 5, suffix: "", label: "Card schemes L3-certified" },
       { display: "GenAI", label: "Now learning — Agentic AI, LearnBay 2026–27" },
     ],
     aboutBio: [
-      "I'm a QA engineer with 4+ years in payments and fintech — testing, defect detection, quality gates, compliance, and fraud monitoring in production systems.",
+      "I'm a Senior QA Engineer with 4+ years in payments and fintech — EMV transaction processing, ISO-8583 & NEXO protocol testing, and L2/L3 card certifications for Visa, Mastercard, Amex, UnionPay, and Diners Club, delivered for tier-1 clients including Verifone, Geidea, and Gilbarco (Costco North America).",
       "I'm extending that discipline into AI: learning GenAI & Agentic AI through a Master's program, and building real AI-powered tools — a multi-tenant SaaS knowledge base, automation, chatbots — on the side to apply it hands-on.",
     ],
-    aboutClosing: "QA taught me how things break. Now I'm learning to build and evaluate AI systems that don't.",
-    skills: ["QA & Test Automation", "Payments & FinTech Domain", "Compliance & Fraud Monitoring", "Python", "GenAI / LLMs", "Agentic AI (learning)", "REST APIs", "SQL", "React & Next.js"],
+    aboutClosing: "QA taught me how payment systems break. Now I'm learning to build and evaluate the AI systems that come next.",
+    skills: ["EMV & ISO-8583", "PCI DSS Compliance", "REST API Automation (Python/Selenium)", "Settlement & Reconciliation", "JIRA & Zephyr", "SQL / DBeaver", "GenAI / LLMs (learning)", "Agentic AI (learning)", "React & Next.js"],
     contactRole: "QA Engineer → AI/Automation",
     contactHeading1: "Let's",
     contactHeading2: "connect.",
-    contactSub: "Open to conversations about AI/Automation roles — or just talking shop.",
+    contactSub: "Open to conversations about AI/Automation roles. Reach out on LinkedIn, email, or phone.",
     contactBadge: "Open to AI/Automation conversations",
     contactPrimaryCta: { label: "Connect on LinkedIn", href: LINKEDIN },
     contactTile2: { title: "Open to a conversation", sub: "No pitch, just a chat" },
     contactMessagePlaceholder: "Say hello, ask a question, or just connect…",
+    resumeCta: { label: "Download résumé (PDF)", href: RESUME_PDF },
   },
 };
 
@@ -612,65 +801,9 @@ function ProjectRow({ p, i }: { p: Project; i: number }) {
 
       <div className={flip ? "lg:order-1" : ""}>
         <motion.div style={{ y }} className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/12 bg-[var(--v2-surface)]">
-          {p.mockup === "ai-kb" ? (
-            <div className="absolute inset-0 p-6 font-mono text-[13px]">
-              <div className="flex items-center gap-2 mb-5">
-                <span className="w-3 h-3 rounded-full bg-red-400/70" />
-                <span className="w-3 h-3 rounded-full bg-amber-400/70" />
-                <span className="w-3 h-3 rounded-full bg-emerald-400/70" />
-                <span className="ml-3 text-white/30">ai-kb · ingest</span>
-              </div>
-              <div className="space-y-2 text-white/55">
-                <p><span className="text-emerald-300">POST</span> /orgs/acme/documents</p>
-                <p className="text-white/35">→ uploaded handbook.pdf (2.4 MB)</p>
-                <p className="text-white/35">→ chunking… <span className="text-violet-300">1,248 chunks</span></p>
-                <p className="text-white/35">→ embedding… <span className="text-violet-300">done</span></p>
-                <p><span className="text-sky-300">audit_log</span> document.uploaded ✓</p>
-              </div>
-              <div className="absolute bottom-6 left-6 right-6">
-                <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                  <div className="h-full w-[85%] bg-gradient-to-r from-violet-500 to-fuchsia-400" />
-                </div>
-                <p className="text-white/30 mt-2 text-xs">56 sprints shipped · 73 routes · 68 tests passing</p>
-              </div>
-            </div>
-          ) : p.mockup === "mission-control" ? (
-            <div className="absolute inset-0 p-6 font-mono text-[13px]">
-              <div className="flex items-center gap-2 mb-5">
-                <span className="w-3 h-3 rounded-full bg-red-400/70" />
-                <span className="w-3 h-3 rounded-full bg-amber-400/70" />
-                <span className="w-3 h-3 rounded-full bg-emerald-400/70" />
-                <span className="ml-3 text-white/30">mission-control · ⌘K</span>
-              </div>
-              <div className="grid grid-cols-3 gap-3 text-[11px]">
-                {[
-                  { label: "Todo", accent: "bg-white/25", items: ["Sync GitHub Issues", "Insights charts"] },
-                  { label: "Doing", accent: "bg-sky-400/70", items: ["Sprint board drag"] },
-                  { label: "Done", accent: "bg-emerald-400/70", items: ["Command palette", "Dark mode", "Bug tracker"] },
-                ].map((col) => (
-                  <div key={col.label} className="space-y-2">
-                    <div className="flex items-center gap-1.5 text-white/40 uppercase tracking-wide text-[10px]">
-                      <span className={`w-1.5 h-1.5 rounded-full ${col.accent}`} />
-                      {col.label}
-                    </div>
-                    {col.items.map((it) => (
-                      <div key={it} className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1.5 text-white/55 leading-snug">{it}</div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-              <div className="absolute bottom-6 left-6 right-6">
-                <div className="h-1.5 rounded-full bg-white/10 overflow-hidden flex gap-[2px]">
-                  <div className="h-full w-[60%] bg-gradient-to-r from-sky-400 to-emerald-400" />
-                </div>
-                <p className="text-white/30 mt-2 text-xs">Local-first · SQLite · velocity ▲ this sprint</p>
-              </div>
-            </div>
-          ) : (
-            <motion.div style={{ scale }} className="absolute inset-0">
-              <Image src={p.image as string} alt={p.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover object-top" priority={i === 0} />
-            </motion.div>
-          )}
+          <motion.div style={{ scale }} className="absolute inset-0">
+            <Image src={p.image} alt={p.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover object-top" priority={i === 0} />
+          </motion.div>
         </motion.div>
       </div>
     </div>
@@ -885,7 +1018,13 @@ export default function V2Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-[1.3fr_1fr]">
                   {/* Left: large numbered nav links */}
                   <nav className="p-7">
-                    {navLinks.filter((l) => mode === "side" || l.href !== "#services").map((l, idx) => (
+                    {navLinks
+                      .filter((l) => {
+                        if (l.href === "#work" || l.href === "#services") return mode === "side";
+                        if (l.href === "#experience" || l.href === "#skills") return mode === "day";
+                        return true;
+                      })
+                      .map((l, idx) => (
                       <motion.a
                         key={l.href}
                         href={l.href}
@@ -965,10 +1104,10 @@ export default function V2Home() {
         </div>
         {/* ── Hero ── */}
         <section id="hero" className="relative min-h-screen flex items-center overflow-hidden">
-          <HeroCanvas />
+          <HeroCanvas mode={mode} />
           <div className="absolute inset-0 bg-gradient-to-b from-[#060608]/30 via-transparent to-[#060608]" aria-hidden />
 
-          <div className="relative max-w-6xl mx-auto px-6 w-full pt-28 pb-20">
+          <div key={mode} className="relative max-w-6xl mx-auto px-6 w-full pt-28 pb-20">
             <motion.p
               variants={fadeV}
               initial="hide"
@@ -995,7 +1134,7 @@ export default function V2Home() {
             </motion.p>
             <motion.div variants={fadeV} initial="hide" animate={ready ? "show" : "hide"} custom={2} className="flex flex-col sm:flex-row gap-4 mt-12">
               <Magnetic strength={0.35}>
-                <a href="#work" onClick={(e) => goTo(e, "#work")} className="px-8 py-3.5 rounded-full bg-white text-black font-semibold hover:bg-white/90 transition-colors">See my work</a>
+                <a href={mode === "day" ? "#experience" : "#work"} onClick={(e) => goTo(e, mode === "day" ? "#experience" : "#work")} className="px-8 py-3.5 rounded-full bg-white text-black font-semibold hover:bg-white/90 transition-colors">{mode === "day" ? "See my experience" : "See my work"}</a>
               </Magnetic>
               <Magnetic strength={0.35}>
                 <a href={content.secondaryCta.href} target="_blank" rel="noopener noreferrer" className="px-8 py-3.5 rounded-full border border-white/25 text-white font-semibold hover:bg-white/5 transition-colors inline-flex items-center gap-2">{content.secondaryCta.label} <ArrowUpRight /></a>
@@ -1031,7 +1170,7 @@ export default function V2Home() {
 
         {/* ── Stats ── */}
         <section className="border-b border-white/10">
-          <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6">
+          <div key={mode} className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6">
             {content.stats.map((s) => (
               <Reveal key={s.label} className="text-center md:text-left">
                 <div className="text-4xl sm:text-5xl font-bold tracking-tight">
@@ -1043,7 +1182,117 @@ export default function V2Home() {
           </div>
         </section>
 
-        {/* ── Work ── */}
+        {mode === "day" && (
+        <section id="experience" className="py-28 border-b border-white/10 relative">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16">
+              <Reveal><h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Experience</h2></Reveal>
+              <Reveal delay={0.1} className="sm:text-right">
+                <p className="text-white/45 max-w-xs sm:ml-auto">4+ years testing production payment systems for tier-1 fintech clients.</p>
+                <a
+                  href={RESUME_PDF}
+                  download
+                  className="group inline-flex items-center gap-2 mt-3 text-sm font-semibold text-violet-300 hover:text-violet-200 transition-colors"
+                >
+                  Download résumé (PDF)
+                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </a>
+              </Reveal>
+            </div>
+
+            {/* Company header */}
+            <Reveal className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-6 rounded-2xl border border-white/10 bg-[var(--v2-surface)] mb-10">
+              <div>
+                <h3 className="text-xl font-bold">{experience.company}</h3>
+                <p className="text-white/50 text-sm mt-1">{experience.role}</p>
+              </div>
+              <div className="text-sm text-white/40 sm:text-right shrink-0">
+                <p>{experience.dates}</p>
+                <p>{experience.location}</p>
+              </div>
+            </Reveal>
+
+            {/* Client engagement timeline */}
+            <div>
+              {experience.engagements.map((e, i) => (
+                <Reveal
+                  key={e.org}
+                  delay={i * 0.06}
+                  className="grid sm:grid-cols-[220px_1fr] gap-3 sm:gap-8 py-8 border-b border-white/[0.06] last:border-0"
+                >
+                  <div>
+                    <h4 className="font-semibold text-white/90">{e.org}</h4>
+                    <p className="text-violet-300 text-xs mt-1 leading-snug">{e.scope}</p>
+                  </div>
+                  <ul className="space-y-2.5">
+                    {e.bullets.map((b) => (
+                      <li key={b.slice(0, 28)} className="text-sm text-white/55 leading-relaxed flex gap-2.5">
+                        <span className="text-violet-400/60 mt-1.5 shrink-0">·</span><span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
+              ))}
+            </div>
+
+            {/* Currently learning + education */}
+            <div className="grid sm:grid-cols-2 gap-5 mt-4">
+              <Reveal className="p-6 rounded-2xl border border-violet-400/20 bg-violet-400/[0.05]">
+                <p className="text-[10px] uppercase tracking-[0.28em] text-violet-300/70 mb-2">Currently</p>
+                <h4 className="font-semibold mb-2">GenAI &amp; Agentic AI Master&apos;s Program</h4>
+                <p className="text-sm text-white/55 leading-relaxed">
+                  LearnBay, 2026–2027 — applying the same QA discipline to LLM evaluation, RAG, and agentic systems. Building BFSI-focused projects: fraud detection, compliance review, payment-domain AI tools.
+                </p>
+              </Reveal>
+              <Reveal delay={0.08} className="p-6 rounded-2xl border border-white/10 bg-[var(--v2-surface)]">
+                <p className="text-[10px] uppercase tracking-[0.28em] text-white/30 mb-2">Education</p>
+                <h4 className="font-semibold mb-1">{experience.education.degree}</h4>
+                <p className="text-sm text-white/50">{experience.education.school} · {experience.education.year}</p>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+        )}
+
+        {mode === "day" && (
+        <section id="skills" className="py-28 border-t border-white/10 relative">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="flex items-end justify-between mb-16">
+              <Reveal><h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Skills &amp;<br />tooling</h2></Reveal>
+              <Reveal className="hidden sm:block" delay={0.1}><p className="text-white/45 max-w-xs text-right">Four years of payments QA depth, now pointed at AI.</p></Reveal>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {skillCategories.map((cat, i) => (
+                <Reveal key={cat.title} delay={i * 0.07}>
+                  <motion.div
+                    whileHover={{ y: -4 }}
+                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    className={`v2-bento-card group p-6 h-full ${cat.icon === "spark" ? "border-fuchsia-400/25 bg-fuchsia-400/[0.04]" : ""}`}
+                  >
+                    <div>
+                      <div className="flex items-center gap-3 mb-5">
+                        <span className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 ${cat.icon === "spark" ? "text-fuchsia-300 bg-fuchsia-400/10" : "text-violet-300 bg-violet-400/10"}`}>
+                          <SkillIcon kind={cat.icon} />
+                        </span>
+                        <h3 className="font-semibold text-white/90 leading-snug">{cat.title}</h3>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {cat.items.map((item) => (
+                          <span key={item} className="text-xs font-medium text-white/60 border border-white/12 bg-white/[0.03] px-2.5 py-1 rounded-full group-hover:border-violet-400/30 transition-colors">
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+        )}
+
+        {mode === "side" && (
         <section id="work" className="py-28 relative">
           <div className="max-w-6xl mx-auto px-6">
             <div className="flex items-end justify-between mb-20">
@@ -1055,6 +1304,7 @@ export default function V2Home() {
             </div>
           </div>
         </section>
+        )}
 
         {mode === "side" && (
         <>
@@ -1178,7 +1428,7 @@ export default function V2Home() {
                 </div>
               </Reveal>
               {/* Bio + Skills */}
-              <div>
+              <div key={mode}>
                 <Reveal>
                   <h2 className="text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-8">About me</h2>
                   <div className="space-y-5 text-white/60 leading-relaxed text-lg">
@@ -1188,6 +1438,7 @@ export default function V2Home() {
                     <p className="text-white">{content.aboutClosing}</p>
                   </div>
                 </Reveal>
+                {mode === "side" && (
                 <Reveal delay={0.15} className="mt-10">
                   <h3 className="text-sm font-semibold uppercase tracking-widest text-white/40 mb-6">Skills &amp; tools</h3>
                   <div className="flex flex-wrap gap-2.5">
@@ -1196,6 +1447,7 @@ export default function V2Home() {
                     ))}
                   </div>
                 </Reveal>
+                )}
               </div>
             </div>
           </div>
@@ -1251,47 +1503,99 @@ export default function V2Home() {
                     </div>
                   </div>
 
-                  {/* Promise tiles */}
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04]">
-                      <div className="w-7 h-7 rounded-lg bg-violet-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-violet-400" aria-hidden>
-                          <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1ZM7.5 4.5a.5.5 0 0 1 1 0v3.793l2.146 2.147a.5.5 0 0 1-.707.707l-2.293-2.293A.5.5 0 0 1 7.5 8.5V4.5Z"/>
-                        </svg>
+                  {mode === "day" ? (
+                    <>
+                      {/* Direct contact channels — LinkedIn / Email / Phone */}
+                      <div className="flex flex-col gap-2">
+                        <a href={LINKEDIN} target="_blank" rel="noopener noreferrer"
+                          className="group flex items-center gap-3 p-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] transition-colors">
+                          <span className="w-7 h-7 rounded-lg bg-sky-500/15 text-sky-300 flex items-center justify-center flex-shrink-0">
+                            <LinkedInIcon className="w-3.5 h-3.5" />
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <p className="text-white/80 text-xs font-medium">LinkedIn</p>
+                            <p className="text-white/35 text-[11px] mt-0.5 truncate">Message me directly</p>
+                          </span>
+                          <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-sky-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+                        </a>
+                        <a href={`mailto:${RESUME_EMAIL}`}
+                          className="group flex items-center gap-3 p-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] transition-colors">
+                          <span className="w-7 h-7 rounded-lg bg-violet-500/15 text-violet-300 flex items-center justify-center flex-shrink-0">
+                            <MailIcon className="w-3.5 h-3.5" />
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <p className="text-white/80 text-xs font-medium">Email</p>
+                            <p className="text-white/35 text-[11px] mt-0.5 truncate">{RESUME_EMAIL}</p>
+                          </span>
+                          <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-violet-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+                        </a>
+                        <a href={`tel:${PHONE_TEL}`}
+                          className="group flex items-center gap-3 p-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] transition-colors">
+                          <span className="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-300 flex items-center justify-center flex-shrink-0">
+                            <PhoneIcon className="w-3.5 h-3.5" />
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <p className="text-white/80 text-xs font-medium">Phone</p>
+                            <p className="text-white/35 text-[11px] mt-0.5 truncate">{PHONE_DISPLAY}</p>
+                          </span>
+                          <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-emerald-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+                        </a>
                       </div>
-                      <div>
-                        <p className="text-white/80 text-xs font-medium">Replies within 24 hrs</p>
-                        <p className="text-white/35 text-[11px] mt-0.5">Usually same day</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04]">
-                      <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-emerald-400" aria-hidden>
-                          <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022Z"/>
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-white/80 text-xs font-medium">{content.contactTile2.title}</p>
-                        <p className="text-white/35 text-[11px] mt-0.5">{content.contactTile2.sub}</p>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="flex-1" />
+                      <div className="flex-1" />
 
-                  {/* CTAs */}
-                  <div className="flex flex-col gap-2">
-                    <Magnetic strength={0.2}>
-                      <a href={content.contactPrimaryCta.href} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center justify-center w-full px-4 py-2.5 rounded-full bg-white text-black text-xs font-semibold hover:bg-white/90 transition-colors">
-                        {content.contactPrimaryCta.label}
-                      </a>
-                    </Magnetic>
-                    <a href={`mailto:${EMAIL}`}
-                      className="flex items-center justify-center w-full px-4 py-2.5 rounded-full border border-white/15 text-white/60 text-xs font-medium hover:bg-white/5 hover:text-white/90 transition-colors truncate">
-                      {EMAIL}
-                    </a>
-                  </div>
+                      {content.resumeCta && (
+                        <a href={content.resumeCta.href} download
+                          className="flex items-center justify-center w-full px-4 py-2.5 rounded-full bg-white text-black text-xs font-semibold hover:bg-white/90 transition-colors">
+                          {content.resumeCta.label}
+                        </a>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {/* Promise tiles */}
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04]">
+                          <div className="w-7 h-7 rounded-lg bg-violet-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-violet-400" aria-hidden>
+                              <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1ZM7.5 4.5a.5.5 0 0 1 1 0v3.793l2.146 2.147a.5.5 0 0 1-.707.707l-2.293-2.293A.5.5 0 0 1 7.5 8.5V4.5Z"/>
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-white/80 text-xs font-medium">Replies within 24 hrs</p>
+                            <p className="text-white/35 text-[11px] mt-0.5">Usually same day</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04]">
+                          <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-emerald-400" aria-hidden>
+                              <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022Z"/>
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-white/80 text-xs font-medium">{content.contactTile2.title}</p>
+                            <p className="text-white/35 text-[11px] mt-0.5">{content.contactTile2.sub}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex-1" />
+
+                      {/* CTAs */}
+                      <div className="flex flex-col gap-2">
+                        <Magnetic strength={0.2}>
+                          <a href={content.contactPrimaryCta.href} target="_blank" rel="noopener noreferrer"
+                            className="flex items-center justify-center w-full px-4 py-2.5 rounded-full bg-white text-black text-xs font-semibold hover:bg-white/90 transition-colors">
+                            {content.contactPrimaryCta.label}
+                          </a>
+                        </Magnetic>
+                        <a href={`mailto:${EMAIL}`}
+                          className="flex items-center justify-center w-full px-4 py-2.5 rounded-full border border-white/15 text-white/60 text-xs font-medium hover:bg-white/5 hover:text-white/90 transition-colors truncate">
+                          {EMAIL}
+                        </a>
+                      </div>
+                    </>
+                  )}
 
                   {/* Socials */}
                   <div className="flex items-center gap-4 pt-4 border-t border-white/[0.07]">
