@@ -14,7 +14,7 @@ import Image from "next/image";
 
 const FIVERR_PROFILE = "https://www.fiverr.com/shaktibuilds";
 const GITHUB = "https://github.com/shakti-mohapatra";
-const LINKEDIN = "https://www.linkedin.com/in/shakti-mohapatra/";
+const LINKEDIN = "https://www.linkedin.com/in/shakti-prasad-mohapatra/";
 const EMAIL = "shaktidev.work@gmail.com";
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeebgngl";
 const RESUME_PDF = "/resume-shakti-mohapatra.pdf";
