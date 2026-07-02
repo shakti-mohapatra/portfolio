@@ -516,7 +516,7 @@ const projects: Project[] = [
     title: "Mission Control", tagline: "A local work tracker that replaced a mess of scattered files",
     desc: "Kanban board, sprint planning, bug tracker, and GitHub Issues sync — running offline as a local web app. A Ctrl+K command palette, dark mode, and an insights dashboard with velocity charts.",
     tags: ["Next.js", "SQLite", "TypeScript", "Tailwind"],
-    image: "/projects/mc-4.webp", link: "https://github.com/shakti-mohapatra/mission-control", linkLabel: "View on GitHub",
+    image: "/projects/mc-4.webp", link: GITHUB, linkLabel: "GitHub profile",
   },
   {
     index: "03", badge: "In progress", badgeClass: "text-amber-300 border-amber-400/30 bg-amber-400/10",
