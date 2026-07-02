@@ -422,14 +422,14 @@ const projects: Project[] = [
     title: "Mission Control", tagline: "A local work tracker that replaced a mess of scattered files",
     desc: "Kanban board, sprint planning, bug tracker, and GitHub Issues sync — running offline as a local web app. A Ctrl+K command palette, dark mode, and an insights dashboard with velocity charts.",
     tags: ["Next.js", "SQLite", "TypeScript", "Tailwind"],
-    mockup: "mission-control", link: "https://github.com/shakti-mohapatra/mission-control", linkLabel: "View on GitHub",
+    image: "/projects/mc-4.webp", link: "https://github.com/shakti-mohapatra/mission-control", linkLabel: "View on GitHub",
   },
   {
     index: "03", badge: "In progress", badgeClass: "text-amber-300 border-amber-400/30 bg-amber-400/10",
     title: "AI Knowledge Base", tagline: "A team's documents, turned into an AI assistant they can query",
     desc: "A multi-tenant SaaS where organisations upload documents and get an AI assistant trained on them. Roles and invitations, document ingestion and chunking, API keys and webhooks, and a complete audit log. Built with FastAPI, Postgres, and React.",
     tags: ["FastAPI", "PostgreSQL", "React", "TanStack Query", "Alembic"],
-    mockup: "ai-kb", link: GITHUB, linkLabel: "Case study coming soon",
+    image: "/projects/ai-kb-1.webp", link: GITHUB, linkLabel: "Case study coming soon",
   },
 ];
 
