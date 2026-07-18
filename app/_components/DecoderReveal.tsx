@@ -18,7 +18,7 @@ export default function DecoderReveal({ children }: { children: React.ReactNode 
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="reveal group w-full text-left rounded-2xl border border-white/[0.08] bg-[var(--panel)] p-8 sm:p-10 hover:border-[var(--accent)]/30 transition-colors"
+        className="reveal tile tile--interactive group w-full text-left p-8 sm:p-10"
       >
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3 font-mono text-[var(--text-label)] uppercase tracking-widest text-white/55">

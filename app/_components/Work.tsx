@@ -39,7 +39,7 @@ function ProjectRow({ p, i, mode }: { p: Project; i: number; mode: Mode }) {
       </div>
 
       <div className={flip ? "lg:order-1" : ""}>
-        <div data-magnetic className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/[0.08] bg-[var(--panel)]">
+        <div className="tile tile--interactive aspect-[4/3]">
           {p.image ? (
             <Image src={p.image} alt={p.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover object-top" priority={i === 0} />
           ) : (

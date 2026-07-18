@@ -21,7 +21,7 @@ export default function Experience() {
         </div>
 
         {/* Company header */}
-        <div className="reveal flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-6 rounded-2xl border border-white/[0.08] bg-[var(--panel)] mb-10">
+        <div className="reveal tile tile--static flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-6 mb-10">
           <div>
             <h3 className="text-xl font-bold">{experience.company}</h3>
             <p className="text-white/50 text-sm mt-1">{experience.role}</p>
@@ -50,14 +50,17 @@ export default function Experience() {
 
         {/* Currently learning + education */}
         <div className="grid sm:grid-cols-2 gap-5 mt-4">
-          <div className="reveal p-6 rounded-2xl border border-[var(--accent)]/20 bg-[rgba(var(--accent-rgb),0.05)]">
+          <div
+            className="reveal tile tile--static p-6"
+            style={{ borderColor: "rgba(var(--accent-rgb),0.2)", background: "rgba(var(--accent-rgb),0.05)" }}
+          >
             <p className="font-mono text-micro uppercase tracking-[0.28em] text-[var(--accent)]/70 mb-2">Currently</p>
             <h4 className="font-semibold mb-2">GenAI &amp; Agentic AI Master&apos;s Program</h4>
             <p className="text-sm text-white/55 leading-relaxed">
               LearnBay, 2026–2027 — applying the same QA discipline to LLM evaluation, RAG, and agentic systems. Building BFSI-focused projects: fraud detection, compliance review, payment-domain AI tools.
             </p>
           </div>
-          <div className="reveal p-6 rounded-2xl border border-white/[0.08] bg-[var(--panel)]">
+          <div className="reveal tile tile--static p-6">
             <p className="font-mono text-micro uppercase tracking-[0.28em] text-white/50 mb-2">Education</p>
             <h4 className="font-semibold mb-1">{experience.education.degree}</h4>
             <p className="text-sm text-white/50">{experience.education.school} · {experience.education.year}</p>

@@ -652,3 +652,67 @@ violet/cyan, 3-vs-5 cards, renamed headings, menu legible, decoder decodes, no c
 - **Phases 2–5 not started:** 2 = apply `.tile` classes; 3 = apply reveal variants + project rows;
   4 = case-study page (`app/work/[slug]/page.tsx`, gets `data-mode="day"`); 5 = payment animations.
 - **Task 2 (de-AI copy) DEFERRED — Claude/Opus only.** No other agent touches prose.
+
+---
+
+## 2026-07-19 — Phase 2: apply tile system (§2.3) — Sonnet-5
+
+**Done — `.tile`/`.tile--interactive`/`.tile--static` applied everywhere per the plan's table, replacing
+`.bento-card`/`[data-magnetic]` (both now zero references):**
+- `Services.tsx` service card (interactive), `Skills.tsx` category card (static), `Work.tsx` project image
+  panel (interactive, `data-magnetic` removed), `CaseStudyFeature.tsx` case-study card (interactive,
+  `data-magnetic` removed), `Guarantees.tsx` / `HowIWork.tsx` items (static), `Experience.tsx` company
+  header + Currently + Education cards (static), `DecoderReveal.tsx` trigger button (interactive),
+  `Contact.tsx` LinkedIn/Email/Phone channel links (interactive, day-mode only) + form/info card wrappers
+  (static). `Stats.tsx` deliberately left untiled per the plan. Removed `hover:-translate-y-1` from every
+  tile (magnet script now owns lift on interactive; static tiles get none) — left `group-hover:scale-110`
+  on decorative inner icon badges (Skills), that's unrelated to the tile's own transform.
+- Deleted the now-dead `.bento-card`/`.bento-card:hover` CSS block from `globals.css` (plan explicitly
+  says to once all call sites are converted). Verified `.bento-card`'s `text-decoration:none;
+  color:inherit` (needed for the `Services.tsx` anchor card) is redundant with Tailwind's own preflight
+  (`a { color: inherit; text-decoration: inherit }`, confirmed in `node_modules/tailwindcss/preflight.css`)
+  before deleting — no regression.
+
+**Real bug caught before shipping, not in the plan's checklist:** `.tile` (and the `.bento-card` it
+replaces) is unlayered CSS — `globals.css` has no `@layer` wrapper at all. Per the CSS cascade-layers
+spec, unlayered rules always beat layered ones (Tailwind's own utilities live in `@layer utilities`)
+**regardless of source order or specificity.** Two spots relied on a Tailwind arbitrary-value utility
+(`border-[var(--accent)]/…`, `bg-[rgba(...)]`) stacked alongside the tile class to render a distinct
+accent tint: `Experience.tsx`'s "Currently" card and `Skills.tsx`'s "spark" (Now Learning) category card.
+Adding `tile`/`tile--static` on top would have silently cancelled both tints — confirmed live via
+`getComputedStyle` before the fix (both rendered plain panel gray, not accent-tinted). **Fixed both with
+an inline `style` (only thing that outranks an unlayered class short of `!important`)** —
+`borderColor`/`background` set directly, still reading the live `--accent`/`--accent2-rgb` tokens so the
+tint still flips violet↔cyan/teal per route. Re-verified after the fix: `Experience` "Currently" resolves
+`rgba(56,189,248,0.05)` on `/recruiters` (was flat `rgb(14,14,19)`); `Skills` spark card resolves
+`rgba(45,212,191,0.04)`/`rgba(45,212,191,0.25)` border (was flat panel/hairline). **This pattern is now a
+known trap for the rest of the plan** — any future step stacking a Tailwind utility next to `.tile` (or
+any other unlayered custom class in this file) needs the same inline-style treatment, not a class.
+
+**Verified:**
+- `npx tsc --noEmit` clean (twice — before and after the two inline-style fixes).
+- `npm run build` clean, all 9 routes still static-prerender.
+- `npm run lint`: same single pre-existing `CountUp` error, no new issues.
+- `grep -rn "bento-card|data-magnetic" app/` → zero component references (only the now-deleted CSS,
+  confirmed gone).
+- DOM-level, both routes, via the sandboxed Browser pane (console/JS, not screenshots): `/` → 19 `.tile`
+  (10 interactive/9 static), accent `#8b5cf6`; `/recruiters` → 22 `.tile` (11/11), accent `#38bdf8`, 3 Work
+  cards (hideOn filter still holds), 4 case-study tiles, decoder trigger present, 3 Contact channel tiles
+  (LinkedIn/Email/Phone). Zero console errors on either route both before and after the cascade-layer fix.
+
+**Not done / open:**
+- **Real screenshot sign-off explicitly skipped this session, at Shakti's explicit choice** (asked
+  directly whether to wait for Claude-in-Chrome to reconnect, skip ahead, or have him eyeball it himself —
+  he chose to skip and proceed). This is now debt on top of the Phase 0+1 screenshot debt already
+  outstanding (stats `-ml-[1px]`, menu look) — **three things need a real look before this branch is
+  considered done: Phase 0+1's menu/stats, and now Phase 2's tile hover/spotlight/lift feel and the two
+  accent-tint fixes above.** Don't let this compound further into Phase 3 without raising it again.
+- **Own mistake, caught and fixed same session:** ran `rm -rf .next` while a dev server from a *previous*
+  session (never started via this session's tools, so easy to forget it was live) still held `.next/dev`
+  open — corrupted the cache (both routes 404'd). Killed it, restarted clean, rebuilt — no lasting damage,
+  but this is the same documented trap from step 7/8's PROGRESS entries, now confirmed to bite even when
+  the server wasn't started in the current session. **Always check `netstat`/ask before assuming `.next` is
+  safe to delete, not just "did I start a server this turn."**
+- Phase 3 (scroll experience: apply reveal variants to headings/rows), Phase 4 (case-study page), Phase 5
+  (payment animations) — not started.
+- Not committed yet, not pushed, not deployed.

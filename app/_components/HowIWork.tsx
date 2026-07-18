@@ -9,7 +9,7 @@ export default function HowIWork() {
         <h2 className="reveal text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-16">How I actually work</h2>
         <div className="grid md:grid-cols-3 gap-5">
           {howIWork.map((item) => (
-            <div key={item.title} className="reveal flex flex-col gap-3 p-6 rounded-2xl border border-white/[0.08] bg-[var(--panel)] h-full">
+            <div key={item.title} className="reveal tile tile--static flex flex-col gap-3 p-6 h-full">
               <h3 className="font-semibold text-white/90">{item.title}</h3>
               <p className="text-white/55 leading-relaxed text-sm">{item.body}</p>
             </div>

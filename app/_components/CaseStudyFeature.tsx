@@ -17,7 +17,7 @@ export default function CaseStudyFeature() {
         </div>
         <div className="space-y-6">
           {caseStudies.map((cs) => (
-            <div key={cs.slug} data-magnetic className="reveal rounded-2xl border border-white/[0.08] bg-[var(--panel)] p-8 sm:p-12">
+            <div key={cs.slug} className="reveal tile tile--interactive p-8 sm:p-12">
               <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-wide text-white/55">
                 <span>Case study / {cs.index} · {cs.project}</span>
                 <span>{cs.date}</span>

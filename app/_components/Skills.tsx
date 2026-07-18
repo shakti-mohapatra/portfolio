@@ -13,7 +13,8 @@ export default function Skills() {
           {skillCategories.map((cat) => (
             <div
               key={cat.title}
-              className={`reveal bento-card group p-6 h-full transition-transform duration-300 hover:-translate-y-1 ${cat.icon === "spark" ? "border-[var(--accent-2)]/25 bg-[rgba(var(--accent2-rgb),0.04)]" : ""}`}
+              className="reveal tile tile--static group p-6 h-full"
+              style={cat.icon === "spark" ? { borderColor: "rgba(var(--accent2-rgb),0.25)", background: "rgba(var(--accent2-rgb),0.04)" } : undefined}
             >
               <div>
                 <div className="flex items-center gap-3 mb-5">

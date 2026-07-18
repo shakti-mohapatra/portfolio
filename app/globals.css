@@ -164,24 +164,6 @@ body {
 }
 .marquee:hover .marquee-track { animation-play-state: paused; }
 
-/* ── Services bento card ── */
-.bento-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-radius: 1rem;
-  border: 1px solid var(--hairline);
-  background: var(--panel);
-  text-decoration: none;
-  color: inherit;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-}
-.bento-card:hover {
-  background: var(--panel-hover);
-  border-color: var(--accent);
-  box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.12);
-}
-
 /* ── Tile system (redesign 2026-07 §2, Tasks 6 & 8) ── */
 .tile {
   position: relative;

@@ -30,12 +30,12 @@ export default function Contact({ mode }: { mode: Mode }) {
         <div className="grid lg:grid-cols-[1fr_268px] gap-5 max-w-4xl mx-auto">
 
           {/* Form card */}
-          <div className="reveal p-8 rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+          <div className="reveal tile tile--static p-8">
             <ContactForm messagePlaceholder={content.contactMessagePlaceholder} />
           </div>
 
           {/* Info card */}
-          <div className="reveal p-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] flex flex-col gap-5 h-full">
+          <div className="reveal tile tile--static p-6 flex flex-col gap-5 h-full">
 
             {/* Avatar + name */}
             <div className="flex items-center gap-3">
@@ -53,7 +53,7 @@ export default function Contact({ mode }: { mode: Mode }) {
                 {/* Direct contact channels — LinkedIn / Email / Phone */}
                 <div className="flex flex-col gap-2">
                   <a href={LINKEDIN} target="_blank" rel="noopener noreferrer"
-                    className="group flex items-center gap-3 px-3 py-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] transition-colors">
+                    className="tile tile--interactive group flex items-center gap-3 px-3 py-4">
                     <span className="w-7 h-7 rounded-lg bg-sky-500/15 text-sky-300 flex items-center justify-center flex-shrink-0">
                       <LinkedInIcon className="w-3.5 h-3.5" />
                     </span>
@@ -64,7 +64,7 @@ export default function Contact({ mode }: { mode: Mode }) {
                     <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-sky-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                   </a>
                   <a href={`mailto:${RESUME_EMAIL}`}
-                    className="group flex items-center gap-3 px-3 py-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] transition-colors">
+                    className="tile tile--interactive group flex items-center gap-3 px-3 py-4">
                     <span className="w-7 h-7 rounded-lg bg-violet-500/15 text-violet-300 flex items-center justify-center flex-shrink-0">
                       <MailIcon className="w-3.5 h-3.5" />
                     </span>
@@ -75,7 +75,7 @@ export default function Contact({ mode }: { mode: Mode }) {
                     <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-violet-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                   </a>
                   <a href={`tel:${PHONE_TEL}`}
-                    className="group flex items-center gap-3 px-3 py-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] transition-colors">
+                    className="tile tile--interactive group flex items-center gap-3 px-3 py-4">
                     <span className="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-300 flex items-center justify-center flex-shrink-0">
                       <PhoneIcon className="w-3.5 h-3.5" />
                     </span>

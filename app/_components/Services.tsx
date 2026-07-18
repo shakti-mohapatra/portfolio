@@ -9,7 +9,7 @@ function BentoServiceCard({ s, featured = false }: { s: ServiceData; featured?: 
       href={s.href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`bento-card group p-6 sm:p-7 h-full transition-transform duration-300 hover:-translate-y-1 ${featured ? "min-h-[200px]" : "min-h-[170px]"}`}
+      className={`tile tile--interactive group p-6 sm:p-7 h-full ${featured ? "min-h-[200px]" : "min-h-[170px]"}`}
     >
       <div>
         <div className="flex items-start justify-between mb-5">
