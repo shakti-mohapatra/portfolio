@@ -6,6 +6,24 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* ── Instrument design tokens ──────────────────────────────────────────
+     Plumbing only — nothing below is wired into page.tsx yet. Step 4
+     ("Instrument applied") consumes these; changing a value here later
+     is a one-line flip, not a rewrite. */
+  --surface: #000000;
+  --panel: #0e0e13;
+  --panel-hover: #13131c;
+  --ink: #f7f6f3;
+  --muted: #9a9aa6;
+  --accent: #8b5cf6;
+  --accent-2: #e879f9;
+  --hairline: rgba(255, 255, 255, 0.08);
+
+  /* Fluid type — body/label sizes. Headings already clamp() inline. */
+  --text-body: clamp(0.9375rem, 0.875rem + 0.3vw, 1.0625rem);
+  --text-label: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem);
+  --text-micro: clamp(0.625rem, 0.6rem + 0.1vw, 0.6875rem);
 }
 
 .dark {
@@ -18,6 +36,19 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-surface: var(--surface);
+  --color-panel: var(--panel);
+  --color-panel-hover: var(--panel-hover);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-hairline: var(--hairline);
+
+  --text-body: var(--text-body);
+  --text-label: var(--text-label);
+  --text-micro: var(--text-micro);
 }
 
 body {
@@ -26,150 +57,356 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ── Keyframes ── */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+/* ──────────────────────────────────────────────────────────────────────────
+   Site shell — the single visual identity. Folded in from app/v2/v2.css;
+   there was never a "v1" so the v2- prefix was noise. Renamed 1:1, no
+   behavior change.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.site {
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(32px); }
-  to   { opacity: 1; transform: translateY(0);    }
+/* ── Film grain ── */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
 }
 
-@keyframes floatBob {
-  0%,  100% { transform: translateY(0px)   rotate(0deg);  }
-  33%        { transform: translateY(-22px) rotate(2deg);  }
-  66%        { transform: translateY(-10px) rotate(-1deg); }
-}
-
-@keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(-28px); }
-  to   { opacity: 1; transform: translateX(0);     }
-}
-
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(28px); }
-  to   { opacity: 1; transform: translateX(0);    }
-}
-
-@keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position:  200% center; }
-}
-
-/* ── Hero entry utilities ── */
-@layer utilities {
-  .anim-fade-in {
-    animation: fadeIn 0.6s ease-out both;
-  }
-  .anim-fade-in-up {
-    animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .anim-float {
-    animation: floatBob 8s ease-in-out infinite;
-  }
-}
-
-/* ── Scroll-reveal ── */
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.65s ease-out, transform 0.65s ease-out;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.reveal-left {
-  opacity: 0;
-  transform: translateX(-28px);
-  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
-}
-.reveal-left.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.reveal-right {
-  opacity: 0;
-  transform: translateX(28px);
-  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
-}
-.reveal-right.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Stagger skill tags once parent is visible */
-.reveal-right.visible .skill-tag {
-  animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-.reveal-right.visible .skill-tag:nth-child(1)  { animation-delay: 0ms;   }
-.reveal-right.visible .skill-tag:nth-child(2)  { animation-delay: 60ms;  }
-.reveal-right.visible .skill-tag:nth-child(3)  { animation-delay: 120ms; }
-.reveal-right.visible .skill-tag:nth-child(4)  { animation-delay: 180ms; }
-.reveal-right.visible .skill-tag:nth-child(5)  { animation-delay: 240ms; }
-.reveal-right.visible .skill-tag:nth-child(6)  { animation-delay: 300ms; }
-.reveal-right.visible .skill-tag:nth-child(7)  { animation-delay: 360ms; }
-.reveal-right.visible .skill-tag:nth-child(8)  { animation-delay: 420ms; }
-
-/* ── Hero background: B2 noise + radial gradient ── */
-.hero-gradient {
-  background:
-    radial-gradient(60% 70% at 80% 8%,  rgba(99, 102, 241, 0.12) 0%, transparent 65%),
-    radial-gradient(45% 55% at 15% 92%, rgba(139, 92, 246, 0.07) 0%, transparent 65%);
-}
-.dark .hero-gradient {
-  background:
-    radial-gradient(60% 70% at 80% 8%,  rgba(99, 102, 241, 0.24) 0%, transparent 65%),
-    radial-gradient(45% 55% at 15% 92%, rgba(139, 92, 246, 0.14) 0%, transparent 65%);
-}
-.hero-noise {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  opacity: 0.032;
-}
-.dark .hero-noise { opacity: 0.055; }
-
-/* ── Reduced-motion: kill all decorative animations ── */
-@media (prefers-reduced-motion: reduce) {
-  .anim-fade-in,
-  .anim-fade-in-up,
-  .anim-float { animation: none !important; opacity: 1 !important; transform: none !important; }
-
-  .reveal, .reveal-left, .reveal-right {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
-
-  .text-shimmer { animation: none !important; }
-}
-
-/* ── Mobile: reduce GPU-heavy hero blobs ── */
-@media (max-width: 767px) {
-  .hero-blob {
-    animation: none !important;
-    opacity: 0.35 !important;
-    filter: blur(48px) !important;
-    transform: scale(0.6) !important;
-  }
-}
-
-/* Gradient text shimmer on hero */
-.text-shimmer {
-  background: linear-gradient(
-    90deg,
-    #4f46e5 0%,
-    #7c3aed 40%,
-    #4f46e5 80%,
-    #7c3aed 100%
-  );
-  background-size: 200% auto;
+/* ── Accent gradient text — hero only, per Instrument (PLAN §1) ── */
+.accent-text {
+  background: linear-gradient(102deg, #a78bfa 0%, #e879f9 55%, #a78bfa 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmer 4s linear infinite;
+  color: transparent;
+}
+
+/* ── Hero WebGL canvas ── */
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.hero-fallback {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 60% at 70% 30%, rgba(139, 92, 246, 0.5), transparent 70%),
+    radial-gradient(50% 50% at 25% 75%, rgba(232, 121, 249, 0.35), transparent 70%),
+    var(--surface);
+}
+
+/* ── Scroll indicator ── */
+.scroll-line {
+  width: 1.5px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.scroll-line-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  animation: scroll-fill 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes scroll-fill {
+  0%   { height: 0%;   top: 0;    }
+  50%  { height: 100%; top: 0;    }
+  100% { height: 0%;   top: 100%; }
+}
+
+/* ── Kinetic line-mask reveal ── */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+/* ── Marquee ── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee { overflow: hidden; white-space: nowrap; }
+.marquee-track {
+  display: inline-flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+}
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+/* ── Services bento card ── */
+.bento-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 1rem;
+  border: 1px solid var(--hairline);
+  background: var(--panel);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+.bento-card:hover {
+  background: var(--panel-hover);
+  border-color: var(--accent);
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.12);
+}
+
+/* ── Anchor offset for the fixed header ── */
+html {
+  scroll-padding-top: 72px;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Animations — three layers (step 3, PLAN.md §6).
+   1. Baseline: visible, unanimated. Runs before JS, if JS fails, under
+      reduced-motion. Nothing on this site is ever blank waiting for a script.
+   2. Native scroll-driven animation behind @supports (animation-timeline:
+      view()). Chrome 115+ / Safari 26 animate with zero JS.
+   3. Fallback for browsers without animation-timeline (today: Firefox). The
+      inline script in layout.tsx (not a client island) drives the same
+      keyframes via IntersectionObserver + a passive scroll listener.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ── Hero intro — time-based, not scroll-driven. Same in every browser. ── */
+@keyframes hero-line-in {
+  from { transform: translateY(115%); }
+  to   { transform: translateY(0%); }
+}
+@keyframes hero-fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-line {
+  display: inline-block;
+  animation: hero-line-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0s);
+}
+.hero-fade {
+  animation: hero-fade-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0s);
+}
+
+/* ── Kinetic typography — hero headline weight. Native-only; no JS-fallback
+   CSS needed because the fallback IS the baseline: font-bold already renders
+   the headline at its final wght (700), so browsers without
+   animation-timeline just skip straight to the end state. ── */
+@supports (animation-timeline: view()) {
+  .hero-kinetic {
+    animation: kinetic-weight linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 60%;
+  }
+}
+@keyframes kinetic-weight {
+  from { font-variation-settings: "wght" 380; }
+  to   { font-variation-settings: "wght" 700; }
+}
+
+/* ── Scroll reveal ── */
+.reveal { }
+
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal-in linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 32%;
+  }
+}
+
+@supports not (animation-timeline: view()) {
+  .js-reveal .reveal { opacity: 0; transform: translateY(16px); }
+  .js-reveal .reveal.in-view { animation: reveal-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header hide-on-scroll ── */
+@supports (animation-timeline: view()) {
+  header[data-header] {
+    animation: header-hide linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0px 260px;
+  }
+}
+@supports not (animation-timeline: view()) {
+  header[data-header] { transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  header[data-header][data-hidden] { transform: translateY(-130%); }
+}
+@keyframes header-hide {
+  from { transform: translateY(0%); }
+  to   { transform: translateY(-130%); }
+}
+
+/* ── Collapsible panel — stays mounted, animates open/close via grid-rows
+   (no JS height measurement needed). Used by the mobile menu sheet and the
+   decoder's power-on reveal — same mechanism, different trigger. ── */
+.collapse-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.24s ease;
+}
+.collapse-wrap[data-open] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.collapse-inner { overflow: hidden; min-height: 0; }
+
+/* ── Decoder power-on reveal — a brief boot flourish the instant the panel
+   opens, echoing the diagnostic-equipment concept (PLAN §1). Base state is
+   invisible/static so a reduced-motion or animation-less fallback is simply
+   the panel appearing with no flourish, never a stuck visible artifact. ── */
+.decoder-boot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  height: 45%;
+  background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.35), transparent);
+}
+.decoder-boot-on { animation: decoder-flicker 0.45s steps(2, jump-none) 1; }
+.decoder-boot-on::before { animation: decoder-scanline 0.5s ease-out 1; }
+@keyframes decoder-flicker {
+  0%, 100% { opacity: 1; }
+  35%      { opacity: 0.35; }
+  60%      { opacity: 1; }
+  78%      { opacity: 0.55; }
+}
+@keyframes decoder-scanline {
+  0%   { top: -45%; opacity: 0; }
+  15%  { opacity: 0.8; }
+  85%  { opacity: 0.8; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* ── ISO-8583 / EMV decoder readout (step 11, PLAN §3A). Static, no animation —
+   the mono layer doing structural work. Classes emitted by _decoder.js's
+   renderToHtml. ── */
+.dec-output { color: rgba(255, 255, 255, 0.85); }
+.dec-empty { color: rgba(255, 255, 255, 0.35); }
+.dec-badge {
+  display: inline-block;
+  font-size: var(--text-micro);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 2px 8px;
+  margin-bottom: 14px;
+}
+.dec-sub {
+  font-size: var(--text-label);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 18px 0 6px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.dec-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 12px;
+  padding: 5px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.dec-row:first-of-type { border-top: 0; }
+.dec-k { color: rgba(255, 255, 255, 0.45); overflow-wrap: anywhere; }
+.dec-v { color: rgba(255, 255, 255, 0.85); overflow-wrap: anywhere; }
+.dec-decode {
+  display: block;
+  color: var(--accent);
+  opacity: 0.85;
+  margin-top: 2px;
+}
+.dec-ann {
+  margin: 2px 0 6px;
+  padding: 6px 10px;
+  border-left: 2px solid var(--accent);
+  background: rgba(139, 92, 246, 0.06);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: var(--text-micro);
+  line-height: 1.5;
+}
+.dec-ann-tag {
+  display: block;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.dec-flags { margin-top: 18px; }
+.dec-flag {
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  background: rgba(248, 113, 113, 0.07);
+  color: rgba(252, 165, 165, 0.9);
+  padding: 10px 12px;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+.dec-flag-h {
+  display: block;
+  color: #f87171;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  font-size: var(--text-micro);
+}
+
+/* ── Transaction-flow pulse (step 9, PLAN §3B) — time-based @keyframes on
+   `left`, same evergreen pattern as the hero intro and marquee above. Not
+   scroll-driven, so no animation-timeline / Firefox @supports branch needed. ── */
+@keyframes flow-pulse {
+  0%   { left: 0%; }
+  46%  { left: 100%; }
+  50%  { left: 100%; }
+  96%  { left: 0%; }
+  100% { left: 0%; }
+}
+.flow-pulse {
+  animation: flow-pulse 3.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes flow-status-a { 0%, 42% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes flow-status-b { 0%, 48% { opacity: 0; } 55%, 92% { opacity: 1; } 100% { opacity: 0; } }
+.flow-status-a { animation: flow-status-a 3.6s ease-in-out infinite; }
+.flow-status-b { animation: flow-status-b 3.6s ease-in-out infinite; }
+
+/* ── Reduced motion — the visitor's explicit OS-level request. Honoured in
+   all three layers; not a browser concession, never removed. ── */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-line-fill,
+  .marquee-track,
+  .hero-line,
+  .hero-fade { animation: none !important; opacity: 1; transform: none; }
+  .reveal,
+  .js-reveal .reveal,
+  .js-reveal .reveal.in-view { animation: none !important; opacity: 1; transform: none; }
+  .hero-kinetic { animation: none !important; font-variation-settings: normal; }
+  .flow-pulse, .flow-status-a, .flow-status-b { animation: none !important; }
+  .flow-pulse { opacity: 0; }
+  .flow-status-a { opacity: 0; }
+  .flow-status-b { opacity: 1; }
+  .decoder-boot-on { animation: none !important; opacity: 1; }
+  .decoder-boot-on::before { animation: none !important; opacity: 0 !important; }
 }
