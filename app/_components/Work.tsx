@@ -9,9 +9,9 @@ function ProjectRow({ p, i, mode }: { p: Project; i: number; mode: Mode }) {
   const desc = mode === "side" && p.descPlain ? p.descPlain : p.desc;
   return (
     <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-      <div className={`reveal flex flex-col gap-6 ${flip ? "lg:order-2" : ""}`}>
+      <div className={`${flip ? "reveal-right" : "reveal-left"} flex flex-col gap-6 ${flip ? "lg:order-2" : ""}`}>
         <div className="flex items-center gap-4">
-          <span className="font-mono text-7xl font-bold text-white/[0.08] leading-none select-none">{index}</span>
+          <span className="parallax-slow font-mono text-7xl font-bold text-white/[0.08] leading-none select-none">{index}</span>
           <span className={`font-mono text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full border ${p.badgeClass}`}>{p.badge}</span>
         </div>
         <div>
@@ -39,7 +39,7 @@ function ProjectRow({ p, i, mode }: { p: Project; i: number; mode: Mode }) {
       </div>
 
       <div className={flip ? "lg:order-1" : ""}>
-        <div className="tile tile--interactive aspect-[4/3]">
+        <div className={`tile tile--interactive aspect-[4/3] ${flip ? "reveal-left-scale" : "reveal-right-scale"}`}>
           {p.image ? (
             <Image src={p.image} alt={p.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover object-top" priority={i === 0} />
           ) : (
@@ -64,7 +64,7 @@ export default function Work({ mode }: { mode: Mode }) {
           <h2 className="reveal-left text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">
             {mode === "day" ? <>Projects<br />I&apos;ve shipped</> : <>Things<br />I&apos;ve built</>}
           </h2>
-          <p className="reveal hidden sm:block text-white/60 max-w-xs text-right">Real projects built for real use — not demos, not mockups.</p>
+          <p className="reveal-right hidden sm:block text-white/60 max-w-xs text-right">Real projects built for real use — not demos, not mockups.</p>
         </div>
         <div className="space-y-28">
           {ordered.map((p, i) => <ProjectRow key={p.title} p={p} i={i} mode={mode} />)}

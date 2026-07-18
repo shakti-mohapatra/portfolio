@@ -716,3 +716,61 @@ any other unlayered custom class in this file) needs the same inline-style treat
 - Phase 3 (scroll experience: apply reveal variants to headings/rows), Phase 4 (case-study page), Phase 5
   (payment animations) — not started.
 - Not committed yet, not pushed, not deployed.
+
+---
+
+## 2026-07-19 — Phase 3: scroll experience, reveal variants applied (§3.4–3.6) — Sonnet-5
+
+**Continued same session, at Shakti's explicit "continue to Phase 3" call** (asked directly after Phase 2
+whether to keep going or stop to clear the growing screenshot debt first; he chose to continue).
+
+**Done — directional reveals on every named section's heading/descriptor pair (§3.4), replacing bare
+`reveal`, kept `reveal` on body content:** `Work`, `Skills`, `Services`, `Experience`, `CaseStudyFeature`,
+`Guarantees`, `HowIWork`, `Process`, `TransactionFlow`, `Decoder` — heading → `reveal-left`, its
+right-side descriptor → `reveal-right` (or the closest descriptor-role element where the layout isn't
+literally two columns, e.g. `Services`/`TransactionFlow`'s stacked standfirst — still explicitly named in
+the plan's component list). `Guarantees`/`HowIWork`/`Process` have no descriptor, heading-only.
+
+**Parallax (§3.3):** `parallax-slow` added to `Work.tsx`'s watermark index numbers and `Process.tsx`'s
+step numbers, per the plan.
+
+**Project rows (§3.5), `Work.tsx` `ProjectRow`:** text column now `reveal-left`/`reveal-right` keyed off
+the existing `flip` boolean; image tile gets the opposite direction **plus** a scale-in.
+
+**Real spec gap found and fixed, not in the plan's checklist:** §3.5 asks for the image tile to get both
+"the opposite direction" reveal AND `reveal-scale` stacked as two classes. That doesn't work — `.reveal-right`
+and `.reveal-scale` each set the full `animation` shorthand, so applying both to one element means one
+silently wins (same specificity, same file, no `@layer`) instead of combining, same class of bug as Phase
+2's cascade-layer catch. **Added two new combo classes to `globals.css`**: `.reveal-left-scale` /
+`.reveal-right-scale` (fold translateX + scale into one keyframe, mirroring the existing 3-layer
+native/JS-fallback/reduced-motion structure exactly), registered in the JS-fallback observer selector in
+`layout.tsx` and the reduced-motion block. Image tiles use these instead of stacking two classes.
+
+**Verified:**
+- `npx tsc --noEmit` clean, `npm run build` clean, all 9 routes static.
+- `npm run lint`: same single pre-existing `CountUp` error, no new issues.
+- **Own mistake avoided this time**: checked `netstat` for the live dev-server PID and killed it *before*
+  `rm -rf .next` (Phase 2's entry above logged the corruption from skipping this step) — clean rebuild, no
+  cache corruption.
+- DOM-level counts on both routes matched hand-computed expectations exactly (not just "some elements
+  found"): `/` → 9 `reveal-left`, 5 `reveal-right`, 2 `reveal-left-scale` + 3 `reveal-right-scale` (5
+  project rows, flip at odd `i`), 8 `parallax-slow` (5 Work indices + 3 Process steps). `/recruiters` → 7
+  `reveal-left`, 6 `reveal-right`, 1 `reveal-left-scale` + 2 `reveal-right-scale` (3 project rows post-hideOn
+  filter, flip at `i===1` only), 3 `parallax-slow` (3 Work indices, no Process on this route). Zero console
+  errors either route. Decoder re-tested after its heading/descriptor edit — still opens and decodes
+  (`document.getElementById('decoder-output')` populated with real MTI/DE/EMV text) on programmatic click.
+- `CSS.supports('animation-timeline','view()')` → `true` in this harness, so all checks above exercised the
+  **native** scroll-driven path; the JS-fallback (`.js-reveal`) branch for the two new combo classes was
+  registered by code inspection (added to both the observer selector and reduced-motion block) but not
+  exercised live — same structural gap as every other Firefox-parity item logged since step 3 of the
+  original 11-step redesign.
+
+**Not done / open:**
+- **Screenshot debt now covers three phases** (Phase 0+1 menu/stats, Phase 2 tile feel + 2 accent-tint
+  fixes, Phase 3 reveal timing/feel) — still nobody has watched any of this animate in a real browser.
+  Flagging again, as promised in the Phase 2 entry. Next session should lead with clearing this before
+  Phase 4/5 pile on more.
+- Firefox-parity path for the two new `reveal-*-scale` classes — same open item as the rest of the reveal
+  system, not newly broken, just newly existing.
+- Phase 4 (case-study page, §9) and Phase 5 (payment animations, §10/§11) — not started.
+- Not committed yet at time of writing this entry (commit happens right after), not pushed, not deployed.

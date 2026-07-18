@@ -6,8 +6,8 @@ export default function Skills() {
     <section id="skills" className="py-28 border-t border-white/[0.08] relative">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-end justify-between mb-16">
-          <h2 className="reveal text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Skills &amp;<br />tooling</h2>
-          <p className="reveal hidden sm:block text-white/60 max-w-xs text-right">Four years of payments QA depth, now pointed at AI.</p>
+          <h2 className="reveal-left text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Skills &amp;<br />tooling</h2>
+          <p className="reveal-right hidden sm:block text-white/60 max-w-xs text-right">Four years of payments QA depth, now pointed at AI.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {skillCategories.map((cat) => (

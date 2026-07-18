@@ -290,6 +290,25 @@ html {
 @keyframes rv-scale { from { opacity:0; transform: scale(.94);}         to { opacity:1; transform:none;} }
 @keyframes rv-in    { from { opacity:0;} to { opacity:1;} }  /* generic fade for JS fallback end-state */
 
+/* ── Direction + scale combo (§3.5) — project-row image tiles need both at
+   once ("opposite direction" + "scales up as it enters"). Stacking .reveal-left
+   and .reveal-scale as two classes doesn't work: both set the `animation`
+   shorthand in full, so one silently wins over the other (same specificity,
+   same layer) instead of combining. These fold both into one keyframe. ── */
+@supports (animation-timeline: view()) {
+  .reveal-left-scale  { animation: rv-left-scale  linear both; animation-timeline: view(); animation-range: entry 6% cover 32%; }
+  .reveal-right-scale { animation: rv-right-scale linear both; animation-timeline: view(); animation-range: entry 6% cover 32%; }
+}
+@supports not (animation-timeline: view()) {
+  .js-reveal .reveal-left-scale,  .js-reveal .reveal-right-scale { opacity: 0; }
+  .js-reveal .reveal-left-scale  { transform: translateX(-40px) scale(.94); }
+  .js-reveal .reveal-right-scale { transform: translateX(40px) scale(.94); }
+  .js-reveal .reveal-left-scale.in-view,
+  .js-reveal .reveal-right-scale.in-view { animation: rv-in .7s cubic-bezier(.22,1,.36,1) both; }
+}
+@keyframes rv-left-scale  { from { opacity:0; transform: translateX(-40px) scale(.94);} to { opacity:1; transform:none;} }
+@keyframes rv-right-scale { from { opacity:0; transform: translateX(40px) scale(.94);}  to { opacity:1; transform:none;} }
+
 /* ── Parallax utility — depth on scroll (redesign 2026-07 §3.3). Native-only;
    decorative, so no JS fallback (elements just sit still in Firefox). ── */
 @supports (animation-timeline: view()) {
@@ -459,9 +478,11 @@ html {
   .reveal,
   .js-reveal .reveal,
   .js-reveal .reveal.in-view,
-  .reveal-left, .reveal-right, .reveal-scale,
+  .reveal-left, .reveal-right, .reveal-scale, .reveal-left-scale, .reveal-right-scale,
   .js-reveal .reveal-left, .js-reveal .reveal-right, .js-reveal .reveal-scale,
+  .js-reveal .reveal-left-scale, .js-reveal .reveal-right-scale,
   .js-reveal .reveal-left.in-view, .js-reveal .reveal-right.in-view, .js-reveal .reveal-scale.in-view,
+  .js-reveal .reveal-left-scale.in-view, .js-reveal .reveal-right-scale.in-view,
   .parallax-slow { animation: none !important; opacity: 1; transform: none; filter: none; }
   .hero-kinetic { animation: none !important; font-variation-settings: normal; }
   .flow-pulse, .flow-status-a, .flow-status-b { animation: none !important; }

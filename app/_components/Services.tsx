@@ -38,8 +38,8 @@ export default function Services() {
     <section id="services" className="py-28 border-t border-white/[0.08] relative">
       <div className="max-w-6xl mx-auto px-6">
         <div className="max-w-2xl mb-14">
-          <h2 className="reveal text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-5">What I can build</h2>
-          <p className="reveal text-white/55 text-lg">Starting prices — message me for an exact quote. Click any card to open it on Fiverr.</p>
+          <h2 className="reveal-left text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-5">What I can build</h2>
+          <p className="reveal-right text-white/55 text-lg">Starting prices — message me for an exact quote. Click any card to open it on Fiverr.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="reveal sm:col-span-2 lg:col-span-2">

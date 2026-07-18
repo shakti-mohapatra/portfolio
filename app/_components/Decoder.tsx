@@ -24,8 +24,8 @@ export default function Decoder() {
     <section id="decoder" className="py-28 border-t border-white/[0.08]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-end justify-between mb-10">
-          <h2 className="reveal text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Decoder</h2>
-          <p className="reveal hidden sm:block text-white/60 max-w-xs text-right">ISO-8583 / EMV TLV — live, client-side, in the mono layer I read these in on the job.</p>
+          <h2 className="reveal-left text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Decoder</h2>
+          <p className="reveal-right hidden sm:block text-white/60 max-w-xs text-right">ISO-8583 / EMV TLV — live, client-side, in the mono layer I read these in on the job.</p>
         </div>
 
         <DecoderReveal>

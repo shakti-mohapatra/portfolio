@@ -6,8 +6,8 @@ export default function Experience() {
     <section id="experience" className="py-28 border-b border-white/[0.08] relative">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16">
-          <h2 className="reveal text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Experience</h2>
-          <div className="reveal sm:text-right">
+          <h2 className="reveal-left text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Experience</h2>
+          <div className="reveal-right sm:text-right">
             <p className="text-white/60 max-w-xs sm:ml-auto">4+ years testing production payment systems for tier-1 fintech clients.</p>
             <a
               href={RESUME_PDF}

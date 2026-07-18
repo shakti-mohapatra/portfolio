@@ -12,8 +12,8 @@ export default function CaseStudyFeature() {
     <section id="case-studies" className="py-28 border-b border-white/[0.08] relative">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-end justify-between mb-16">
-          <h2 className="reveal text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Case<br />studies</h2>
-          <p className="reveal hidden sm:block text-white/60 max-w-xs text-right">Defect reports, not highlight reels — what broke, why, and what I did about it.</p>
+          <h2 className="reveal-left text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Case<br />studies</h2>
+          <p className="reveal-right hidden sm:block text-white/60 max-w-xs text-right">Defect reports, not highlight reels — what broke, why, and what I did about it.</p>
         </div>
         <div className="space-y-6">
           {caseStudies.map((cs) => (

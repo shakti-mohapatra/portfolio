@@ -31,10 +31,10 @@ export default function TransactionFlow() {
         <span className="reveal block font-mono text-[var(--text-label)] tracking-widest text-[var(--accent)] uppercase mb-3">
           Live readout
         </span>
-        <h2 className="reveal text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-6">
+        <h2 className="reveal-left text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none mb-6">
           What happens when you tap your card
         </h2>
-        <p className="reveal text-white/55 leading-relaxed max-w-2xl mb-16">
+        <p className="reveal-right text-white/55 leading-relaxed max-w-2xl mb-16">
           Four systems talk to each other every time you pay, all in about a second. I test systems like this one for a living — here&apos;s what&apos;s actually happening.
         </p>
 

@@ -63,7 +63,7 @@ export default function RootLayout({
       }
     });
   }, { rootMargin: "0px 0px -10% 0px", threshold: 0.1 });
-  document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-scale").forEach(function (el) { io.observe(el); });
+  document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-left-scale, .reveal-right-scale").forEach(function (el) { io.observe(el); });
 
   var header = document.querySelector("[data-header]");
   if (header) {
