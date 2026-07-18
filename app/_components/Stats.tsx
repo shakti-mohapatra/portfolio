@@ -10,7 +10,7 @@ export default function Stats({ mode }: { mode: Mode }) {
             <div className="text-4xl sm:text-5xl font-bold tracking-tight">
               {"to" in s ? <CountUp to={s.to} suffix={s.suffix} /> : s.display}
             </div>
-            <div className="font-mono text-xs uppercase tracking-wide text-white/45 mt-2">{s.label}</div>
+            <div className="font-mono text-xs uppercase tracking-wide text-white/55 mt-2 -ml-[1px]">{s.label}</div>
           </div>
         ))}
       </div>

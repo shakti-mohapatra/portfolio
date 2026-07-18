@@ -47,7 +47,7 @@ export default function Hero({ mode }: { mode: Mode }) {
             <div className="scroll-line-fill" />
           </div>
           <span
-            className="font-mono text-micro uppercase tracking-[0.3em] text-white/35"
+            className="font-mono text-micro uppercase tracking-[0.3em] text-white/55"
             style={{ writingMode: "vertical-rl", transform: "rotate(180deg)", letterSpacing: "0.25em" }}
           >
             scroll

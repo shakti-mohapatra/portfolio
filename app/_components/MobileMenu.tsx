@@ -39,13 +39,13 @@ export default function MobileMenu({
           {right}
           <button
             onClick={() => setOpen((v) => !v)}
-            className="flex items-center gap-2.5 py-3 text-sm font-medium text-white/80 hover:text-white transition-colors"
+            className="flex items-center gap-2.5 py-3 text-sm font-medium text-white hover:text-white transition-colors"
             aria-label="Toggle menu"
             aria-expanded={open}
           >
             <span className="flex flex-col gap-1">
-              <span className={`block h-px w-5 bg-current transition-transform origin-center ${open ? "translate-y-[3px] rotate-45" : ""}`} />
-              <span className={`block h-px w-5 bg-current transition-transform origin-center ${open ? "-translate-y-[3px] -rotate-45" : ""}`} />
+              <span className={`block h-px w-5 bg-white transition-transform origin-center ${open ? "translate-y-[3px] rotate-45" : ""}`} />
+              <span className={`block h-px w-5 bg-white transition-transform origin-center ${open ? "-translate-y-[3px] -rotate-45" : ""}`} />
             </span>
             {open ? "Close" : "Menu"}
           </button>
@@ -61,8 +61,12 @@ export default function MobileMenu({
           aria-hidden={!open}
           style={{ background: "rgba(6, 6, 8, 0.92)", backdropFilter: "blur(28px)", WebkitBackdropFilter: "blur(28px)" }}
         >
-          {/* Gradient bleed at top matching nav pill accent */}
-          <div className="h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(139,92,246,0.35), transparent)" }} aria-hidden />
+          {/* Top accent line — draws in from center on open (redesign 2026-07 §4.2) */}
+          <div
+            className="h-0.5 mx-auto transition-[width] duration-500 ease-out"
+            style={{ width: open ? "100%" : "0%", background: "linear-gradient(90deg, transparent, var(--accent), transparent)" }}
+            aria-hidden
+          />
 
           <div className="grid grid-cols-1 sm:grid-cols-[1.3fr_1fr]">
             {/* Left: large numbered nav links */}
@@ -72,13 +76,13 @@ export default function MobileMenu({
                   key={l.href}
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="group flex items-center gap-4 py-3.5 border-b border-white/[0.08] last:border-0"
+                  className="group flex items-center gap-4 py-3.5 px-3 -mx-3 rounded-lg border-b border-white/[0.08] last:border-0 hover:bg-[rgba(var(--accent-rgb),0.06)] transition-colors"
                 >
-                  <span className="text-micro font-mono text-violet-400/40 w-5 shrink-0 select-none">0{idx + 1}</span>
-                  <span className="text-3xl sm:text-[2.6rem] font-bold tracking-tight text-white/50 group-hover:text-white transition-colors duration-200">
+                  <span className="text-micro font-mono text-[var(--accent)]/50 w-5 shrink-0 select-none">0{idx + 1}</span>
+                  <span className="text-3xl sm:text-[2.6rem] font-bold tracking-tight text-white/60 group-hover:text-white transition-colors duration-200">
                     <span className="inline-block group-hover:translate-x-1.5 transition-transform duration-300">{l.label}</span>
                   </span>
-                  <span className="ml-auto text-violet-300 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                  <span className="ml-auto text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                     <ArrowUpRight className="w-5 h-5" />
                   </span>
                 </a>
@@ -92,14 +96,14 @@ export default function MobileMenu({
                   <Link
                     href="/"
                     aria-current={mode === "side" ? "page" : undefined}
-                    className={`px-3 py-3 rounded-full transition-colors ${mode === "side" ? "bg-white text-black" : "text-white/50 hover:text-white"}`}
+                    className={`px-3 py-3 rounded-full transition-colors ${mode === "side" ? "bg-white text-black" : "text-white/70 hover:text-white"}`}
                   >
                     For Clients
                   </Link>
                   <Link
                     href="/recruiters"
                     aria-current={mode === "day" ? "page" : undefined}
-                    className={`px-3 py-3 rounded-full transition-colors ${mode === "day" ? "bg-white text-black" : "text-white/50 hover:text-white"}`}
+                    className={`px-3 py-3 rounded-full transition-colors ${mode === "day" ? "bg-white text-black" : "text-white/70 hover:text-white"}`}
                   >
                     For Recruiters
                   </Link>
@@ -111,18 +115,18 @@ export default function MobileMenu({
                   </span>
                   <span className="font-mono text-xs uppercase tracking-[0.28em] text-emerald-400/80">Available</span>
                 </div>
-                <p className="text-sm text-white/35 leading-relaxed">{tagline}</p>
+                <p className="text-sm text-white/60 leading-relaxed">{tagline}</p>
               </div>
 
               <div>
-                <p className="font-mono text-micro uppercase tracking-[0.28em] text-white/20 mb-3">Links</p>
+                <p className="font-mono text-micro uppercase tracking-[0.28em] text-white/45 mb-3">Links</p>
                 {socials.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
                     target={link.external ? "_blank" : undefined}
                     rel={link.external ? "noopener noreferrer" : undefined}
-                    className="group flex items-center justify-between py-2.5 border-b border-white/[0.08] last:border-0 text-sm text-white/40 hover:text-white transition-colors"
+                    className="group flex items-center justify-between py-2.5 border-b border-white/[0.08] last:border-0 text-sm text-white/70 hover:text-white transition-colors"
                   >
                     <span>{link.label}</span>
                     <ArrowUpRight className="w-3.5 h-3.5 ml-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />

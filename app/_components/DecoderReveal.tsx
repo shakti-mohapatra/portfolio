@@ -18,17 +18,17 @@ export default function DecoderReveal({ children }: { children: React.ReactNode 
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="reveal group w-full text-left rounded-2xl border border-white/[0.08] bg-[var(--panel)] p-8 sm:p-10 hover:border-violet-400/30 transition-colors"
+        className="reveal group w-full text-left rounded-2xl border border-white/[0.08] bg-[var(--panel)] p-8 sm:p-10 hover:border-[var(--accent)]/30 transition-colors"
       >
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3 font-mono text-[var(--text-label)] uppercase tracking-widest text-white/40">
+          <div className="flex items-center gap-3 font-mono text-[var(--text-label)] uppercase tracking-widest text-white/55">
             <span className="relative flex h-2 w-2 shrink-0">
               {open && <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />}
               <span className={`relative inline-flex h-2 w-2 rounded-full ${open ? "bg-emerald-400" : "bg-white/25"}`} />
             </span>
             Decoder · {open ? "Live" : "Standby"}
           </div>
-          <span className="font-mono text-xs font-semibold uppercase tracking-wide text-violet-300 group-hover:text-violet-200 transition-colors inline-flex items-center gap-2 shrink-0">
+          <span className="font-mono text-xs font-semibold uppercase tracking-wide text-[var(--accent)] group-hover:text-white transition-colors inline-flex items-center gap-2 shrink-0">
             {open ? "Power off" : "Initialize decoder"}
             <span className={`inline-block transition-transform duration-300 ${open ? "rotate-90" : ""}`}>▶</span>
           </span>

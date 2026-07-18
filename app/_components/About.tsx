@@ -32,10 +32,10 @@ export default function About({ mode }: { mode: Mode }) {
             </div>
             {mode === "side" && (
               <div className="reveal mt-10">
-                <h3 className="font-mono text-sm font-semibold uppercase tracking-widest text-white/40 mb-6">Skills &amp; tools</h3>
+                <h3 className="font-mono text-sm font-semibold uppercase tracking-widest text-white/55 mb-6">Skills &amp; tools</h3>
                 <div className="flex flex-wrap gap-2.5">
                   {content.skills.map((skill) => (
-                    <span key={skill} className="font-mono text-sm font-medium text-white/70 border border-white/[0.08] bg-white/[0.03] px-4 py-2 rounded-full hover:border-violet-400/50 hover:text-violet-200 transition-colors">{skill}</span>
+                    <span key={skill} className="font-mono text-sm font-medium text-white/70 border border-white/[0.08] bg-white/[0.03] px-4 py-2 rounded-full hover:border-[var(--accent)]/50 hover:text-white transition-colors">{skill}</span>
                   ))}
                 </div>
               </div>

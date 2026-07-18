@@ -63,7 +63,7 @@ export default function RootLayout({
       }
     });
   }, { rootMargin: "0px 0px -10% 0px", threshold: 0.1 });
-  document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+  document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-scale").forEach(function (el) { io.observe(el); });
 
   var header = document.querySelector("[data-header]");
   if (header) {
@@ -82,26 +82,28 @@ export default function RootLayout({
   }
 })();
 
-// Magnetic tile hover (2026-07-18) — desktop/mouse only, a tiny cursor-attract
-// pull on card-like tiles. Progressive enhancement, not a client island: plain
-// inline script, same tier as the reveal fallback above. Skipped entirely on
-// touch (matchMedia gate) and under reduced-motion.
+// Shared tile pointer script (redesign 2026-07 §2.2) — desktop/mouse only.
+// Sets --mx/--my on every .tile for the cursor spotlight, and applies a small
+// magnetic lift to .tile--interactive only. Progressive enhancement, not a
+// client island. Skipped on touch and under reduced-motion.
 (function(){
   if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  var STRENGTH = 14;
-  document.querySelectorAll(".bento-card, [data-magnetic]").forEach(function (el) {
-    el.addEventListener("mouseenter", function () {
-      el.style.transition = "transform 0.25s cubic-bezier(0.22, 1, 0.36, 1)";
-    });
+  var LIFT = 10;
+  document.querySelectorAll(".tile").forEach(function (el) {
+    var interactive = el.classList.contains("tile--interactive");
     el.addEventListener("mousemove", function (e) {
       var r = el.getBoundingClientRect();
-      var x = (e.clientX - r.left) / r.width - 0.5;
-      var y = (e.clientY - r.top) / r.height - 0.5;
-      el.style.transform = "translate(" + (x * STRENGTH).toFixed(1) + "px, " + (y * STRENGTH - 3).toFixed(1) + "px)";
+      el.style.setProperty("--mx", (e.clientX - r.left) + "px");
+      el.style.setProperty("--my", (e.clientY - r.top) + "px");
+      if (interactive) {
+        var x = (e.clientX - r.left) / r.width - 0.5;
+        var y = (e.clientY - r.top) / r.height - 0.5;
+        el.style.transform = "translate(" + (x*LIFT).toFixed(1) + "px," + (y*LIFT - 3).toFixed(1) + "px)";
+      }
     });
     el.addEventListener("mouseleave", function () {
-      el.style.transform = "";
+      if (interactive) el.style.transform = "";
     });
   });
 })();`,

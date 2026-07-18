@@ -76,6 +76,8 @@ export type Project = {
   descPlain?: string;
   /** If set, the card shows a "READ THE REPORT →" link to /work/[slug] (PLAN §4). */
   caseStudySlug?: string;
+  /** Routes this card is hidden on (day = recruiter). Client keeps all. */
+  hideOn?: Mode[];
 };
 
 export const projects: Project[] = [
@@ -85,7 +87,7 @@ export const projects: Project[] = [
     desc: "Customers browse the catalogue, bag items, choose store pickup or home delivery, and get an order code. The merchant checks them out at the counter — stock updates automatically on collection. No online payment; the whole experience is built around in-person transactions.",
     tags: ["Next.js", "Supabase", "TypeScript", "Tailwind", "Vercel"],
     image: "/projects/cs-2.png", link: "https://clothing-store-steel-kappa.vercel.app", linkLabel: "View live",
-    order: { side: 1, day: 4 },
+    order: { side: 1, day: 4 }, hideOn: ["day"],
   },
   {
     badge: "In progress", badgeClass: "text-amber-300 border-amber-400/30 bg-amber-400/10",
@@ -101,7 +103,7 @@ export const projects: Project[] = [
     desc: "Kanban board, sprint planning, bug tracker, and GitHub Issues sync — running offline as a local web app. A Ctrl+K command palette, dark mode, and an insights dashboard with velocity charts.",
     tags: ["Next.js", "SQLite", "TypeScript", "Tailwind"],
     image: "/projects/mc-4.webp", link: GITHUB, linkLabel: "GitHub profile",
-    order: { side: 3, day: 5 },
+    order: { side: 3, day: 5 }, hideOn: ["day"],
   },
   {
     badge: "Shipped", badgeClass: "text-violet-300 border-violet-400/30 bg-violet-400/10",

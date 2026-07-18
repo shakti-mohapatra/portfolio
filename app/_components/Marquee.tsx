@@ -7,7 +7,7 @@ export default function Marquee({ mode }: { mode: Mode }) {
         {[0, 1].map((dup) => (
           <div key={dup} className="flex items-center">
             {modeContent[mode].marquee.map((w) => (
-              <span key={dup + w} className="flex items-center text-2xl sm:text-3xl font-semibold text-white/25 mx-8">
+              <span key={dup + w} className="flex items-center text-2xl sm:text-3xl font-semibold text-white/45 mx-8">
                 {w}<span className="mx-8 text-[var(--accent)]">✦</span>
               </span>
             ))}

@@ -68,6 +68,20 @@ body {
   color: var(--ink);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+
+  /* ── Per-mode accent tokens (redesign 2026-07 §1.1). Scoped to .site so the
+     recruiter route (data-mode="day") flips brand accents to blue/cyan.
+     :root above keeps its own --accent as the pre-app fallback. ── */
+  --accent: #8b5cf6;          /* violet  */
+  --accent-2: #e879f9;        /* fuchsia */
+  --accent-rgb: 139, 92, 246;
+  --accent2-rgb: 232, 121, 249;
+}
+.site[data-mode="day"] {
+  --accent: #38bdf8;          /* sky-400 */
+  --accent-2: #2dd4bf;        /* teal-400 */
+  --accent-rgb: 56, 189, 248;
+  --accent2-rgb: 45, 212, 191;
 }
 
 /* ── Film grain ── */
@@ -83,7 +97,7 @@ body {
 
 /* ── Accent gradient text — hero only, per Instrument (PLAN §1) ── */
 .accent-text {
-  background: linear-gradient(102deg, #a78bfa 0%, #e879f9 55%, #a78bfa 100%);
+  background: linear-gradient(102deg, var(--accent) 0%, var(--accent-2) 55%, var(--accent) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -102,8 +116,8 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(60% 60% at 70% 30%, rgba(139, 92, 246, 0.5), transparent 70%),
-    radial-gradient(50% 50% at 25% 75%, rgba(232, 121, 249, 0.35), transparent 70%),
+    radial-gradient(60% 60% at 70% 30%, rgba(var(--accent-rgb), 0.5), transparent 70%),
+    radial-gradient(50% 50% at 25% 75%, rgba(var(--accent2-rgb), 0.35), transparent 70%),
     var(--surface);
 }
 
@@ -165,8 +179,44 @@ body {
 .bento-card:hover {
   background: var(--panel-hover);
   border-color: var(--accent);
-  box-shadow: 0 0 40px rgba(139, 92, 246, 0.12);
+  box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.12);
 }
+
+/* ── Tile system (redesign 2026-07 §2, Tasks 6 & 8) ── */
+.tile {
+  position: relative;
+  border-radius: 1rem;                       /* rounded-2xl, keep */
+  border: 1px solid var(--hairline);
+  background: var(--panel);
+  overflow: hidden;                          /* clip the spotlight */
+  transition: border-color .3s ease, box-shadow .3s ease, background .3s ease, transform .25s cubic-bezier(.22,1,.36,1);
+}
+/* Cursor spotlight — --mx/--my are px within the tile, set by JS (default centered). */
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .35s ease;
+  background: radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%),
+              rgba(var(--accent-rgb), .14), transparent 60%);
+}
+.tile:hover::before { opacity: 1; }
+.tile:hover { border-color: rgba(var(--accent-rgb), .45); background: var(--panel-hover); }
+
+/* Interactive: stronger glow + lift + accepts magnetic transform (set inline by JS). */
+.tile--interactive:hover {
+  border-color: rgba(var(--accent-rgb), .6);
+  box-shadow: 0 0 44px rgba(var(--accent-rgb), .16), inset 0 1px 0 rgba(255,255,255,.04);
+}
+/* Static: gentler — smaller/softer spotlight, no lift, no magnet. */
+.tile--static::before {
+  background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 50%),
+              rgba(var(--accent-rgb), .08), transparent 55%);
+}
+.tile--static:hover { box-shadow: 0 0 30px rgba(var(--accent-rgb), .08); }
 
 /* ── Anchor offset for the fixed header ── */
 html {
@@ -235,10 +285,35 @@ html {
   .js-reveal .reveal.in-view { animation: reveal-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
 }
 
-@keyframes reveal-in {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes reveal-in { from { opacity:0; transform: translateY(28px); filter: blur(4px);} to { opacity:1; transform:none; filter:none;} }
+
+/* ── Directional / scale reveal variants (redesign 2026-07 §3.1). Native
+   scroll-driven first, JS fallback second — mirrors the base .reveal model. ── */
+@supports (animation-timeline: view()) {
+  .reveal-left  { animation: rv-left  linear both; animation-timeline: view(); animation-range: entry 8% cover 34%; }
+  .reveal-right { animation: rv-right linear both; animation-timeline: view(); animation-range: entry 8% cover 34%; }
+  .reveal-scale { animation: rv-scale linear both; animation-timeline: view(); animation-range: entry 6% cover 30%; }
 }
+@supports not (animation-timeline: view()) {
+  .js-reveal .reveal-left,  .js-reveal .reveal-right { opacity: 0; }
+  .js-reveal .reveal-left  { transform: translateX(-40px); }
+  .js-reveal .reveal-right { transform: translateX(40px); }
+  .js-reveal .reveal-scale { opacity: 0; transform: scale(.94); }
+  .js-reveal .reveal-left.in-view,
+  .js-reveal .reveal-right.in-view,
+  .js-reveal .reveal-scale.in-view { animation: rv-in .7s cubic-bezier(.22,1,.36,1) both; }
+}
+@keyframes rv-left  { from { opacity:0; transform: translateX(-40px);} to { opacity:1; transform:none;} }
+@keyframes rv-right { from { opacity:0; transform: translateX(40px);}  to { opacity:1; transform:none;} }
+@keyframes rv-scale { from { opacity:0; transform: scale(.94);}         to { opacity:1; transform:none;} }
+@keyframes rv-in    { from { opacity:0;} to { opacity:1;} }  /* generic fade for JS fallback end-state */
+
+/* ── Parallax utility — depth on scroll (redesign 2026-07 §3.3). Native-only;
+   decorative, so no JS fallback (elements just sit still in Firefox). ── */
+@supports (animation-timeline: view()) {
+  .parallax-slow { animation: parallax-y linear both; animation-timeline: view(); animation-range: cover 0% cover 100%; }
+}
+@keyframes parallax-y { from { transform: translateY(40px);} to { transform: translateY(-40px);} }
 
 /* ── Header hide-on-scroll ── */
 @supports (animation-timeline: view()) {
@@ -283,7 +358,7 @@ html {
   pointer-events: none;
   opacity: 0;
   height: 45%;
-  background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.35), transparent);
+  background: linear-gradient(180deg, transparent, rgba(var(--accent-rgb), 0.35), transparent);
 }
 .decoder-boot-on { animation: decoder-flicker 0.45s steps(2, jump-none) 1; }
 .decoder-boot-on::before { animation: decoder-scanline 0.5s ease-out 1; }
@@ -344,7 +419,7 @@ html {
   margin: 2px 0 6px;
   padding: 6px 10px;
   border-left: 2px solid var(--accent);
-  background: rgba(139, 92, 246, 0.06);
+  background: rgba(var(--accent-rgb), 0.06);
   color: rgba(255, 255, 255, 0.6);
   font-size: var(--text-micro);
   line-height: 1.5;
@@ -401,7 +476,11 @@ html {
   .hero-fade { animation: none !important; opacity: 1; transform: none; }
   .reveal,
   .js-reveal .reveal,
-  .js-reveal .reveal.in-view { animation: none !important; opacity: 1; transform: none; }
+  .js-reveal .reveal.in-view,
+  .reveal-left, .reveal-right, .reveal-scale,
+  .js-reveal .reveal-left, .js-reveal .reveal-right, .js-reveal .reveal-scale,
+  .js-reveal .reveal-left.in-view, .js-reveal .reveal-right.in-view, .js-reveal .reveal-scale.in-view,
+  .parallax-slow { animation: none !important; opacity: 1; transform: none; filter: none; }
   .hero-kinetic { animation: none !important; font-variation-settings: normal; }
   .flow-pulse, .flow-status-a, .flow-status-b { animation: none !important; }
   .flow-pulse { opacity: 0; }

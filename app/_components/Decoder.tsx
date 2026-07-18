@@ -1,6 +1,6 @@
-import Script from "next/script";
-import { DECODER_SCRIPT, SEED_HEX, ANNOTATIONS } from "../_decoder";
+import { SEED_HEX, ANNOTATIONS } from "../_decoder";
 import DecoderReveal from "./DecoderReveal";
+import DecoderEngine from "./DecoderEngine";
 
 // ISO-8583 / EMV TLV decoder (PLAN §3A). Recruiter route only — §1's dialect
 // split: the decoder *proves* to a recruiter, the transaction-flow visualizer
@@ -25,7 +25,7 @@ export default function Decoder() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-end justify-between mb-10">
           <h2 className="reveal text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Decoder</h2>
-          <p className="reveal hidden sm:block text-white/45 max-w-xs text-right">ISO-8583 / EMV TLV — live, client-side, in the mono layer I read these in on the job.</p>
+          <p className="reveal hidden sm:block text-white/60 max-w-xs text-right">ISO-8583 / EMV TLV — live, client-side, in the mono layer I read these in on the job.</p>
         </div>
 
         <DecoderReveal>
@@ -34,7 +34,7 @@ export default function Decoder() {
             dispenser — an <span className="font-mono text-white/75">0100</span> request
             carrying its EMV chip data in DE55. Edit it, or paste your own.
           </p>
-          <p className="text-white/40 text-sm leading-relaxed max-w-2xl mb-8">
+          <p className="text-white/55 text-sm leading-relaxed max-w-2xl mb-8">
             Every value is fabricated test data — test PAN, no real card, no real
             merchant. This one hides a deliberate defect: the amount and currency in
             the ISO fields disagree with the amount and currency the chip actually
@@ -50,7 +50,7 @@ export default function Decoder() {
                 <button
                   type="button"
                   id="decoder-reset"
-                  className="font-mono text-[var(--text-micro)] uppercase tracking-widest text-white/40 hover:text-[var(--accent)] transition-colors"
+                  className="font-mono text-[var(--text-micro)] uppercase tracking-widest text-white/55 hover:text-[var(--accent)] transition-colors"
                 >
                   Reset seed
                 </button>
@@ -61,7 +61,7 @@ export default function Decoder() {
                 autoComplete="off"
                 defaultValue={SEED_HEX}
                 aria-label="ISO-8583 or EMV TLV hex input"
-                className="flex-1 min-h-[220px] w-full resize-y bg-transparent font-mono text-xs leading-relaxed text-white/80 outline-none break-all placeholder:text-white/30"
+                className="flex-1 min-h-[220px] w-full resize-y bg-transparent font-mono text-xs leading-relaxed text-white/80 outline-none break-all placeholder:text-white/50"
               />
             </div>
             <div className="bg-[var(--surface)] p-5">
@@ -69,7 +69,7 @@ export default function Decoder() {
                 Decoded
               </div>
               <div id="decoder-output" className="dec-output font-mono text-xs">
-                <div className="dec-empty">Enable JavaScript to decode. The message above is the seed.</div>
+                <noscript><div className="dec-empty">Enable JavaScript to decode this message. The hex above is the seed.</div></noscript>
               </div>
             </div>
           </div>
@@ -94,13 +94,12 @@ export default function Decoder() {
         </DecoderReveal>
       </div>
 
-      {/* Inline engine via next/script — required because React 19 will not
-          execute a raw <script> rendered inside a nested component. Not a client
-          island: next/script lives in node_modules. afterInteractive runs it once
-          post-hydration, when #decoder-input exists; it parses the seed and
-          re-parses on edit — the panel being visually collapsed doesn't stop it
-          from being mounted, so it's ready the instant DecoderReveal opens. */}
-      <Script id="decoder-engine" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: DECODER_SCRIPT }} />
+      {/* Engine runs from a tiny client island via useEffect (§8.2) — reliable
+          post-mount execution. Replaces the next/script afterInteractive inject,
+          which did not run under Next 16 / React 19, leaving the output on its
+          placeholder. #decoder-input/#decoder-output are server-rendered and stay
+          mounted while collapsed, so the engine is live the instant it opens. */}
+      <DecoderEngine />
     </section>
   );
 }

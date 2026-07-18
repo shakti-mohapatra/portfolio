@@ -33,8 +33,8 @@ export default function ContactForm({ messagePlaceholder = "Tell me about your p
   }
 
   const inputCls = `w-full px-4 py-3 rounded-xl text-sm
-    bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-white/30
-    focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30
+    bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-white/50
+    focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50 focus:border-[var(--accent)]/30
     transition-all`;
 
   if (status === "success") {
@@ -56,23 +56,23 @@ export default function ContactForm({ messagePlaceholder = "Tell me about your p
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-left">
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="contact-name" className="block font-mono text-micro font-medium text-white/35 uppercase tracking-widest mb-2">Name</label>
+          <label htmlFor="contact-name" className="block font-mono text-micro font-medium text-white/55 uppercase tracking-widest mb-2">Name</label>
           <input id="contact-name" type="text" required placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} className={inputCls} />
         </div>
         <div>
-          <label htmlFor="contact-email" className="block font-mono text-micro font-medium text-white/35 uppercase tracking-widest mb-2">Email</label>
+          <label htmlFor="contact-email" className="block font-mono text-micro font-medium text-white/55 uppercase tracking-widest mb-2">Email</label>
           <input id="contact-email" type="email" required placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} />
         </div>
       </div>
       <div>
-        <label htmlFor="contact-message" className="block font-mono text-micro font-medium text-white/35 uppercase tracking-widest mb-2">Message</label>
+        <label htmlFor="contact-message" className="block font-mono text-micro font-medium text-white/55 uppercase tracking-widest mb-2">Message</label>
         <textarea id="contact-message" required rows={5} placeholder={messagePlaceholder} value={message} onChange={(e) => setMessage(e.target.value)} className={`${inputCls} resize-none`} />
       </div>
       {status === "error" && (
         <p className="text-sm text-red-400">Something went wrong — please try again or email me directly.</p>
       )}
       <button type="submit" disabled={status === "submitting"}
-        className="w-full py-3.5 rounded-full bg-gradient-to-r from-violet-600 to-purple-500 text-white font-semibold
+        className="w-full py-3.5 rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-2)] text-white font-semibold
                    hover:brightness-110 active:scale-95 transition-all
                    disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100">
         {status === "submitting" ? "Sending…" : "Send message"}

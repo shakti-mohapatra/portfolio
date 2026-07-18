@@ -16,7 +16,7 @@ function ProjectRow({ p, i, mode }: { p: Project; i: number; mode: Mode }) {
         </div>
         <div>
           <h3 className="text-4xl sm:text-5xl font-bold tracking-tight mb-3">{p.title}</h3>
-          <p className="text-violet-300 font-medium mb-4">{p.tagline}</p>
+          <p className="text-[var(--accent)] font-medium mb-4">{p.tagline}</p>
           <p className="text-white/55 leading-relaxed">{desc}</p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -25,12 +25,12 @@ function ProjectRow({ p, i, mode }: { p: Project; i: number; mode: Mode }) {
           ))}
         </div>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-          <a href={p.link} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-violet-300 transition-colors">
+          <a href={p.link} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-[var(--accent)] transition-colors">
             {p.linkLabel}
             <span className="group-hover:translate-x-1 transition-transform"><ArrowUpRight /></span>
           </a>
           {p.caseStudySlug && mode === "day" && (
-            <Link href={`/work/${p.caseStudySlug}`} className="group inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wide text-violet-300 hover:text-violet-200 transition-colors">
+            <Link href={`/work/${p.caseStudySlug}`} className="group inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wide text-[var(--accent)] hover:text-white transition-colors">
               Read the report
               <span className="group-hover:translate-x-1 transition-transform">→</span>
             </Link>
@@ -44,7 +44,7 @@ function ProjectRow({ p, i, mode }: { p: Project; i: number; mode: Mode }) {
             <Image src={p.image} alt={p.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover object-top" priority={i === 0} />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="font-mono text-xs uppercase tracking-wide text-white/25">Screenshot pending</span>
+              <span className="font-mono text-xs uppercase tracking-wide text-white/45">Screenshot pending</span>
             </div>
           )}
         </div>
@@ -54,13 +54,17 @@ function ProjectRow({ p, i, mode }: { p: Project; i: number; mode: Mode }) {
 }
 
 export default function Work({ mode }: { mode: Mode }) {
-  const ordered = [...projects].sort((a, b) => a.order[mode] - b.order[mode]);
+  const ordered = [...projects]
+    .filter((p) => !p.hideOn?.includes(mode))
+    .sort((a, b) => a.order[mode] - b.order[mode]);
   return (
     <section id="work" className="py-28 relative">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-end justify-between mb-20">
-          <h2 className="reveal text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">Selected<br />work</h2>
-          <p className="reveal hidden sm:block text-white/45 max-w-xs text-right">Real projects built for real use — not demos, not mockups.</p>
+          <h2 className="reveal-left text-[clamp(2rem,6vw,4rem)] font-bold tracking-tight leading-none">
+            {mode === "day" ? <>Projects<br />I&apos;ve shipped</> : <>Things<br />I&apos;ve built</>}
+          </h2>
+          <p className="reveal hidden sm:block text-white/60 max-w-xs text-right">Real projects built for real use — not demos, not mockups.</p>
         </div>
         <div className="space-y-28">
           {ordered.map((p, i) => <ProjectRow key={p.title} p={p} i={i} mode={mode} />)}

@@ -16,12 +16,12 @@ function BentoServiceCard({ s, featured = false }: { s: ServiceData; featured?: 
           <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconAccent}`}>
             <ServiceIcon n={s.n} />
           </div>
-          <span className="font-mono text-xs text-white/25">{s.n}</span>
+          <span className="font-mono text-xs text-white/45">{s.n}</span>
         </div>
         <h3 className={`font-bold tracking-tight text-white/90 group-hover:text-white transition-colors mb-2 ${featured ? "text-2xl sm:text-3xl" : "text-xl"}`}>
           {s.title}
         </h3>
-        <p className="text-sm text-white/45 leading-relaxed">{s.desc}</p>
+        <p className="text-sm text-white/60 leading-relaxed">{s.desc}</p>
       </div>
       <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/[0.08]">
         <span className={`text-sm font-semibold ${fromAccent}`}>{s.from}</span>
@@ -52,7 +52,7 @@ export default function Services() {
           ))}
         </div>
         <div className="reveal mt-10">
-          <p className="text-white/50">Something else in mind? <a href={`mailto:${EMAIL}`} className="text-violet-300 hover:text-violet-200 underline underline-offset-4">Email me</a> — if you can describe it in plain English, I can probably build it.</p>
+          <p className="text-white/50">Something else in mind? <a href={`mailto:${EMAIL}`} className="text-[var(--accent)] hover:text-white underline underline-offset-4">Email me</a> — if you can describe it in plain English, I can probably build it.</p>
         </div>
       </div>
     </section>

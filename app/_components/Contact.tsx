@@ -7,7 +7,7 @@ export default function Contact({ mode }: { mode: Mode }) {
   const content = modeContent[mode];
   return (
     <section id="contact" className="py-32 border-t border-white/[0.08] relative overflow-hidden">
-      <div className="absolute inset-0" aria-hidden style={{ background: "radial-gradient(60% 80% at 50% 120%, rgba(139,92,246,0.3), transparent 70%)" }} />
+      <div className="absolute inset-0" aria-hidden style={{ background: "radial-gradient(60% 80% at 50% 120%, rgba(var(--accent-rgb),0.3), transparent 70%)" }} />
       <div className="max-w-6xl mx-auto px-6 relative">
 
         {/* Header */}
@@ -44,7 +44,7 @@ export default function Contact({ mode }: { mode: Mode }) {
               </div>
               <div>
                 <p className="font-semibold text-white text-sm leading-tight">Shakti M.</p>
-                <p className="font-mono text-white/40 text-xs mt-0.5">{content.contactRole}</p>
+                <p className="font-mono text-white/55 text-xs mt-0.5">{content.contactRole}</p>
               </div>
             </div>
 
@@ -59,7 +59,7 @@ export default function Contact({ mode }: { mode: Mode }) {
                     </span>
                     <span className="min-w-0 flex-1">
                       <p className="text-white/80 text-xs font-medium">LinkedIn</p>
-                      <p className="text-white/35 text-label mt-0.5 truncate">Message me directly</p>
+                      <p className="text-white/55 text-label mt-0.5 truncate">Message me directly</p>
                     </span>
                     <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-sky-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                   </a>
@@ -70,7 +70,7 @@ export default function Contact({ mode }: { mode: Mode }) {
                     </span>
                     <span className="min-w-0 flex-1">
                       <p className="text-white/80 text-xs font-medium">Email</p>
-                      <p className="text-white/35 text-label mt-0.5 truncate">{RESUME_EMAIL}</p>
+                      <p className="text-white/55 text-label mt-0.5 truncate">{RESUME_EMAIL}</p>
                     </span>
                     <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-violet-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                   </a>
@@ -81,7 +81,7 @@ export default function Contact({ mode }: { mode: Mode }) {
                     </span>
                     <span className="min-w-0 flex-1">
                       <p className="text-white/80 text-xs font-medium">Phone</p>
-                      <p className="text-white/35 text-label mt-0.5 truncate">{PHONE_DISPLAY}</p>
+                      <p className="text-white/55 text-label mt-0.5 truncate">{PHONE_DISPLAY}</p>
                     </span>
                     <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-emerald-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                   </a>
@@ -108,7 +108,7 @@ export default function Contact({ mode }: { mode: Mode }) {
                     </div>
                     <div>
                       <p className="text-white/80 text-xs font-medium">Replies within 24 hrs</p>
-                      <p className="text-white/35 text-label mt-0.5">Usually same day</p>
+                      <p className="text-white/55 text-label mt-0.5">Usually same day</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04]">
@@ -119,7 +119,7 @@ export default function Contact({ mode }: { mode: Mode }) {
                     </div>
                     <div>
                       <p className="text-white/80 text-xs font-medium">{content.contactTile2.title}</p>
-                      <p className="text-white/35 text-label mt-0.5">{content.contactTile2.sub}</p>
+                      <p className="text-white/55 text-label mt-0.5">{content.contactTile2.sub}</p>
                     </div>
                   </div>
                 </div>
@@ -143,11 +143,11 @@ export default function Contact({ mode }: { mode: Mode }) {
             {/* Socials */}
             <div className="flex items-center gap-4 pt-4 border-t border-white/[0.08]">
               <a href={LINKEDIN} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white transition-colors">
+                className="flex items-center gap-1.5 text-xs text-white/55 hover:text-white transition-colors">
                 <LinkedInIcon /> LinkedIn
               </a>
               <a href={GITHUB} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white transition-colors">
+                className="flex items-center gap-1.5 text-xs text-white/55 hover:text-white transition-colors">
                 <GitHubIcon /> GitHub
               </a>
             </div>

@@ -9,14 +9,14 @@ function ModeLinks({ mode, className }: { mode: Mode; className: string }) {
       <Link
         href="/"
         aria-current={mode === "side" ? "page" : undefined}
-        className={`px-3 py-3 rounded-full transition-colors ${mode === "side" ? "bg-white text-black" : "text-white/50 hover:text-white"}`}
+        className={`px-3 py-3 rounded-full transition-colors ${mode === "side" ? "bg-white text-black" : "text-white/70 hover:text-white"}`}
       >
         For Clients
       </Link>
       <Link
         href="/recruiters"
         aria-current={mode === "day" ? "page" : undefined}
-        className={`px-3 py-3 rounded-full transition-colors ${mode === "day" ? "bg-white text-black" : "text-white/50 hover:text-white"}`}
+        className={`px-3 py-3 rounded-full transition-colors ${mode === "day" ? "bg-white text-black" : "text-white/70 hover:text-white"}`}
       >
         For Recruiters
       </Link>
@@ -39,8 +39,8 @@ export default function SiteHeader({ mode }: { mode: Mode }) {
             { label: "Email me", href: `mailto:${EMAIL}`, external: false },
           ]}
           left={
-            <a href="#hero" className="font-semibold tracking-tight text-[15px]">
-              shakti<span className="text-violet-400">builds</span>
+            <a href="#hero" className="font-semibold tracking-tight text-[15px] text-white">
+              shakti<span className="text-[var(--accent)]">builds</span>
             </a>
           }
           right={
