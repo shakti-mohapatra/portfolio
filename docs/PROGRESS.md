@@ -601,3 +601,54 @@ flat/no-blur treatment as if it were still the settled decision.
 Firefox parity, still structurally unverifiable in this harness), §3C (live CI
 badges, still unassigned), §9's path-to-10 items. **Still not committed, not
 pushed, not deployed** — all of the above is working-tree only.
+
+---
+
+## 2026-07-18 — 2026-07 redesign: Phase 0 + Phase 1 (Opus planned, Sonnet-5 built)
+
+Governing plan for this and all following phases: **`docs/REDESIGN-PLAN-2026-07.md`** (15-task
+redesign, phased 0–5). Workflow this session: Opus wrote the plan + reviews; Sonnet-5 wrote the code.
+
+**Git:** new branch `redesign-2026-07` off `main` (`f329f32`). `main` untouched.
+- `6201e4b` — baseline: committed all prior-session uncommitted WIP (route split into
+  `app/_components` + `_data.ts`, `recruiters/`+`work/` routes, decoder, case studies, webp thumbnail
+  swaps, `v2.css`/old-PNG deletions). This is the rollback point.
+- `03aada0` — Phase 0+1. **Nothing pushed. Not deployed.**
+
+**Phase 0 (foundation) — done:**
+- Per-mode accent tokens on `.site` (`--accent`/`--accent-2`/`--accent-rgb`/`--accent2-rgb`);
+  `[data-mode="day"]` = blue/cyan, default = violet/fuchsia (`Shell.tsx` sets `data-mode`).
+- Hardcoded violet/fuchsia converted to tokens across route components (accent-text gradient,
+  hero-fallback, bento hover shadow, orbs, decoder scanline/`.dec-ann`, section eyebrows, links,
+  marquee ✦). Semantic colors left alone (emerald status, service-icon set, project badges, dec-flag red).
+- `.tile`/`.tile--interactive`/`.tile--static` cursor-spotlight CSS + shared pointer script in
+  `layout.tsx` (spotlight for all `.tile`, magnetic lift for interactive). **CSS+script only — classes
+  are NOT yet applied to components (that is Phase 2).**
+- `.reveal-left/right/scale` + strengthened `reveal-in` (28px + blur) + `.parallax-slow`; fallback
+  observer broadened. All new animated classes added to the reduced-motion block.
+
+**Phase 1 (structural) — done:**
+- Menu redesign + global contrast raise (`MobileMenu.tsx`, `SiteHeader.tsx` + accent/contrast pass
+  across ~12 components).
+- Stats left-edge fix: `-ml-[1px]` on the mono label. ⚠️ **UNVERIFIED px** — sandbox can't measure a
+  1px optical offset; needs a real-browser eyeball (1px vs 2px vs 0).
+- Recruiter Work now hides SS BAZAR + Mission Control via new `Project.hideOn?: Mode[]` (`["day"]`) +
+  filter in `Work.tsx`. Recruiter shows 3 cards (01–03), client still 5.
+- Work heading mode-aware: recruiter "Projects / I've shipped", client "Things / I've built".
+- **Decoder fixed.** Root cause: inline `next/script strategy="afterInteractive"` did not execute
+  under Next 16.2.9 / React 19, so `#decoder-output` never rendered. Fix: new `DecoderEngine.tsx`
+  client island runs the same `DECODER_SCRIPT` via `new Function()()` in `useEffect`; removed the
+  `<Script>`; JS-off text moved to `<noscript>`. Verified: seed decodes on open, both FAILS CERT flags
+  present; `node app/_decoder.selfcheck.mjs` still green.
+
+**Verified:** `tsc` clean · `build` succeeds · `lint` = only the 1 pre-existing CountUp error ·
+`"use client"` = the 7 allowed (+DecoderEngine) · DOM-confirmed on both routes (accent differs
+violet/cyan, 3-vs-5 cards, renamed headings, menu legible, decoder decodes, no console errors).
+
+**Open / owed (do NOT mark these done):**
+- **Real-browser screenshot sign-off is owed for everything** — sandbox WebGL hero blocks screenshots,
+  so all confirms are DOM/JS-level. Especially the **stats `-ml-[1px]`** and the **menu look**.
+- Dev server runs on **port 3000** (plan says 3001).
+- **Phases 2–5 not started:** 2 = apply `.tile` classes; 3 = apply reveal variants + project rows;
+  4 = case-study page (`app/work/[slug]/page.tsx`, gets `data-mode="day"`); 5 = payment animations.
+- **Task 2 (de-AI copy) DEFERRED — Claude/Opus only.** No other agent touches prose.
