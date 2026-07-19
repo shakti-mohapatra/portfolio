@@ -110,7 +110,7 @@ export default function Contact({ mode }: { mode: Mode }) {
             ) : (
               <>
                 {/* Promise rows */}
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-4">
                   <div className="flex items-start gap-3.5 p-4 rounded-xl bg-white/[0.04]">
                     <div className="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-violet-400" aria-hidden>

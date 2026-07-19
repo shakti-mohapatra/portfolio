@@ -90,7 +90,7 @@ export const projects: Project[] = [
     order: { side: 1, day: 4 }, hideOn: ["day"],
   },
   {
-    badge: "In progress", badgeClass: "text-amber-300 border-amber-400/30 bg-amber-400/10",
+    badge: "Shipped", badgeClass: "text-violet-300 border-violet-400/30 bg-violet-400/10",
     title: "AI Knowledge Base", tagline: "A team's documents, turned into an AI assistant they can query",
     desc: "A multi-tenant SaaS where organisations upload documents and get an AI assistant trained on them. Roles and invitations, document ingestion and chunking, API keys and webhooks, and a complete audit log. Built with FastAPI, Postgres, and React.",
     tags: ["FastAPI", "PostgreSQL", "React", "TanStack Query", "Alembic"],
@@ -115,7 +115,7 @@ export const projects: Project[] = [
     order: { side: 4, day: 2 }, caseStudySlug: "aegisqa",
   },
   {
-    badge: "In progress", badgeClass: "text-amber-300 border-amber-400/30 bg-amber-400/10",
+    badge: "Shipped", badgeClass: "text-violet-300 border-violet-400/30 bg-violet-400/10",
     title: "Fintech-AI-Guard", tagline: "The QA discipline from payments, pointed at language models.",
     desc: "Evaluates whether an LLM can safely stand in for part of a fintech workflow, tested against ten risk categories, from prompt-injection resistance to PII/PCI leakage, using promptfoo, Python assertions, and JSON-schema validation against a mock API. Current baseline: 88.9% composite pass rate, 0% PII/PCI leakage detected.",
     descPlain: "Checks whether an AI model can be trusted with financial data before it goes near real customers, testing it against ten different ways it could go wrong, from leaking private information to giving inconsistent answers. Current score: 88.9% pass rate, zero data leaks found.",
@@ -128,13 +128,13 @@ export const projects: Project[] = [
 export const steps = [
   { n: "01", title: "Tell me what you need",       desc: "Plain English works. Describe what you want the tool, bot, or app to do, and I handle the technical side." },
   { n: "02", title: "I build it and explain it",   desc: "Working code delivered with instructions that make sense: how to run it, what each part does, how to change it later." },
-  { n: "03", title: "Revisions until it's right",  desc: "Included in every order. If the software doesn't do what you hired it for, I fix it. No re-billing, no arguing." },
+  { n: "03", title: "Two rounds of revisions",  desc: "Two revision rounds are included. Defects against the agreed scope are fixed at no extra charge." },
 ];
 
 export const guarantees = [
   { title: "No outsourcing",       desc: "Every line is written by me. The person you talk to is the person who builds it." },
   { title: "Price agreed upfront", desc: "We settle on the cost before I start. No surprise charges halfway through." },
-  { title: "Revisions included",   desc: "If it doesn't do what you hired it for, I fix it. No re-billing." },
+  { title: "Two revisions included",   desc: "Defects against the agreed scope are fixed at no extra charge." },
   { title: "Secure through Fiverr", desc: "Payment protection and delivery guarantees handled by the platform." },
 ];
 
@@ -154,7 +154,7 @@ export const howIWork = [
   {
     eyebrow: "Refine",
     title: "If it breaks, that's mine to fix",
-    body: "Two revision rounds ship with every project. If it doesn't do what you hired it for, I fix it. Not a change request, not a new invoice.",
+    body: "Two revision rounds are included. Defects against the agreed scope are fixed at no extra charge, not a change request, not a new invoice.",
   },
 ];
 
@@ -545,7 +545,7 @@ export const modeContent: Record<Mode, ModeContent> = {
     heroLine1: "I break payment systems",
     heroLine2: "for a living.",
     heroLine3: "Now I'm doing it to AI.",
-    heroSub: "Four years testing the rails money actually moves on. EMV, ISO-8583, L3 certification across five card schemes, for Verifone, Geidea, and Costco's North American fuel network. Now I'm pointing the same paranoia at language models.",
+    heroSub: "Four years testing the rails that money actually moves on. EMV, ISO-8583, L3 certification across five card schemes, for Verifone, Geidea, and Costco's North American fuel network. Now I'm pointing the same paranoia at language models.",
     primaryCta: { label: "See my experience", href: "#experience" },
     secondaryCta: { label: "Connect on LinkedIn", href: LINKEDIN },
     navTagline: "QA engineer in payments/fintech, building AI on the side.",
