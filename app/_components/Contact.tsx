@@ -1,8 +1,13 @@
 import Image from "next/image";
 import ContactForm from "./ContactForm";
 import { ArrowUpRight, GitHubIcon, LinkedInIcon, MailIcon, PhoneIcon } from "./icons";
-import { EMAIL, GITHUB, LINKEDIN, PHONE_DISPLAY, PHONE_TEL, RESUME_EMAIL, modeContent, type Mode } from "../_data";
+import { EMAIL, GITHUB, LINKEDIN, PHONE_DISPLAY, PHONE_TEL, RESUME_EMAIL, modeContent, services, type Mode } from "../_data";
 
+// Redesign (2026-07, Reference_Images/Contact_me_reference_photo.png): the
+// centered banner header moved inside the form card (left-aligned), and the
+// info card gained a bigger centered avatar + tag row. Mode-specific content
+// (side's direct channels vs day's promise rows) is unchanged, just reskinned
+// into the same icon-square-plus-text row shape both already used.
 export default function Contact({ mode }: { mode: Mode }) {
   const content = modeContent[mode];
   return (
@@ -10,43 +15,49 @@ export default function Contact({ mode }: { mode: Mode }) {
       <div className="absolute inset-0" aria-hidden style={{ background: "radial-gradient(60% 80% at 50% 120%, rgba(var(--accent-rgb),0.3), transparent 70%)" }} />
       <div className="max-w-6xl mx-auto px-6 relative">
 
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="reveal flex justify-center mb-6">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/[0.07] text-emerald-300 font-mono text-xs font-medium tracking-[0.2em] uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              {content.contactBadge}
-            </span>
-          </div>
-          <h2 className="reveal text-[clamp(2.5rem,8vw,6rem)] font-bold tracking-tight leading-[1.02]">
-            {content.contactHeading1} <span className="text-[var(--accent)] underline decoration-1 underline-offset-8">{content.contactHeading2}</span>
-          </h2>
-          <p className="reveal text-white/50 text-lg max-w-md mx-auto mt-4">
-            {content.contactSub}
-          </p>
-        </div>
-
-        {/* Two-column: form card + info card */}
-        <div className="grid lg:grid-cols-[1fr_320px] gap-6 max-w-4xl mx-auto">
+        <div className="grid lg:grid-cols-[1fr_360px] gap-6 max-w-5xl mx-auto items-start">
 
           {/* Form card */}
-          <div className="reveal tile tile--static p-8">
-            <ContactForm messagePlaceholder={content.contactMessagePlaceholder} />
+          <div className="reveal-left tile tile--static p-8 sm:p-10">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+              <span className="font-mono text-[var(--text-label)] uppercase tracking-[0.2em] text-[var(--accent)]">Get in touch</span>
+            </div>
+            <h2 className="text-[clamp(2rem,5vw,3.25rem)] font-bold tracking-tight leading-[1.05] mb-4">
+              {content.contactHeading1} <span className="text-[var(--accent)] underline decoration-1 underline-offset-8">{content.contactHeading2}</span>
+            </h2>
+            <p className="text-white/50 max-w-md mb-8">{content.contactSub}</p>
+            <ContactForm
+              messagePlaceholder={content.contactMessagePlaceholder}
+              projectTypes={mode === "side" ? services.map((s) => s.title) : undefined}
+            />
           </div>
 
           {/* Info card */}
-          <div className="reveal tile tile--static p-7 flex flex-col gap-6 h-full">
+          <div className="reveal-right tile tile--static p-7 flex flex-col gap-6 h-full">
 
-            {/* Avatar + name */}
-            <div className="flex items-center gap-3">
-              <div className="relative w-11 h-11 flex-shrink-0 rounded-full overflow-hidden border border-violet-400/30 ring-2 ring-violet-400/10">
-                <Image src="/profile-photo.jpg" alt="Shakti M." fill className="object-cover object-top" sizes="44px" />
+            {/* Avatar + name + tags */}
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="relative w-24 h-24">
+                <div className="relative w-full h-full rounded-full overflow-hidden border border-violet-400/30 ring-2 ring-violet-400/10">
+                  <Image src="/profile-photo.jpg" alt="Shakti M." fill className="object-cover object-top" sizes="96px" />
+                </div>
+                <span className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-400 ring-4 ring-[var(--panel)]" aria-hidden />
               </div>
               <div>
-                <p className="font-semibold text-white text-sm leading-tight">Shakti M.</p>
-                <p className="font-mono text-white/55 text-xs mt-0.5">{content.contactRole}</p>
+                <p className="font-semibold text-white text-base leading-tight">Shakti M.</p>
+                <p className="font-mono text-[var(--accent)] text-xs mt-1">{content.contactRole}</p>
+              </div>
+              <div className="flex flex-wrap justify-center gap-2">
+                {content.contactTags.map((tag) => (
+                  <span key={tag} className="font-mono text-[10px] uppercase tracking-wide text-white/60 border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 rounded-full">
+                    {tag}
+                  </span>
+                ))}
               </div>
             </div>
+
+            <div className="border-t border-white/[0.08]" />
 
             {mode === "day" ? (
               <>
@@ -98,7 +109,7 @@ export default function Contact({ mode }: { mode: Mode }) {
               </>
             ) : (
               <>
-                {/* Promise tiles */}
+                {/* Promise rows */}
                 <div className="flex flex-col gap-3">
                   <div className="flex items-start gap-3.5 p-4 rounded-xl bg-white/[0.04]">
                     <div className="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -120,6 +131,17 @@ export default function Contact({ mode }: { mode: Mode }) {
                     <div>
                       <p className="text-white/80 text-xs font-medium">{content.contactTile2.title}</p>
                       <p className="text-white/55 text-label mt-1">{content.contactTile2.sub}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3.5 p-4 rounded-xl bg-white/[0.04]">
+                    <div className="w-8 h-8 rounded-lg bg-sky-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-sky-400" aria-hidden>
+                        <path d="M5 1.5a.5.5 0 0 0-1 0V2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-1v-.5a.5.5 0 0 0-1 0V2H5V1.5ZM3 6h10v7H3V6Z"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-white/80 text-xs font-medium">{content.contactBadge}</p>
+                      <p className="text-white/55 text-label mt-1">Ready when you are</p>
                     </div>
                   </div>
                 </div>

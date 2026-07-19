@@ -142,14 +142,17 @@ export const guarantees = [
 // names, no stars, nothing invented. PLAN §7, verbatim.
 export const howIWork = [
   {
+    eyebrow: "Discover",
     title: "You'll hear back within a day",
-    body: "Usually the same day. If I can't take the work, I say so straight away, no leaving you waiting on a maybe.",
+    body: "Usually the same day. Describe what you want built in plain English, and if I can't take the work, I say so straight away, no leaving you waiting on a maybe.",
   },
   {
+    eyebrow: "Build",
     title: "You get the code and the reasoning",
-    body: "Not just a zip file. I show you how to run it, what each piece does, and where it'll need changing later.",
+    body: "Not just a zip file. I write it, then show you how to run it, what each piece does, and where it'll need changing later.",
   },
   {
+    eyebrow: "Refine",
     title: "If it breaks, that's mine to fix",
     body: "Two revision rounds ship with every project. If it doesn't do what you hired it for, I fix it. Not a change request, not a new invoice.",
   },
@@ -494,6 +497,7 @@ export type ModeContent = {
   aboutClosing: string;
   skills: string[];
   contactRole: string;
+  contactTags: string[];
   contactHeading1: string;
   contactHeading2: string;
   contactSub: string;
@@ -527,6 +531,7 @@ export const modeContent: Record<Mode, ModeContent> = {
     aboutClosing: "If you can describe what you want in plain English, I can build it.",
     skills: ["Python", "TypeScript", "React & Next.js", "OpenAI / Claude API", "FastAPI", "Discord.py", "Web Scraping", "REST APIs", "Supabase / PostgreSQL", "Tailwind CSS"],
     contactRole: "Full-stack Developer",
+    contactTags: ["Python", "AI Tools", "Web Apps"],
     contactHeading1: "Let's build",
     contactHeading2: "something.",
     contactSub: "Tell me about your project and I'll get back to you within 24 hours.",
@@ -558,6 +563,7 @@ export const modeContent: Record<Mode, ModeContent> = {
     aboutClosing: "QA taught me how payment systems break. Now I'm learning to build and evaluate the AI systems that come next.",
     skills: ["EMV & ISO-8583", "PCI DSS Compliance", "REST API Automation (Python/Selenium)", "Settlement & Reconciliation", "JIRA & Zephyr", "SQL / DBeaver", "GenAI / LLMs (learning)", "Agentic AI (learning)", "React & Next.js"],
     contactRole: "QA Engineer → AI/Automation",
+    contactTags: ["QA Engineer", "Payments", "FinTech"],
     contactHeading1: "Let's",
     contactHeading2: "connect.",
     contactSub: "Open to conversations about AI/Automation roles. Reach out on LinkedIn, email, or phone.",

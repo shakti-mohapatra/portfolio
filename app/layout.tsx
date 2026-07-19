@@ -73,16 +73,20 @@ export default function RootLayout({
 // near the very top, which stranded users with no way to reach the nav after
 // scrolling past ~260px. This always reflects actual scroll direction instead.
 (function(){
-  var header = document.querySelector("[data-header]");
-  if (!header) return;
+  // Re-query the header on every scroll tick rather than once at setup — mode
+  // switching (/ <-> /recruiters) remounts <SiteHeader> inside its
+  // ViewTransition boundary, so a header reference captured once goes stale
+  // (detached DOM node, toggleAttribute becomes a silent no-op) after the
+  // first client-side navigation.
   var lastY = window.scrollY;
   var ticking = false;
   window.addEventListener("scroll", function () {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(function () {
+      var header = document.querySelector("[data-header]");
       var y = window.scrollY;
-      header.toggleAttribute("data-hidden", y > lastY && y > 140);
+      if (header) header.toggleAttribute("data-hidden", y > lastY && y > 140);
       lastY = y;
       ticking = false;
     });

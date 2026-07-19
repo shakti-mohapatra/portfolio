@@ -6,11 +6,18 @@ const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeebgngl";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
-export default function ContactForm({ messagePlaceholder = "Tell me about your project…" }: { messagePlaceholder?: string }) {
-  const [name,    setName]    = useState("");
-  const [email,   setEmail]   = useState("");
-  const [message, setMessage] = useState("");
-  const [status,  setStatus]  = useState<FormStatus>("idle");
+export default function ContactForm({
+  messagePlaceholder = "Tell me about your project…",
+  projectTypes,
+}: {
+  messagePlaceholder?: string;
+  projectTypes?: string[];
+}) {
+  const [name,        setName]        = useState("");
+  const [email,        setEmail]        = useState("");
+  const [projectType, setProjectType] = useState("");
+  const [message,     setMessage]     = useState("");
+  const [status,      setStatus]      = useState<FormStatus>("idle");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -19,11 +26,11 @@ export default function ContactForm({ messagePlaceholder = "Tell me about your p
       const res = await fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ name, email, projectType: projectType || undefined, message }),
       });
       if (res.ok) {
         setStatus("success");
-        setName(""); setEmail(""); setMessage("");
+        setName(""); setEmail(""); setProjectType(""); setMessage("");
       } else {
         setStatus("error");
       }
@@ -64,6 +71,17 @@ export default function ContactForm({ messagePlaceholder = "Tell me about your p
           <input id="contact-email" type="email" required placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} />
         </div>
       </div>
+      {projectTypes && projectTypes.length > 0 && (
+        <div>
+          <label htmlFor="contact-project-type" className="block font-mono text-micro font-medium text-white/55 uppercase tracking-widest mb-2">Project type (optional)</label>
+          <select id="contact-project-type" value={projectType} onChange={(e) => setProjectType(e.target.value)} className={`${inputCls} appearance-none`}>
+            <option value="">Select project type</option>
+            {projectTypes.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+        </div>
+      )}
       <div>
         <label htmlFor="contact-message" className="block font-mono text-micro font-medium text-white/55 uppercase tracking-widest mb-2">Message</label>
         <textarea id="contact-message" required rows={5} placeholder={messagePlaceholder} value={message} onChange={(e) => setMessage(e.target.value)} className={`${inputCls} resize-none`} />
@@ -77,6 +95,12 @@ export default function ContactForm({ messagePlaceholder = "Tell me about your p
                    disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100">
         {status === "submitting" ? "Sending…" : "Send message"}
       </button>
+      <p className="flex items-center gap-1.5 text-[11px] text-white/35">
+        <svg viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3 shrink-0" aria-hidden>
+          <path d="M8 1 2.5 3v4c0 3.5 2.3 6.4 5.5 7.4 3.2-1 5.5-3.9 5.5-7.4V3L8 1Z" />
+        </svg>
+        Your information stays private, used only to reply to you.
+      </p>
     </form>
   );
 }

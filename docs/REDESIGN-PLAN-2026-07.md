@@ -634,6 +634,14 @@ seam by watching 2 full cycles.
 
 ## 11. CLIENT "TAP YOUR CARD" REDESIGN (Task 14) — Phase 5
 
+> **SUPERSEDED 2026-07-19 (session 9).** Shakti dropped this idea outright — `TransactionFlow.tsx`
+> stays deleted (removed session 6 along with `PaymentLifecycle`'s build). The client route got a
+> **different** animated section instead: `app/_components/OrderFlow.tsx` (3-stage message→build→revise
+> loop, jargon-free, same rail/packet/node grammar as `PaymentLifecycle`), placed between `Guarantees`
+> and `HowIWork` in `app/page.tsx`. Shakti reviewed and approved it in his own Firefox — do not rebuild
+> the card-tap concept below, and do not touch `OrderFlow.tsx` without asking first. Kept below for
+> historical record only.
+
 **File `app/_components/TransactionFlow.tsx`** (client route only). Current: a single dot slides across a
 line — owner calls it "horrible." Replace with a proper, seamless, infinite-loop animation, plain-language
 (NO jargon — this is the client dialect; keep the existing plain labels Card/Reader/Network/Bank from

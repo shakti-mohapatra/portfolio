@@ -572,6 +572,15 @@ header[data-header][data-hidden] { transform: translateY(-130%); }
 .plc-label-4 { animation: plc-label-4 9s ease-in-out infinite; }
 .plc-label-5 { animation: plc-label-5 9s ease-in-out infinite; }
 
+/* ── Order flow (client route) — reuses .plc-packet/.plc-node above (generic
+   rail/pulse animations), only needs its own 3-state label cross-fade. ── */
+@keyframes of-label-1 { 0% {opacity:1;} 7% {opacity:1;} 9% {opacity:0;} 100% {opacity:0;} }
+@keyframes of-label-2 { 0%,7% {opacity:0;} 9% {opacity:1;} 43% {opacity:1;} 45% {opacity:0;} 100% {opacity:0;} }
+@keyframes of-label-3 { 0%,45% {opacity:0;} 47% {opacity:1;} 92% {opacity:1;} 96% {opacity:0;} 100% {opacity:0;} }
+.of-label-1 { animation: of-label-1 9s ease-in-out infinite; }
+.of-label-2 { animation: of-label-2 9s ease-in-out infinite; }
+.of-label-3 { animation: of-label-3 9s ease-in-out infinite; }
+
 /* Settlement pulse — deliberately NOT synced to the 9s loop above: settlement
    is a separate, slower, independent process from real-time authorization. */
 @keyframes plc-settle { 0%, 100% { opacity: 0.25; transform: scale(0.85); } 50% { opacity: 0.9; transform: scale(1.15); } }
@@ -603,5 +612,7 @@ header[data-header][data-hidden] { transform: translateY(-130%); }
   .plc-node { animation: none !important; border-color: rgba(var(--accent-rgb), .6) !important; background: rgba(var(--accent-rgb), .1) !important; }
   .plc-label-1, .plc-label-2, .plc-label-3, .plc-label-4 { animation: none !important; opacity: 0 !important; }
   .plc-label-5 { animation: none !important; opacity: 1 !important; }
+  .of-label-1, .of-label-2 { animation: none !important; opacity: 0 !important; }
+  .of-label-3 { animation: none !important; opacity: 1 !important; }
   .plc-settle > span { animation: none !important; opacity: 0.9 !important; transform: none !important; }
 }

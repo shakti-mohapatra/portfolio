@@ -3,6 +3,7 @@ import Shell from "./_components/Shell";
 import Work from "./_components/Work";
 import Services from "./_components/Services";
 import Guarantees from "./_components/Guarantees";
+import OrderFlow from "./_components/OrderFlow";
 import HowIWork from "./_components/HowIWork";
 
 const title = "Shakti Mohapatra — Freelance Developer | Python Automation, AI Tools & Web Apps";
@@ -33,6 +34,7 @@ export default function Home() {
       <Work mode="side" />
       <Services />
       <Guarantees />
+      <OrderFlow />
       <HowIWork />
     </Shell>
   );
