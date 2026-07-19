@@ -6,7 +6,7 @@ import { EMAIL, GITHUB, LINKEDIN, PHONE_DISPLAY, PHONE_TEL, RESUME_EMAIL, modeCo
 export default function Contact({ mode }: { mode: Mode }) {
   const content = modeContent[mode];
   return (
-    <section id="contact" className="py-32 border-t border-white/[0.08] relative overflow-hidden">
+    <section id="contact" className="py-32 border-t border-white/[0.08] relative overflow-clip">
       <div className="absolute inset-0" aria-hidden style={{ background: "radial-gradient(60% 80% at 50% 120%, rgba(var(--accent-rgb),0.3), transparent 70%)" }} />
       <div className="max-w-6xl mx-auto px-6 relative">
 
@@ -27,7 +27,7 @@ export default function Contact({ mode }: { mode: Mode }) {
         </div>
 
         {/* Two-column: form card + info card */}
-        <div className="grid lg:grid-cols-[1fr_268px] gap-5 max-w-4xl mx-auto">
+        <div className="grid lg:grid-cols-[1fr_320px] gap-6 max-w-4xl mx-auto">
 
           {/* Form card */}
           <div className="reveal tile tile--static p-8">
@@ -35,7 +35,7 @@ export default function Contact({ mode }: { mode: Mode }) {
           </div>
 
           {/* Info card */}
-          <div className="reveal tile tile--static p-6 flex flex-col gap-5 h-full">
+          <div className="reveal tile tile--static p-7 flex flex-col gap-6 h-full">
 
             {/* Avatar + name */}
             <div className="flex items-center gap-3">
@@ -51,37 +51,37 @@ export default function Contact({ mode }: { mode: Mode }) {
             {mode === "day" ? (
               <>
                 {/* Direct contact channels — LinkedIn / Email / Phone */}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-3">
                   <a href={LINKEDIN} target="_blank" rel="noopener noreferrer"
-                    className="tile tile--interactive group flex items-center gap-3 px-3 py-4">
-                    <span className="w-7 h-7 rounded-lg bg-sky-500/15 text-sky-300 flex items-center justify-center flex-shrink-0">
-                      <LinkedInIcon className="w-3.5 h-3.5" />
+                    className="tile tile--interactive group flex items-center gap-3.5 px-4 py-4">
+                    <span className="w-8 h-8 rounded-lg bg-sky-500/15 text-sky-300 flex items-center justify-center flex-shrink-0">
+                      <LinkedInIcon className="w-4 h-4" />
                     </span>
-                    <span className="min-w-0 flex-1">
+                    <span className="tile-pull min-w-0 flex-1">
                       <p className="text-white/80 text-xs font-medium">LinkedIn</p>
-                      <p className="text-white/55 text-label mt-0.5 truncate">Message me directly</p>
+                      <p className="text-white/55 text-label mt-1 truncate">Message me directly</p>
                     </span>
                     <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-sky-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                   </a>
                   <a href={`mailto:${RESUME_EMAIL}`}
-                    className="tile tile--interactive group flex items-center gap-3 px-3 py-4">
-                    <span className="w-7 h-7 rounded-lg bg-violet-500/15 text-violet-300 flex items-center justify-center flex-shrink-0">
-                      <MailIcon className="w-3.5 h-3.5" />
+                    className="tile tile--interactive group flex items-center gap-3.5 px-4 py-4">
+                    <span className="w-8 h-8 rounded-lg bg-violet-500/15 text-violet-300 flex items-center justify-center flex-shrink-0">
+                      <MailIcon className="w-4 h-4" />
                     </span>
-                    <span className="min-w-0 flex-1">
+                    <span className="tile-pull min-w-0 flex-1">
                       <p className="text-white/80 text-xs font-medium">Email</p>
-                      <p className="text-white/55 text-label mt-0.5 truncate">{RESUME_EMAIL}</p>
+                      <p className="text-white/55 text-label mt-1 truncate">{RESUME_EMAIL}</p>
                     </span>
                     <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-violet-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                   </a>
                   <a href={`tel:${PHONE_TEL}`}
-                    className="tile tile--interactive group flex items-center gap-3 px-3 py-4">
-                    <span className="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-300 flex items-center justify-center flex-shrink-0">
-                      <PhoneIcon className="w-3.5 h-3.5" />
+                    className="tile tile--interactive group flex items-center gap-3.5 px-4 py-4">
+                    <span className="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-300 flex items-center justify-center flex-shrink-0">
+                      <PhoneIcon className="w-4 h-4" />
                     </span>
-                    <span className="min-w-0 flex-1">
+                    <span className="tile-pull min-w-0 flex-1">
                       <p className="text-white/80 text-xs font-medium">Phone</p>
-                      <p className="text-white/55 text-label mt-0.5 truncate">{PHONE_DISPLAY}</p>
+                      <p className="text-white/55 text-label mt-1 truncate">{PHONE_DISPLAY}</p>
                     </span>
                     <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-emerald-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                   </a>
@@ -99,27 +99,27 @@ export default function Contact({ mode }: { mode: Mode }) {
             ) : (
               <>
                 {/* Promise tiles */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04]">
-                    <div className="w-7 h-7 rounded-lg bg-violet-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-start gap-3.5 p-4 rounded-xl bg-white/[0.04]">
+                    <div className="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-violet-400" aria-hidden>
                         <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1ZM7.5 4.5a.5.5 0 0 1 1 0v3.793l2.146 2.147a.5.5 0 0 1-.707.707l-2.293-2.293A.5.5 0 0 1 7.5 8.5V4.5Z"/>
                       </svg>
                     </div>
                     <div>
                       <p className="text-white/80 text-xs font-medium">Replies within 24 hrs</p>
-                      <p className="text-white/55 text-label mt-0.5">Usually same day</p>
+                      <p className="text-white/55 text-label mt-1">Usually same day</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04]">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="flex items-start gap-3.5 p-4 rounded-xl bg-white/[0.04]">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-emerald-400" aria-hidden>
                         <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022Z"/>
                       </svg>
                     </div>
                     <div>
                       <p className="text-white/80 text-xs font-medium">{content.contactTile2.title}</p>
-                      <p className="text-white/55 text-label mt-0.5">{content.contactTile2.sub}</p>
+                      <p className="text-white/55 text-label mt-1">{content.contactTile2.sub}</p>
                     </div>
                   </div>
                 </div>

@@ -49,6 +49,13 @@ export default function Decoder() {
                 </label>
                 <button
                   type="button"
+                  id="decoder-defect"
+                  className="font-mono text-[var(--text-micro)] uppercase tracking-widest text-white/55 hover:text-red-400 transition-colors"
+                >
+                  Load defect example
+                </button>
+                <button
+                  type="button"
                   id="decoder-reset"
                   className="font-mono text-[var(--text-micro)] uppercase tracking-widest text-white/55 hover:text-[var(--accent)] transition-colors"
                 >
@@ -64,11 +71,11 @@ export default function Decoder() {
                 className="flex-1 min-h-[220px] w-full resize-y bg-transparent font-mono text-xs leading-relaxed text-white/80 outline-none break-all placeholder:text-white/50"
               />
             </div>
-            <div className="bg-[var(--surface)] p-5">
+            <div className="bg-[var(--surface)] p-5 flex flex-col">
               <div className="font-mono text-[var(--text-label)] uppercase tracking-widest text-white/50 mb-3">
                 Decoded
               </div>
-              <div id="decoder-output" className="dec-output font-mono text-xs">
+              <div id="decoder-output" className="dec-output font-mono text-xs max-h-[420px] overflow-y-auto pr-2">
                 <noscript><div className="dec-empty">Enable JavaScript to decode this message. The hex above is the seed.</div></noscript>
               </div>
             </div>

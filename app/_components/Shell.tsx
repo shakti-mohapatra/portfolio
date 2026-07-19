@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import SiteHeader from "./SiteHeader";
 import Footer from "./Footer";
 import Hero from "./Hero";
@@ -13,6 +14,12 @@ import type { Mode } from "../_data";
 // between the stats band and About.
 export default function Shell({ mode, children }: { mode: Mode; children: React.ReactNode }) {
   return (
+    // Item 5 (2026-07): named ViewTransition around the whole route content so
+    // switching / <-> /recruiters crossfades instead of hard-cutting — React
+    // finds the old and new ".site" by this shared name and blends between them
+    // (needs experimental.viewTransition in next.config.ts). SiteHeader keeps
+    // its own name so it never takes part in the fade (see globals.css).
+    <ViewTransition name="page-content" share="auto" enter="auto" default="none">
     <div className="site relative min-h-screen overflow-x-clip" data-mode={mode}>
       <SmoothScroll />
       <div className="grain" aria-hidden />
@@ -37,5 +44,6 @@ export default function Shell({ mode, children }: { mode: Mode; children: React.
 
       <Footer />
     </div>
+    </ViewTransition>
   );
 }

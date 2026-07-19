@@ -9,11 +9,20 @@
 // way to keep them identical. If a third consumer appears, extract to a real
 // module then.
 
-// Synthetic Visa contactless AFD/fuel 0100 authorization (decision: seed flow).
-// All values fabricated test data — test PAN 4111…, no real card/merchant.
-// Deliberate malformed field baked in: DE4 amount (50.00) disagrees with EMV
-// 9F02 (60.00) and DE49 currency (840 USD) disagrees with 5F2A (978 EUR).
+// Synthetic Visa contactless AFD/fuel 0100 authorization. All values fabricated
+// test data — test PAN 4111…, no real card/merchant. Decodes clean by default
+// (DE4/9F02 amounts and DE49/5F2A currencies agree) so a first-time visitor sees
+// a working parse, not a wall of red. The malformed-field demo (DE4 amount 50.00
+// vs EMV 9F02 60.00, DE49 USD vs EMV 5F2A EUR) is still one click away via
+// DEFECT_SEED_HEX below — same bytes as the original seed, just no longer the
+// thing you see first.
 export const SEED_HEX =
+  "0100723c448000c0820016411111111111111100300000000000500007181230450001231230450718281255420071004146443030313233434f5354434f303030303041464431084001204f07a0000000031010500b564953412043524544495482023900950500000080009a032507189c01009f02060000000050005f2a0208409f1a0208409f3303e0f8c89f34031e03009f3602001e9f3704a1b2c3d49f10120110a00003220000000000000000000000ff9f260811223344556677889f270180";
+
+// The original seed — DE4/DE49 disagree with EMV 9F02/5F2A. One click via
+// "Load defect example" (DecoderReveal). This is the exact scenario a
+// certification run is built to catch.
+export const DEFECT_SEED_HEX =
   "0100723c448000c0820016411111111111111100300000000000500007181230450001231230450718281255420071004146443030313233434f5354434f303030303041464431084001204f07a0000000031010500b564953412043524544495482023900950500000080009a032507189c01009f02060000000060005f2a0209789f1a0208409f3303e0f8c89f34031e03009f3602001e9f3704a1b2c3d49f10120110a00003220000000000000000000000ff9f260811223344556677889f270180";
 
 // "Fields I personally test" annotations (decision: TVR 95, CID 9F26/9F27,
@@ -29,6 +38,7 @@ export const ANNOTATIONS = {
 
 export const DECODER_SCRIPT = `(function () {
   var SEED = ${JSON.stringify(SEED_HEX)};
+  var DEFECT_SEED = ${JSON.stringify(DEFECT_SEED_HEX)};
   var ANN = ${JSON.stringify(ANNOTATIONS)};
 
   var hx = function (s) { return (s || "").replace(/[^0-9a-fA-F]/g, "").toLowerCase(); };
@@ -220,6 +230,8 @@ export const DECODER_SCRIPT = `(function () {
       input.addEventListener("input", render);
       var reset = document.getElementById("decoder-reset");
       if (reset) reset.addEventListener("click", function () { input.value = SEED; render(); });
+      var defect = document.getElementById("decoder-defect");
+      if (defect) defect.addEventListener("click", function () { input.value = DEFECT_SEED; render(); });
       render();
     };
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);

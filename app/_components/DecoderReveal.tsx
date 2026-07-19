@@ -33,7 +33,7 @@ export default function DecoderReveal({ children }: { children: React.ReactNode 
             <span className={`inline-block transition-transform duration-300 ${open ? "rotate-90" : ""}`}>▶</span>
           </span>
         </div>
-        <p className="mt-4 text-white/55 leading-relaxed max-w-2xl">
+        <p className="tile-pull mt-4 text-white/55 leading-relaxed max-w-2xl">
           A live ISO-8583 / EMV TLV parser, client-side — paste a payment message, read it back in the
           mono layer I read these in on the job. Seeded with a synthetic transaction hiding a
           deliberate defect.

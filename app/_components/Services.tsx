@@ -18,10 +18,10 @@ function BentoServiceCard({ s, featured = false }: { s: ServiceData; featured?: 
           </div>
           <span className="font-mono text-xs text-white/45">{s.n}</span>
         </div>
-        <h3 className={`font-bold tracking-tight text-white/90 group-hover:text-white transition-colors mb-2 ${featured ? "text-2xl sm:text-3xl" : "text-xl"}`}>
+        <h3 className={`tile-pull font-bold tracking-tight text-white/90 group-hover:text-white transition-colors mb-2 ${featured ? "text-2xl sm:text-3xl" : "text-xl"}`}>
           {s.title}
         </h3>
-        <p className="text-sm text-white/60 leading-relaxed">{s.desc}</p>
+        <p className="tile-pull text-sm text-white/60 leading-relaxed">{s.desc}</p>
       </div>
       <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/[0.08]">
         <span className={`text-sm font-semibold ${fromAccent}`}>{s.from}</span>

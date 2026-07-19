@@ -11,8 +11,8 @@ export default function Guarantees() {
               <span className="w-9 h-9 rounded-lg bg-emerald-400/10 text-emerald-300 flex items-center justify-center">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" className="w-5 h-5"><polyline points="20 6 9 17 4 12" /></svg>
               </span>
-              <h3 className="font-semibold">{g.title}</h3>
-              <p className="text-sm text-white/55 leading-relaxed">{g.desc}</p>
+              <h3 className="tile-pull font-semibold">{g.title}</h3>
+              <p className="tile-pull text-sm text-white/55 leading-relaxed">{g.desc}</p>
             </div>
           ))}
         </div>

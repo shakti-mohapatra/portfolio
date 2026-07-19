@@ -166,6 +166,7 @@ body {
 
 /* ── Tile system (redesign 2026-07 §2, Tasks 6 & 8) ── */
 .tile {
+  display: block;                             /* anchors/buttons default inline(-block); tile needs a real box */
   position: relative;
   border-radius: 1rem;                       /* rounded-2xl, keep */
   border: 1px solid var(--hairline);
@@ -193,16 +194,99 @@ body {
   border-color: rgba(var(--accent-rgb), .6);
   box-shadow: 0 0 44px rgba(var(--accent-rgb), .16), inset 0 1px 0 rgba(255,255,255,.04);
 }
-/* Static: gentler — smaller/softer spotlight, no lift, no magnet. */
+/* Static: gentler — smaller/softer spotlight, no magnet, but the whole tile
+   still lifts a hair on hover (item 6 bugfix, redesign 2026-07) so the box and
+   everything printed on it zoom together as one unit, instead of only the
+   .tile-pull text scaling independently and visually spilling past the box.
+   1.02 is deliberately small: it has to stay inside the surrounding grid gap
+   (12-20px on every static tile's container) so a hovered tile never overlaps
+   its neighbors — z-index just keeps it painting above them regardless. */
 .tile--static::before {
   background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 50%),
               rgba(var(--accent-rgb), .08), transparent 55%);
 }
-.tile--static:hover { box-shadow: 0 0 30px rgba(var(--accent-rgb), .08); }
+.tile--static:hover { box-shadow: 0 0 30px rgba(var(--accent-rgb), .08); transform: scale(1.02); z-index: 1; }
+
+/* ── Per-element tile attraction (item 6, redesign 2026-07) — the whole-tile
+   spotlight/magnet above reads as one flat surface; this makes what's PRINTED
+   on it feel touchable too. Direction-aware: layout.tsx's pointer script
+   writes --px/--py (-0.5..0.5, fraction of tile size) on every .tile on
+   mousemove; anything inside marked .tile-pull drifts a few px toward the
+   cursor and scales up a hair while hovered — transform/opacity only, so it
+   stays on the compositor thread (no layout cost) even stacked with the
+   parent tile's own magnetic transform. */
+.tile-pull { transition: transform .35s cubic-bezier(.22,1,.36,1); }
+/* Interactive tiles: unchanged — text drifts/scales on top of the tile's own
+   JS-driven magnetic translate (layout.tsx). Static tiles: the tile itself
+   now scales on hover (above), so its .tile-pull children only need a small
+   drift, not an extra independent scale — that's what made static tiles
+   (e.g. Experience's company header) look like their text was zooming past
+   the box on its own while the box stayed put. */
+.tile--interactive:hover .tile-pull {
+  transform: translate(calc(var(--px, 0) * 14px), calc(var(--py, 0) * 14px)) scale(1.04);
+}
+.tile--static:hover .tile-pull {
+  transform: translate(calc(var(--px, 0) * 6px), calc(var(--py, 0) * 6px));
+}
+
+/* ── Case-study reading progress (item 2, redesign 2026-07 §9.1) — native
+   scroll-driven, no JS. Firefox (no scroll(root) support) just shows the bar
+   pinned at 0 width, which is an acceptable no-op there. ── */
+.read-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  z-index: 60;
+  transform: scaleX(0);
+}
+@supports (animation-timeline: scroll(root)) {
+  .read-progress { animation: read-fill linear both; animation-timeline: scroll(root); }
+}
+@keyframes read-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 /* ── Anchor offset for the fixed header ── */
 html {
   scroll-padding-top: 72px;
+}
+
+/* ── Route crossfade (item 5, redesign 2026-07) — native View Transitions,
+   wired in Shell.tsx's <ViewTransition name="page-content">. A held-blur
+   cross-dissolve between the outgoing and incoming route: cheap (no JS,
+   no layout thrash), and it reads as "same site, different lens" rather
+   than a hard cut, which a plain opacity fade doesn't quite sell given how
+   much (background hue, hero copy) changes at once between the two modes. ── */
+::view-transition-group(page-content) { animation-duration: 0.5s; }
+::view-transition-old(page-content) {
+  animation: pc-out 0.22s cubic-bezier(0.4, 0, 1, 1) both;
+}
+::view-transition-new(page-content) {
+  animation: pc-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes pc-out {
+  from { opacity: 1; filter: blur(0); }
+  to   { opacity: 0; filter: blur(6px); }
+}
+@keyframes pc-in {
+  from { opacity: 0; filter: blur(10px); transform: scale(1.015); }
+  to   { opacity: 1; filter: blur(0);    transform: none; }
+}
+/* The fixed header opts out entirely — it's identical DOM in both modes bar a
+   few labels, so letting it fade with the page would double-flash it. */
+::view-transition-group(site-header) { animation: none; z-index: 100; }
+::view-transition-old(site-header) { display: none; }
+::view-transition-new(site-header) { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -316,22 +400,14 @@ html {
 }
 @keyframes parallax-y { from { transform: translateY(40px);} to { transform: translateY(-40px);} }
 
-/* ── Header hide-on-scroll ── */
-@supports (animation-timeline: view()) {
-  header[data-header] {
-    animation: header-hide linear both;
-    animation-timeline: scroll(root);
-    animation-range: 0px 260px;
-  }
-}
-@supports not (animation-timeline: view()) {
-  header[data-header] { transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
-  header[data-header][data-hidden] { transform: translateY(-130%); }
-}
-@keyframes header-hide {
-  from { transform: translateY(0%); }
-  to   { transform: translateY(-130%); }
-}
+/* ── Header hide-on-scroll — direction-based via layout.tsx's scroll listener
+   (runs in every browser). Was previously a scroll(root)-position timeline in
+   supporting browsers, which only reflects absolute scroll offset: past the
+   260px range-end it stayed hidden for the rest of the page no matter which
+   way the user scrolled, so there was no way to bring the nav back short of
+   scrolling nearly to the top. Direction-aware data-hidden fixes that. ── */
+header[data-header] { transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+header[data-header][data-hidden] { transform: translateY(-130%); }
 
 /* ── Collapsible panel — stays mounted, animates open/close via grid-rows
    (no JS height measurement needed). Used by the mobile menu sheet and the
@@ -340,13 +416,19 @@ html {
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
+  /* overflow-anchor:none — a several-thousand-px grid-rows animation (the
+     decoder output) makes the browser's native scroll anchoring repin the
+     viewport mid-transition, reading as the page randomly jumping on
+     open/close. This subtree opts out; nothing here should ever be the
+     anchor candidate. */
+  overflow-anchor: none;
   transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.24s ease;
 }
 .collapse-wrap[data-open] {
   grid-template-rows: 1fr;
   opacity: 1;
 }
-.collapse-inner { overflow: hidden; min-height: 0; }
+.collapse-inner { overflow: hidden; min-height: 0; overflow-anchor: none; }
 
 /* ── Decoder power-on reveal — a brief boot flourish the instant the panel
    opens, echoing the diagnostic-equipment concept (PLAN §1). Base state is
@@ -379,7 +461,15 @@ html {
 /* ── ISO-8583 / EMV decoder readout (step 11, PLAN §3A). Static, no animation —
    the mono layer doing structural work. Classes emitted by _decoder.js's
    renderToHtml. ── */
-.dec-output { color: rgba(255, 255, 255, 0.85); }
+.dec-output {
+  color: rgba(255, 255, 255, 0.85);
+  overflow-anchor: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb), 0.4) transparent;
+}
+.dec-output::-webkit-scrollbar { width: 6px; }
+.dec-output::-webkit-scrollbar-thumb { background: rgba(var(--accent-rgb), 0.4); border-radius: 3px; }
+.dec-output::-webkit-scrollbar-track { background: transparent; }
 .dec-empty { color: rgba(255, 255, 255, 0.35); }
 .dec-badge {
   display: inline-block;
@@ -450,23 +540,42 @@ html {
   font-size: var(--text-micro);
 }
 
-/* ── Transaction-flow pulse (step 9, PLAN §3B) — time-based @keyframes on
-   `left`, same evergreen pattern as the hero intro and marquee above. Not
-   scroll-driven, so no animation-timeline / Firefox @supports branch needed. ── */
-@keyframes flow-pulse {
-  0%   { left: 0%; }
-  46%  { left: 100%; }
-  50%  { left: 100%; }
-  96%  { left: 0%; }
-  100% { left: 0%; }
+/* ── Payment lifecycle (item 7, redesign 2026-07) — recruiter-only, pure CSS,
+   one 9s evergreen loop: a packet travels the rail out and back while each
+   stage node pulses as it's reached and the data label cross-fades through
+   the real message states (ARQC -> 0100 -> issuer -> 0110/ARPC -> approved).
+   "First frame == last frame" seamless loop, same idea as the hero intro. ── */
+@keyframes plc-packet-move {
+  0%   { left: 0%; opacity: 1; }
+  45%  { left: 100%; opacity: 1; }
+  50%  { left: 100%; opacity: 1; }
+  92%  { left: 0%; opacity: 1; }
+  96%  { left: 0%; opacity: 0; }
+  100% { left: 0%; opacity: 0; }
 }
-.flow-pulse {
-  animation: flow-pulse 3.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+.plc-packet { animation: plc-packet-move 9s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+
+@keyframes plc-node-pulse {
+  0%, 8%, 100% { border-color: var(--hairline); box-shadow: none; background: var(--panel); }
+  3% { border-color: rgba(var(--accent-rgb), .9); box-shadow: 0 0 26px rgba(var(--accent-rgb), .5); background: rgba(var(--accent-rgb), .12); }
 }
-@keyframes flow-status-a { 0%, 42% { opacity: 1; } 50%, 100% { opacity: 0; } }
-@keyframes flow-status-b { 0%, 48% { opacity: 0; } 55%, 92% { opacity: 1; } 100% { opacity: 0; } }
-.flow-status-a { animation: flow-status-a 3.6s ease-in-out infinite; }
-.flow-status-b { animation: flow-status-b 3.6s ease-in-out infinite; }
+.plc-node { animation: plc-node-pulse 9s ease-in-out infinite; }
+
+@keyframes plc-label-1 { 0% {opacity:1;} 7% {opacity:1;} 9% {opacity:0;} 100% {opacity:0;} }
+@keyframes plc-label-2 { 0%,7% {opacity:0;} 9% {opacity:1;} 43% {opacity:1;} 45% {opacity:0;} 100% {opacity:0;} }
+@keyframes plc-label-3 { 0%,43% {opacity:0;} 45% {opacity:1;} 50% {opacity:1;} 52% {opacity:0;} 100% {opacity:0;} }
+@keyframes plc-label-4 { 0%,50% {opacity:0;} 52% {opacity:1;} 88% {opacity:1;} 90% {opacity:0;} 100% {opacity:0;} }
+@keyframes plc-label-5 { 0%,88% {opacity:0;} 90% {opacity:1;} 98% {opacity:1;} 100% {opacity:0;} }
+.plc-label-1 { animation: plc-label-1 9s ease-in-out infinite; }
+.plc-label-2 { animation: plc-label-2 9s ease-in-out infinite; }
+.plc-label-3 { animation: plc-label-3 9s ease-in-out infinite; }
+.plc-label-4 { animation: plc-label-4 9s ease-in-out infinite; }
+.plc-label-5 { animation: plc-label-5 9s ease-in-out infinite; }
+
+/* Settlement pulse — deliberately NOT synced to the 9s loop above: settlement
+   is a separate, slower, independent process from real-time authorization. */
+@keyframes plc-settle { 0%, 100% { opacity: 0.25; transform: scale(0.85); } 50% { opacity: 0.9; transform: scale(1.15); } }
+.plc-settle > span { animation: plc-settle 3.4s ease-in-out infinite; }
 
 /* ── Reduced motion — the visitor's explicit OS-level request. Honoured in
    all three layers; not a browser concession, never removed. ── */
@@ -485,10 +594,14 @@ html {
   .js-reveal .reveal-left-scale.in-view, .js-reveal .reveal-right-scale.in-view,
   .parallax-slow { animation: none !important; opacity: 1; transform: none; filter: none; }
   .hero-kinetic { animation: none !important; font-variation-settings: normal; }
-  .flow-pulse, .flow-status-a, .flow-status-b { animation: none !important; }
-  .flow-pulse { opacity: 0; }
-  .flow-status-a { opacity: 0; }
-  .flow-status-b { opacity: 1; }
   .decoder-boot-on { animation: none !important; opacity: 1; }
   .decoder-boot-on::before { animation: none !important; opacity: 0 !important; }
+  .tile-pull, .tile--interactive:hover .tile-pull, .tile--static:hover .tile-pull { transition: none !important; transform: none !important; }
+  .tile--static:hover { transform: none !important; }
+  .read-progress { animation: none !important; transform: scaleX(1) !important; }
+  .plc-packet { animation: none !important; opacity: 0 !important; }
+  .plc-node { animation: none !important; border-color: rgba(var(--accent-rgb), .6) !important; background: rgba(var(--accent-rgb), .1) !important; }
+  .plc-label-1, .plc-label-2, .plc-label-3, .plc-label-4 { animation: none !important; opacity: 0 !important; }
+  .plc-label-5 { animation: none !important; opacity: 1 !important; }
+  .plc-settle > span { animation: none !important; opacity: 0.9 !important; transform: none !important; }
 }

@@ -3,7 +3,7 @@
 // DECODER_SCRIPT the browser runs (no parser duplication): sets a Node export
 // hook, executes the script DOM-free via new Function, asserts on the captured
 // pure functions. Run: node app/_decoder.selfcheck.mjs  (exit 1 on failure).
-import { DECODER_SCRIPT, SEED_HEX } from "./_decoder.js";
+import { DECODER_SCRIPT, SEED_HEX, DEFECT_SEED_HEX } from "./_decoder.js";
 
 let api = null;
 globalThis.__DECODER_EXPORT__ = (x) => { api = x; };
@@ -31,13 +31,21 @@ ok(et("4f") && et("4f").value === "A0000000031010", "AID");
 ok(et("50") && et("50").decode === "VISA CREDIT", "app label VISA CREDIT");
 ok(et("82") && /DDA supported/.test(et("82").decode), "AIP bit-decoded");
 ok(et("95") && typeof et("95").decode === "string", "TVR bit-decoded");
-ok(et("9f02") && parseInt(et("9f02").value, 10) === 6000 && et("9f02").decode === "60.00", "9F02 amount 60.00");
-ok(et("5f2a") && parseInt(et("5f2a").value, 10) === 978, "5F2A currency 978");
+// default seed decodes clean now (item 10, 2026-07-19): DE4/9F02 and DE49/5F2A agree
+ok(et("9f02") && parseInt(et("9f02").value, 10) === 5000 && et("9f02").decode === "50.00", "9F02 amount 50.00 (matches DE4)");
+ok(et("5f2a") && parseInt(et("5f2a").value, 10) === 840, "5F2A currency 840 (matches DE49)");
 ok(et("9f27") && /ARQC/.test(et("9f27").decode), "CID ARQC");
 ok(et("9f26") && et("9f26").value === "1122334455667788", "ARQC cryptogram");
-// the two deliberate malformed flags (decision #3: amount + currency mismatch)
-ok(r.flags.some((x) => x.field === "DE4 vs 9F02"), "amount mismatch flagged");
-ok(r.flags.some((x) => x.field === "DE49 vs 5F2A"), "currency mismatch flagged");
+ok(r.flags.length === 0, "default seed has no FAILS CERT flags");
+
+// the deliberate malformed-field demo now lives behind "Load defect example" —
+// same bytes as the pre-2026-07-19 default seed, still exercised here.
+const dr = parseDump(DEFECT_SEED_HEX);
+const det = (tag) => dr.emv.tags.find((x) => x.tag.toLowerCase() === tag);
+ok(det("9f02") && parseInt(det("9f02").value, 10) === 6000 && det("9f02").decode === "60.00", "DEFECT: 9F02 amount 60.00");
+ok(det("5f2a") && parseInt(det("5f2a").value, 10) === 978, "DEFECT: 5F2A currency 978");
+ok(dr.flags.some((x) => x.field === "DE4 vs 9F02"), "DEFECT: amount mismatch flagged");
+ok(dr.flags.some((x) => x.field === "DE49 vs 5F2A"), "DEFECT: currency mismatch flagged");
 // fail-soft: garbage / partial input must never throw
 let threw = false;
 try { parseDump("zzz not hex"); parseDump("0100"); parseDump(""); parseDump("9f0203000001"); } catch { threw = true; }
@@ -46,4 +54,4 @@ ok(!threw, "fail-soft: no throw on bad input");
 ok(parseDump("9f02060000000060005f2a020978").format === "EMV TLV", "EMV-only auto-detect");
 
 if (fails.length) { console.error("SELF-CHECK FAILED:\n  - " + fails.join("\n  - ")); process.exit(1); }
-console.log("decoder self-check: " + (21) + "+ assertions green — seed decodes, both malformed fields flagged, fail-soft holds");
+console.log("decoder self-check: " + (25) + "+ assertions green — seed decodes, both malformed fields flagged, fail-soft holds");

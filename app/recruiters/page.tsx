@@ -4,6 +4,7 @@ import Work from "../_components/Work";
 import CaseStudyFeature from "../_components/CaseStudyFeature";
 import Experience from "../_components/Experience";
 import Skills from "../_components/Skills";
+import PaymentLifecycle from "../_components/PaymentLifecycle";
 import Decoder from "../_components/Decoder";
 
 const title = "Shakti Mohapatra — QA Engineer, Payments & FinTech | Building AI";
@@ -41,6 +42,7 @@ export default function Recruiters() {
       <Experience />
       <Skills />
       <Work mode="day" />
+      <PaymentLifecycle />
       <Decoder />
       <CaseStudyFeature />
     </Shell>

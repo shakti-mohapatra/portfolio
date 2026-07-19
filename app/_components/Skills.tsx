@@ -21,7 +21,7 @@ export default function Skills() {
                   <span className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 ${cat.icon === "spark" ? "text-[var(--accent-2)] bg-[rgba(var(--accent2-rgb),0.1)]" : "text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)]"}`}>
                     <SkillIcon kind={cat.icon} />
                   </span>
-                  <h3 className="font-semibold text-white/90 leading-snug">{cat.title}</h3>
+                  <h3 className="tile-pull font-semibold text-white/90 leading-snug">{cat.title}</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {cat.items.map((item) => (

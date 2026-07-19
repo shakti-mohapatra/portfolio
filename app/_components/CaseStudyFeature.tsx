@@ -22,10 +22,10 @@ export default function CaseStudyFeature() {
                 <span>Case study / {cs.index} · {cs.project}</span>
                 <span>{cs.date}</span>
               </div>
-              <h3 className="mt-6 text-[clamp(1.6rem,4vw,2.75rem)] font-bold tracking-tight leading-[0.98]">
+              <h3 className="tile-pull mt-6 text-[clamp(1.6rem,4vw,2.75rem)] font-bold tracking-tight leading-[0.98]">
                 {cs.title1} {cs.title2}
               </h3>
-              <p className="mt-6 max-w-2xl text-white/60 leading-relaxed">{cs.standfirst}</p>
+              <p className="tile-pull mt-6 max-w-2xl text-white/60 leading-relaxed">{cs.standfirst}</p>
               <Link
                 href={`/work/${cs.slug}`}
                 className="group mt-8 inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wide text-[var(--accent)] hover:text-white transition-colors"

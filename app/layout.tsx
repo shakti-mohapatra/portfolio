@@ -39,6 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`dark ${geistSans.variable} ${geistMono.variable} scroll-smooth antialiased`}
     >
       <body>
@@ -64,22 +65,28 @@ export default function RootLayout({
     });
   }, { rootMargin: "0px 0px -10% 0px", threshold: 0.1 });
   document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-left-scale, .reveal-right-scale").forEach(function (el) { io.observe(el); });
+})();
 
+// Header hide-on-scroll — direction-based, runs in every browser (not just the
+// animation-timeline fallback above). A pure scroll(root)-position timeline
+// can only hide the header once and never bring it back until scroll returns
+// near the very top, which stranded users with no way to reach the nav after
+// scrolling past ~260px. This always reflects actual scroll direction instead.
+(function(){
   var header = document.querySelector("[data-header]");
-  if (header) {
-    var lastY = window.scrollY;
-    var ticking = false;
-    window.addEventListener("scroll", function () {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () {
-        var y = window.scrollY;
-        header.toggleAttribute("data-hidden", y > lastY && y > 140);
-        lastY = y;
-        ticking = false;
-      });
-    }, { passive: true });
-  }
+  if (!header) return;
+  var lastY = window.scrollY;
+  var ticking = false;
+  window.addEventListener("scroll", function () {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      var y = window.scrollY;
+      header.toggleAttribute("data-hidden", y > lastY && y > 140);
+      lastY = y;
+      ticking = false;
+    });
+  }, { passive: true });
 })();
 
 // Shared tile pointer script (redesign 2026-07 §2.2) — desktop/mouse only.
@@ -96,9 +103,14 @@ export default function RootLayout({
       var r = el.getBoundingClientRect();
       el.style.setProperty("--mx", (e.clientX - r.left) + "px");
       el.style.setProperty("--my", (e.clientY - r.top) + "px");
+      var x = (e.clientX - r.left) / r.width - 0.5;
+      var y = (e.clientY - r.top) / r.height - 0.5;
+      // Fractional cursor position (-0.5..0.5), read by .tile-pull children in
+      // globals.css so the text/icon inside a tile drifts + scales toward the
+      // cursor, distinct from (smaller than) the whole-tile magnetic lift below.
+      el.style.setProperty("--px", x.toFixed(3));
+      el.style.setProperty("--py", y.toFixed(3));
       if (interactive) {
-        var x = (e.clientX - r.left) / r.width - 0.5;
-        var y = (e.clientY - r.top) / r.height - 0.5;
         el.style.transform = "translate(" + (x*LIFT).toFixed(1) + "px," + (y*LIFT - 3).toFixed(1) + "px)";
       }
     });

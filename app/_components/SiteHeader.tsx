@@ -26,7 +26,7 @@ function ModeLinks({ mode, className }: { mode: Mode; className: string }) {
 
 export default function SiteHeader({ mode }: { mode: Mode }) {
   return (
-    <header data-header className="fixed top-0 inset-x-0 z-50">
+    <header data-header style={{ viewTransitionName: "site-header" }} className="fixed top-0 inset-x-0 z-50">
       <div className="max-w-6xl mx-auto px-6 mt-4">
         <MobileMenu
           mode={mode}

@@ -22,7 +22,7 @@ export default function Experience() {
 
         {/* Company header */}
         <div className="reveal tile tile--static flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-6 mb-10">
-          <div>
+          <div className="tile-pull">
             <h3 className="text-xl font-bold">{experience.company}</h3>
             <p className="text-white/50 text-sm mt-1">{experience.role}</p>
           </div>
@@ -35,7 +35,7 @@ export default function Experience() {
         {/* Client engagement timeline */}
         <div>
           {experience.engagements.map((e) => (
-            <div key={e.org} className="reveal grid sm:grid-cols-[220px_1fr] gap-3 sm:gap-8 py-8 border-b border-white/[0.08] last:border-0">
+            <div key={e.org} className="reveal group grid sm:grid-cols-[220px_1fr] gap-3 sm:gap-8 py-8 px-4 -mx-4 sm:px-6 sm:-mx-6 rounded-xl border-b border-white/[0.08] last:border-0 transition-colors duration-300 hover:bg-white/[0.03]">
               <div>
                 <h4 className="font-semibold text-white/90">{e.org}</h4>
                 <p className="text-[var(--accent)] text-xs mt-1 leading-snug">{e.scope}</p>
@@ -54,16 +54,16 @@ export default function Experience() {
             className="reveal tile tile--static p-6"
             style={{ borderColor: "rgba(var(--accent-rgb),0.2)", background: "rgba(var(--accent-rgb),0.05)" }}
           >
-            <p className="font-mono text-micro uppercase tracking-[0.28em] text-[var(--accent)]/70 mb-2">Currently</p>
-            <h4 className="font-semibold mb-2">GenAI &amp; Agentic AI Master&apos;s Program</h4>
-            <p className="text-sm text-white/55 leading-relaxed">
+            <p className="tile-pull font-mono text-micro uppercase tracking-[0.28em] text-[var(--accent)]/70 mb-2">Currently</p>
+            <h4 className="tile-pull font-semibold mb-2">GenAI &amp; Agentic AI Master&apos;s Program</h4>
+            <p className="tile-pull text-sm text-white/55 leading-relaxed">
               LearnBay, 2026–2027 — applying the same QA discipline to LLM evaluation, RAG, and agentic systems. Building BFSI-focused projects: fraud detection, compliance review, payment-domain AI tools.
             </p>
           </div>
           <div className="reveal tile tile--static p-6">
-            <p className="font-mono text-micro uppercase tracking-[0.28em] text-white/50 mb-2">Education</p>
-            <h4 className="font-semibold mb-1">{experience.education.degree}</h4>
-            <p className="text-sm text-white/50">{experience.education.school} · {experience.education.year}</p>
+            <p className="tile-pull font-mono text-micro uppercase tracking-[0.28em] text-white/50 mb-2">Education</p>
+            <h4 className="tile-pull font-semibold mb-1">{experience.education.degree}</h4>
+            <p className="tile-pull text-sm text-white/50">{experience.education.school} · {experience.education.year}</p>
           </div>
         </div>
       </div>

@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import Shell from "./_components/Shell";
 import Work from "./_components/Work";
-import TransactionFlow from "./_components/TransactionFlow";
 import Services from "./_components/Services";
-import Process from "./_components/Process";
 import Guarantees from "./_components/Guarantees";
 import HowIWork from "./_components/HowIWork";
 
@@ -33,9 +31,7 @@ export default function Home() {
   return (
     <Shell mode="side">
       <Work mode="side" />
-      <TransactionFlow />
       <Services />
-      <Process />
       <Guarantees />
       <HowIWork />
     </Shell>
