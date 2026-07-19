@@ -95,6 +95,7 @@ export default function MobileMenu({
                 <div className="items-center gap-0.5 rounded-full border border-white/10 bg-white/[0.04] p-0.5 font-mono text-label font-medium flex sm:hidden">
                   <Link
                     href="/"
+                    onClick={() => setOpen(false)}
                     aria-current={mode === "side" ? "page" : undefined}
                     className={`px-3 py-3 rounded-full transition-colors ${mode === "side" ? "bg-white text-black" : "text-white/70 hover:text-white"}`}
                   >
@@ -102,6 +103,7 @@ export default function MobileMenu({
                   </Link>
                   <Link
                     href="/recruiters"
+                    onClick={() => setOpen(false)}
                     aria-current={mode === "day" ? "page" : undefined}
                     className={`px-3 py-3 rounded-full transition-colors ${mode === "day" ? "bg-white text-black" : "text-white/70 hover:text-white"}`}
                   >
