@@ -127,6 +127,11 @@ function initHeroGL(canvas: HTMLCanvasElement, mode: number): (() => void) | nul
     window.removeEventListener("resize",    resize);
     window.removeEventListener("mousemove", onMove);
     io.disconnect();
+    // Force the GPU context to release now rather than waiting on GC — iOS
+    // Safari keeps a low ceiling on simultaneously-live WebGL contexts and is
+    // slow to reclaim merely-unreferenced ones, so repeated mode switches
+    // (each mount/unmount creates a new context) can exhaust it mid-session.
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
   };
 }
 

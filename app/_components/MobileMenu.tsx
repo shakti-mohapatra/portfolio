@@ -32,8 +32,12 @@ export default function MobileMenu({
       {/* Click-outside backdrop */}
       {open && <div className="fixed inset-0 z-[39]" onClick={() => setOpen(false)} aria-hidden />}
 
-      {/* Nav pill */}
-      <div className="flex items-center justify-between h-14 px-5 rounded-2xl border border-white/10 bg-black/30 backdrop-blur-xl">
+      {/* Nav pill — relative z-40: backdrop-blur alone promotes this into its own
+          stacking context, which the CSS painting-order spec then paints ABOVE
+          plain static siblings regardless of DOM order. Without an explicit
+          z-index here, the z-[39] click-outside backdrop below silently won
+          that fight and intercepted every tap on the pill and the sheet. */}
+      <div className="relative z-40 flex items-center justify-between h-14 px-5 rounded-2xl border border-white/10 bg-black/30 backdrop-blur-xl">
         {left}
         <div className="flex items-center gap-4">
           {right}
@@ -54,7 +58,7 @@ export default function MobileMenu({
 
       {/* Drop-sheet menu — stays mounted; grid-rows transition drives open/close so
           it works without JS measuring height (see .collapse-wrap in globals.css) */}
-      <div className="collapse-wrap mt-2" data-open={open || undefined}>
+      <div className="relative z-40 collapse-wrap mt-2" data-open={open || undefined}>
         <div
           className="collapse-inner rounded-2xl border border-white/10 overflow-hidden"
           inert={!open}
