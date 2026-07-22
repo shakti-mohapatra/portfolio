@@ -17,7 +17,14 @@ export default function Contact({ mode }: { mode: Mode }) {
 
         <div className="grid lg:grid-cols-[1fr_360px] gap-6 max-w-5xl mx-auto items-start">
 
-          {/* Form card */}
+          {/* Form card. Was forced to h-full/stretch to match the taller info
+              card — rejected as a non-fix (a bigger empty box is still an
+              empty box). Real fix: natural height (items-start above) plus
+              an actual footer with real content, same "form + reassurance
+              strip" pattern Stripe/Linear/Vercel contact forms use, so the
+              card earns whatever height it ends up at. Socials moved out to
+              a shared strip below both cards (further down) to shorten the
+              info card from the other side instead of inflating this one. */}
           <div className="reveal-left tile tile--static p-8 sm:p-10">
             <div className="flex items-center gap-2 mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
@@ -31,10 +38,22 @@ export default function Contact({ mode }: { mode: Mode }) {
               messagePlaceholder={content.contactMessagePlaceholder}
               projectTypes={mode === "side" ? services.map((s) => s.title) : undefined}
             />
+            <div className="flex items-center gap-2.5 mt-6 pt-5 border-t border-white/[0.08]">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              </span>
+              <p className="text-white/60 text-sm">
+                {mode === "day" ? "Open to new opportunities right now." : "Open to new projects right now."}
+              </p>
+            </div>
           </div>
 
-          {/* Info card */}
-          <div className="reveal-right tile tile--static p-7 flex flex-col gap-6 h-full">
+          {/* Info card — plain box, not .tile: it wraps tile--interactive
+              channel rows below, and :hover bubbles to ancestors, so making
+              this a tile too double-fired hover (parent scale + own glow) on
+              top of the child's, growing the border past the tag row above. */}
+          <div className="reveal-right relative rounded-2xl border border-white/[0.08] bg-[var(--panel)] overflow-hidden p-7 flex flex-col gap-6">
 
             {/* Avatar + name + tags */}
             <div className="flex flex-col items-center text-center gap-3">
@@ -61,40 +80,55 @@ export default function Contact({ mode }: { mode: Mode }) {
 
             {mode === "day" ? (
               <>
-                {/* Direct contact channels — LinkedIn / Email / Phone */}
+                {/* Direct contact channels — LinkedIn / Email / Phone.
+                    Icon-over-label, centered — was icon-left/text-left/arrow-right,
+                    which left a wide dead gap between short text and the arrow.
+                    Arrow moved to a corner badge instead of pushed right by flex-1.
+                    Centering forced via inline `style`, not the `flex flex-col
+                    items-center` utility classes: globals.css's `.tile` sets
+                    `display:block` in unlayered CSS, which beats Tailwind's own
+                    (layered) `.flex` utility regardless of source order — a
+                    documented trap in this repo (see PROGRESS.md's "cascade
+                    layers" note). Confirmed live via getComputedStyle before
+                    fixing: className had `flex flex-col items-center`, computed
+                    display was still `block`. Inline style is the only thing
+                    short of `!important` that outranks it. */}
                 <div className="flex flex-col gap-3">
                   <a href={LINKEDIN} target="_blank" rel="noopener noreferrer"
-                    className="tile tile--interactive group flex items-center gap-3.5 px-4 py-4">
-                    <span className="w-8 h-8 rounded-lg bg-sky-500/15 text-sky-300 flex items-center justify-center flex-shrink-0">
+                    className="tile tile--interactive group relative gap-2 px-4 py-5"
+                    style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+                    <span className="w-9 h-9 rounded-lg bg-sky-500/15 text-sky-300 flex items-center justify-center">
                       <LinkedInIcon className="w-4 h-4" />
                     </span>
-                    <span className="tile-pull min-w-0 flex-1">
-                      <p className="text-white/80 text-xs font-medium">LinkedIn</p>
-                      <p className="text-white/55 text-label mt-1 truncate">Message me directly</p>
+                    <span className="tile-pull">
+                      <p className="text-white/80 text-sm font-medium">LinkedIn</p>
+                      <p className="text-white/55 text-label mt-1">Message me directly</p>
                     </span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-sky-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+                    <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-sky-300 transition-colors absolute top-3 right-3" />
                   </a>
                   <a href={`mailto:${RESUME_EMAIL}`}
-                    className="tile tile--interactive group flex items-center gap-3.5 px-4 py-4">
-                    <span className="w-8 h-8 rounded-lg bg-violet-500/15 text-violet-300 flex items-center justify-center flex-shrink-0">
+                    className="tile tile--interactive group relative gap-2 px-4 py-5"
+                    style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+                    <span className="w-9 h-9 rounded-lg bg-violet-500/15 text-violet-300 flex items-center justify-center">
                       <MailIcon className="w-4 h-4" />
                     </span>
-                    <span className="tile-pull min-w-0 flex-1">
-                      <p className="text-white/80 text-xs font-medium">Email</p>
-                      <p className="text-white/55 text-label mt-1 truncate">{RESUME_EMAIL}</p>
+                    <span className="tile-pull">
+                      <p className="text-white/80 text-sm font-medium">Email</p>
+                      <p className="text-white/55 text-label mt-1 truncate max-w-[220px]">{RESUME_EMAIL}</p>
                     </span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-violet-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+                    <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-violet-300 transition-colors absolute top-3 right-3" />
                   </a>
                   <a href={`tel:${PHONE_TEL}`}
-                    className="tile tile--interactive group flex items-center gap-3.5 px-4 py-4">
-                    <span className="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-300 flex items-center justify-center flex-shrink-0">
+                    className="tile tile--interactive group relative gap-2 px-4 py-5"
+                    style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+                    <span className="w-9 h-9 rounded-lg bg-emerald-500/15 text-emerald-300 flex items-center justify-center">
                       <PhoneIcon className="w-4 h-4" />
                     </span>
-                    <span className="tile-pull min-w-0 flex-1">
-                      <p className="text-white/80 text-xs font-medium">Phone</p>
-                      <p className="text-white/55 text-label mt-1 truncate">{PHONE_DISPLAY}</p>
+                    <span className="tile-pull">
+                      <p className="text-white/80 text-sm font-medium">Phone</p>
+                      <p className="text-white/55 text-label mt-1">{PHONE_DISPLAY}</p>
                     </span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-emerald-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+                    <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-emerald-300 transition-colors absolute top-3 right-3" />
                   </a>
                 </div>
 
@@ -162,20 +196,22 @@ export default function Contact({ mode }: { mode: Mode }) {
               </>
             )}
 
-            {/* Socials */}
-            <div className="flex items-center gap-4 pt-4 border-t border-white/[0.08]">
-              <a href={LINKEDIN} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs text-white/55 hover:text-white transition-colors">
-                <LinkedInIcon /> LinkedIn
-              </a>
-              <a href={GITHUB} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs text-white/55 hover:text-white transition-colors">
-                <GitHubIcon /> GitHub
-              </a>
-            </div>
-
           </div>
 
+        </div>
+
+        {/* Socials — was inside the info card; moved to a shared strip below
+            both cards so it stops padding out the info card's height against
+            the form card next to it (see the grid/footer comment above). */}
+        <div className="flex items-center justify-center gap-6 max-w-5xl mx-auto mt-8 pt-6 border-t border-white/[0.08]">
+          <a href={LINKEDIN} target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-xs text-white/55 hover:text-white transition-colors">
+            <LinkedInIcon /> LinkedIn
+          </a>
+          <a href={GITHUB} target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-xs text-white/55 hover:text-white transition-colors">
+            <GitHubIcon /> GitHub
+          </a>
         </div>
       </div>
     </section>

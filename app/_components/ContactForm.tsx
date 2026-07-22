@@ -84,7 +84,7 @@ export default function ContactForm({
       )}
       <div>
         <label htmlFor="contact-message" className="block font-mono text-micro font-medium text-white/55 uppercase tracking-widest mb-2">Message</label>
-        <textarea id="contact-message" required rows={5} placeholder={messagePlaceholder} value={message} onChange={(e) => setMessage(e.target.value)} className={`${inputCls} resize-none`} />
+        <textarea id="contact-message" required rows={7} placeholder={messagePlaceholder} value={message} onChange={(e) => setMessage(e.target.value)} className={`${inputCls} resize-none`} />
       </div>
       {status === "error" && (
         <p className="text-sm text-red-400">Something went wrong — please try again or email me directly.</p>

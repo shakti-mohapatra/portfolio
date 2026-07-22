@@ -54,14 +54,21 @@ function initHeroGL(canvas: HTMLCanvasElement, mode: number): (() => void) | nul
   const gl =
     (canvas.getContext("webgl") as WebGLRenderingContext | null) ||
     (canvas.getContext("experimental-webgl") as WebGLRenderingContext | null);
-  if (!gl) return null;
+  if (!gl) {
+    if (process.env.NODE_ENV !== "production") console.warn("[HeroCanvas] getContext(webgl) returned null");
+    return null;
+  }
 
   const compile = (type: number, src: string) => {
     const s = gl.createShader(type);
     if (!s) return null;
     gl.shaderSource(s, src);
     gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { gl.deleteShader(s); return null; }
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      if (process.env.NODE_ENV !== "production") console.warn("[HeroCanvas] shader compile failed:", gl.getShaderInfoLog(s));
+      gl.deleteShader(s);
+      return null;
+    }
     return s;
   };
 
@@ -69,11 +76,17 @@ function initHeroGL(canvas: HTMLCanvasElement, mode: number): (() => void) | nul
   const fs = compile(gl.FRAGMENT_SHADER, FRAG);
   if (!vs || !fs) return null;
   const prog = gl.createProgram();
-  if (!prog) return null;
+  if (!prog) {
+    if (process.env.NODE_ENV !== "production") console.warn("[HeroCanvas] createProgram returned null");
+    return null;
+  }
   gl.attachShader(prog, vs);
   gl.attachShader(prog, fs);
   gl.linkProgram(prog);
-  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    if (process.env.NODE_ENV !== "production") console.warn("[HeroCanvas] program link failed:", gl.getProgramInfoLog(prog));
+    return null;
+  }
   gl.useProgram(prog);
 
   const buf = gl.createBuffer();
@@ -136,11 +149,18 @@ function initHeroGL(canvas: HTMLCanvasElement, mode: number): (() => void) | nul
     window.removeEventListener("resize",    resize);
     window.removeEventListener("mousemove", onMove);
     io.disconnect();
-    // Force the GPU context to release now rather than waiting on GC — iOS
-    // Safari keeps a low ceiling on simultaneously-live WebGL contexts and is
-    // slow to reclaim merely-unreferenced ones, so repeated mode switches
-    // (each mount/unmount creates a new context) can exhaust it mid-session.
-    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    // NOT calling WEBGL_lose_context here (removed 2026-07-22). It was added
+    // for iOS Safari's low simultaneous-context ceiling, but shouldUseStaticHero()
+    // now gates mobile/tablet out before initHeroGL ever runs at all (P0 fix,
+    // e97842f) -- so this cleanup only ever ran on desktop, where forcing the
+    // context dead here raced the *new* page's context creation on every
+    // route switch and reliably poisoned it under React Strict Mode's
+    // synchronous mount->cleanup->mount cycle (confirmed live: the new
+    // canvas's shader compile failed deterministically, every switch, only
+    // in `next dev`; a clean `next build && next start` never failed).
+    // Letting the old, no-longer-referenced context get garbage collected
+    // normally (nothing still reads from it once `raf` stops and listeners
+    // are removed) avoids the collision entirely.
   };
 }
 
@@ -152,9 +172,39 @@ export default function HeroCanvas({ mode }: { mode: "side" | "day" }) {
   useEffect(() => {
     if (!ref.current) return;
     if (shouldUseStaticHero()) { setFailed(true); return; }
-    const cleanup = initHeroGL(ref.current, mode === "day" ? 1 : 0);
-    if (!cleanup) { setFailed(true); return; }
-    return cleanup;
+    let cancelled = false;
+    let cleanup: (() => void) | null = null;
+    let timer = 0;
+    // A route switch hands a fresh HeroCanvas a context-creation attempt
+    // while the outgoing page's WebGL context may not be fully released yet
+    // -- the native ViewTransition unmounts the old page and mounts the new
+    // one in the same flush, and the GPU-side release behind
+    // WEBGL_lose_context can lag behind the JS call that triggered it. A
+    // single next-frame retry wasn't enough margin on a real desktop
+    // (confirmed: still failed reliably on every switch). Retry with
+    // increasing real delay instead of one rAF, so there's actual wall-clock
+    // time for the old context to be released before giving up.
+    const DELAYS = [0, 32, 100, 250];
+    let n = 0;
+    const attempt = () => {
+      if (cancelled || !ref.current) return;
+      cleanup = initHeroGL(ref.current, mode === "day" ? 1 : 0);
+      if (!cleanup) {
+        n++;
+        if (n < DELAYS.length) {
+          timer = window.setTimeout(attempt, DELAYS[n]);
+        } else {
+          if (process.env.NODE_ENV !== "production") console.warn(`[HeroCanvas] gave up after ${DELAYS.length} attempts`);
+          setFailed(true);
+        }
+      }
+    };
+    attempt();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+      cleanup?.();
+    };
   }, [mode]);
   return (
     <>
