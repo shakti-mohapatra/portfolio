@@ -41,6 +41,15 @@ void main(){
   gl_FragColor=vec4(col,1.0);
 }`;
 
+// Mobile/tablet GPUs choke when this shader's context churns during a route
+// switch (2026-07-22 P0) -- skip WebGL there entirely and use the static
+// fallback gradient instead. Gate on pointer/hover capability, not just
+// width, so it also catches tablets and large phones in landscape.
+function shouldUseStaticHero() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(hover: none), (pointer: coarse), (max-width: 1024px)").matches;
+}
+
 function initHeroGL(canvas: HTMLCanvasElement, mode: number): (() => void) | null {
   const gl =
     (canvas.getContext("webgl") as WebGLRenderingContext | null) ||
@@ -142,6 +151,7 @@ export default function HeroCanvas({ mode }: { mode: "side" | "day" }) {
   const [failed, setFailed] = useState(false);
   useEffect(() => {
     if (!ref.current) return;
+    if (shouldUseStaticHero()) { setFailed(true); return; }
     const cleanup = initHeroGL(ref.current, mode === "day" ? 1 : 0);
     if (!cleanup) { setFailed(true); return; }
     return cleanup;

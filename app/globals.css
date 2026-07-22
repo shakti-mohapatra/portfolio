@@ -253,6 +253,28 @@ html {
   scroll-padding-top: 72px;
 }
 
+/* -- Ambient orbs (Shell.tsx) -- moved from inline styles to classes so the
+   mobile/tablet query below can cut blur radius; was contributing to the same
+   route-switch freeze the View Transition skip below targets (2026-07-22 P0). */
+.ambient-orb-a {
+  top: 22%; left: -18%; width: 55vw; height: 55vw;
+  background: radial-gradient(circle, rgba(var(--accent-rgb),0.11) 0%, transparent 70%);
+  filter: blur(120px);
+}
+.ambient-orb-b {
+  top: 54%; right: -18%; width: 50vw; height: 50vw;
+  background: radial-gradient(circle, rgba(var(--accent2-rgb),0.08) 0%, transparent 70%);
+  filter: blur(120px);
+}
+.ambient-orb-c {
+  top: 80%; left: 12%; width: 48vw; height: 48vw;
+  background: radial-gradient(circle, rgba(var(--accent-rgb),0.09) 0%, transparent 70%);
+  filter: blur(120px);
+}
+@media (hover: none), (pointer: coarse), (max-width: 1024px) {
+  .ambient-orb { filter: blur(40px); }
+}
+
 /* ── Route crossfade (item 5, redesign 2026-07) — native View Transitions,
    wired in Shell.tsx's <ViewTransition name="page-content">. Opacity + a
    small scale, no filter: blur() — an earlier version animated a blur over
@@ -288,6 +310,17 @@ html {
   ::view-transition-new(*) {
     animation-duration: 0s !important;
     animation-delay: 0s !important;
+  }
+}
+
+/* ── RouteTransitionWrapper.tsx skips the native ViewTransition above on
+   mobile/tablet (2026-07-22 P0) — give it a cheap plain-CSS fade instead of
+   a hard cut, since none of the ::view-transition-* rules above apply then. ── */
+@media (hover: none), (pointer: coarse), (max-width: 1024px) {
+  .site { animation: mobile-route-fade 180ms ease-out; }
+  @keyframes mobile-route-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
   }
 }
 

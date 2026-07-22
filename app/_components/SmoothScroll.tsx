@@ -22,6 +22,9 @@ import "lenis/dist/lenis.css";
 export default function SmoothScroll() {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Skip on mobile/tablet too -- Lenis re-inits on every Shell mount, adding
+    // another rAF loop and setup cost right at route-switch time (2026-07-22 P0).
+    if (window.matchMedia("(hover: none), (pointer: coarse), (max-width: 1024px)").matches) return;
 
     const lenis = new Lenis({
       duration: 1.1,
