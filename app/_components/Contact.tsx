@@ -15,16 +15,11 @@ export default function Contact({ mode }: { mode: Mode }) {
       <div className="absolute inset-0" aria-hidden style={{ background: "radial-gradient(60% 80% at 50% 120%, rgba(var(--accent-rgb),0.3), transparent 70%)" }} />
       <div className="max-w-6xl mx-auto px-6 relative">
 
-        <div className="grid lg:grid-cols-[1fr_360px] gap-6 max-w-5xl mx-auto items-start">
+        <div className="grid lg:grid-cols-[1fr_360px] gap-6 max-w-5xl mx-auto items-stretch">
 
-          {/* Form card. Was forced to h-full/stretch to match the taller info
-              card — rejected as a non-fix (a bigger empty box is still an
-              empty box). Real fix: natural height (items-start above) plus
-              an actual footer with real content, same "form + reassurance
-              strip" pattern Stripe/Linear/Vercel contact forms use, so the
-              card earns whatever height it ends up at. Socials moved out to
-              a shared strip below both cards (further down) to shorten the
-              info card from the other side instead of inflating this one. */}
+          {/* Both cards stretch to match height (grid items-stretch). Info
+              card's flex-1 spacer (below) absorbs the extra height instead of
+              stretching its content, so it never looks like empty padding. */}
           <div className="reveal-left tile tile--static p-8 sm:p-10">
             <div className="flex items-center gap-2 mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
@@ -93,10 +88,10 @@ export default function Contact({ mode }: { mode: Mode }) {
                     fixing: className had `flex flex-col items-center`, computed
                     display was still `block`. Inline style is the only thing
                     short of `!important` that outranks it. */}
-                <div className="flex flex-col gap-3">
+                <div className="flex-1 flex flex-col gap-3">
                   <a href={LINKEDIN} target="_blank" rel="noopener noreferrer"
-                    className="tile tile--interactive group relative gap-2 px-4 py-5"
-                    style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+                    className="tile tile--interactive group relative gap-2 px-4 py-5 flex-1"
+                    style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
                     <span className="w-9 h-9 rounded-lg bg-sky-500/15 text-sky-300 flex items-center justify-center">
                       <LinkedInIcon className="w-4 h-4" />
                     </span>
@@ -107,8 +102,8 @@ export default function Contact({ mode }: { mode: Mode }) {
                     <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-sky-300 transition-colors absolute top-3 right-3" />
                   </a>
                   <a href={`mailto:${RESUME_EMAIL}`}
-                    className="tile tile--interactive group relative gap-2 px-4 py-5"
-                    style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+                    className="tile tile--interactive group relative gap-2 px-4 py-5 flex-1"
+                    style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
                     <span className="w-9 h-9 rounded-lg bg-violet-500/15 text-violet-300 flex items-center justify-center">
                       <MailIcon className="w-4 h-4" />
                     </span>
@@ -119,8 +114,8 @@ export default function Contact({ mode }: { mode: Mode }) {
                     <ArrowUpRight className="w-3.5 h-3.5 text-white/20 group-hover:text-violet-300 transition-colors absolute top-3 right-3" />
                   </a>
                   <a href={`tel:${PHONE_TEL}`}
-                    className="tile tile--interactive group relative gap-2 px-4 py-5"
-                    style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+                    className="tile tile--interactive group relative gap-2 px-4 py-5 flex-1"
+                    style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
                     <span className="w-9 h-9 rounded-lg bg-emerald-500/15 text-emerald-300 flex items-center justify-center">
                       <PhoneIcon className="w-4 h-4" />
                     </span>
@@ -132,8 +127,6 @@ export default function Contact({ mode }: { mode: Mode }) {
                   </a>
                 </div>
 
-                <div className="flex-1" />
-
                 {content.resumeCta && (
                   <a href={content.resumeCta.href} download
                     className="flex items-center justify-center w-full px-4 py-2.5 rounded-full bg-white text-black text-xs font-semibold hover:bg-white/90 transition-colors">
@@ -144,43 +137,41 @@ export default function Contact({ mode }: { mode: Mode }) {
             ) : (
               <>
                 {/* Promise rows */}
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-start gap-3.5 p-4 rounded-xl bg-white/[0.04]">
-                    <div className="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="flex-1 flex flex-col gap-4">
+                  <div className="tile tile--static gap-3.5 p-4 flex-1" style={{ display: "flex", alignItems: "center" }}>
+                    <div className="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center flex-shrink-0">
                       <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-violet-400" aria-hidden>
                         <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1ZM7.5 4.5a.5.5 0 0 1 1 0v3.793l2.146 2.147a.5.5 0 0 1-.707.707l-2.293-2.293A.5.5 0 0 1 7.5 8.5V4.5Z"/>
                       </svg>
                     </div>
-                    <div>
+                    <div className="tile-pull">
                       <p className="text-white/80 text-xs font-medium">Replies within 24 hrs</p>
                       <p className="text-white/55 text-label mt-1">Usually same day</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3.5 p-4 rounded-xl bg-white/[0.04]">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="tile tile--static gap-3.5 p-4 flex-1" style={{ display: "flex", alignItems: "center" }}>
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0">
                       <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-emerald-400" aria-hidden>
                         <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022Z"/>
                       </svg>
                     </div>
-                    <div>
+                    <div className="tile-pull">
                       <p className="text-white/80 text-xs font-medium">{content.contactTile2.title}</p>
                       <p className="text-white/55 text-label mt-1">{content.contactTile2.sub}</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3.5 p-4 rounded-xl bg-white/[0.04]">
-                    <div className="w-8 h-8 rounded-lg bg-sky-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="tile tile--static gap-3.5 p-4 flex-1" style={{ display: "flex", alignItems: "center" }}>
+                    <div className="w-8 h-8 rounded-lg bg-sky-500/15 flex items-center justify-center flex-shrink-0">
                       <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 text-sky-400" aria-hidden>
                         <path d="M5 1.5a.5.5 0 0 0-1 0V2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-1v-.5a.5.5 0 0 0-1 0V2H5V1.5ZM3 6h10v7H3V6Z"/>
                       </svg>
                     </div>
-                    <div>
+                    <div className="tile-pull">
                       <p className="text-white/80 text-xs font-medium">{content.contactBadge}</p>
                       <p className="text-white/55 text-label mt-1">Ready when you are</p>
                     </div>
                   </div>
                 </div>
-
-                <div className="flex-1" />
 
                 {/* CTAs */}
                 <div className="flex flex-col gap-2">
