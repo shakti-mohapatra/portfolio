@@ -158,45 +158,64 @@ export const howIWork = [
   },
 ];
 
-// Sourced from resume — Girmiti Softwares Pvt Ltd (Mar 2022–present) is the
-// sole employer; the entries below are client engagements delivered under it.
+// Sourced from resume. Newest employer first; each company's engagements are
+// client work delivered under it.
 export const experience = {
-  company: "Girmiti Softwares Pvt Ltd",
-  role: "Software QA Engineer, Payments & FinTech Domain",
-  dates: "March 2022 – Present",
-  location: "Bangalore, India",
-  // Bullets → prose + one mono metric line (PLAN §7). Same facts as before,
-  // reformatted — kills the `·` markers, no new claims added.
-  engagements: [
+  companies: [
     {
-      org: "Gilbarco Veeder-Root",
-      scope: "AFD Payment Systems · Client: Costco (North America)",
-      prose: "Owned smoke, regression, and sanity testing for SmartCRIND payment terminals across Costco's North American fueling network, validating fueling, deferred payments, QR payments, ShopCards, and coupon redemptions, with zero critical-defect escapes to production. Root-caused production bugs through multi-layer log analysis.",
-      metric: "500+ stations · 35% faster defect resolution",
+      company: "Stixis Technologies Pvt Ltd",
+      role: "Senior Software QA Engineer",
+      dates: "October 2026 – Present",
+      location: "Bangalore, India",
+      // TODO: fill scope, prose and metric once DRB KT and tool access land.
+      engagements: [
+        {
+          org: "DRB",
+          scope: "Client engagement · A Vontier company",
+          prose: "Joined in October 2026 as the Senior Software QA Engineer on the DRB engagement. Onboarding and knowledge transfer are under way, and the details of the work will be added here once they start.",
+          metric: "Started October 2026",
+        },
+      ],
     },
     {
-      org: "Sensei Sigma",
-      scope: "Mobile Trading Platform, In-App Payments · Client: USA",
-      prose: "Led a 4-person QA team across the full SDLC for a B2C mobile trading platform shipped on Google Play and the App Store, owning strategy across Android, iOS, a React admin portal, and the backend API layer. Automated payment and user-journey API tests in Python and Selenium, validating card tokenization and balance reconciliation.",
-      metric: "Team of 4 · Android + iOS + web",
-    },
-    {
-      org: "Geidea",
-      scope: "Settlement, Reconciliation & Merchant Onboarding · Client: Saudi Arabia",
-      prose: "Owned QA for a settlement and reconciliation platform end-to-end, tracking simulated daily transactions and validating merchant onboarding (MID/TID provisioning) across partnered banking institutions. Built REST API test suites in Postman covering every transaction type.",
-      metric: "1,000+ daily transactions · 20+ banks · 98%+ scenario coverage",
-    },
-    {
-      org: "L2 Kernel & L3 Card Certifications",
-      scope: "Multi-scheme terminal certification",
-      prose: "Delivered L3 certifications for five card schemes (Visa, Mastercard, Amex, UnionPay, and Diners Club) on first or second submission every time. Led L2 Kernel certification for internal SPOS applications, passing EMV compliance on the first attempt, and took the Lavego POS through NEXO pre-certification to Visa and Mastercard certification.",
-      metric: "5 schemes L3-certified · EMV compliant on first attempt",
-    },
-    {
-      org: "Verifone",
-      scope: "POS Applications & Backend Payment Systems",
-      prose: "Tested the full transaction spectrum (purchase, refund, pre-auth, settlement, reversal, batch upload), including offline terminal scenarios, and ran Terminal Management System testing end-to-end across deployed terminals. Traced authorization flows through backend logs via Postman to validate processor integration.",
-      metric: "200+ terminals",
+      company: "Girmiti Softwares Pvt Ltd",
+      role: "Software QA Engineer, Payments & FinTech Domain",
+      dates: "March 2022 – August 2026",
+      location: "Bangalore, India",
+      // Bullets → prose + one mono metric line (PLAN §7). Same facts as before,
+      // reformatted — kills the `·` markers, no new claims added.
+      engagements: [
+        {
+          org: "Gilbarco Veeder-Root",
+          scope: "AFD Payment Systems · Client: Costco (North America)",
+          prose: "Owned smoke, regression, and sanity testing for SmartCRIND payment terminals across Costco's North American fueling network, validating fueling, deferred payments, QR payments, ShopCards, and coupon redemptions, with zero critical-defect escapes to production. Root-caused production bugs through multi-layer log analysis.",
+          metric: "500+ stations · 35% faster defect resolution",
+        },
+        {
+          org: "Sensei Sigma",
+          scope: "Mobile Trading Platform, In-App Payments · Client: USA",
+          prose: "Led a 4-person QA team across the full SDLC for a B2C mobile trading platform shipped on Google Play and the App Store, owning strategy across Android, iOS, a React admin portal, and the backend API layer. Automated payment and user-journey API tests in Python and Selenium, validating card tokenization and balance reconciliation.",
+          metric: "Team of 4 · Android + iOS + web",
+        },
+        {
+          org: "Geidea",
+          scope: "Settlement, Reconciliation & Merchant Onboarding · Client: Saudi Arabia",
+          prose: "Owned QA for a settlement and reconciliation platform end-to-end, tracking simulated daily transactions and validating merchant onboarding (MID/TID provisioning) across partnered banking institutions. Built REST API test suites in Postman covering every transaction type.",
+          metric: "1,000+ daily transactions · 20+ banks · 98%+ scenario coverage",
+        },
+        {
+          org: "L2 Kernel & L3 Card Certifications",
+          scope: "Multi-scheme terminal certification",
+          prose: "Delivered L3 certifications for five card schemes (Visa, Mastercard, Amex, UnionPay, and Diners Club) on first or second submission every time. Led L2 Kernel certification for internal SPOS applications, passing EMV compliance on the first attempt, and took the Lavego POS through NEXO pre-certification to Visa and Mastercard certification.",
+          metric: "5 schemes L3-certified · EMV compliant on first attempt",
+        },
+        {
+          org: "Verifone",
+          scope: "POS Applications & Backend Payment Systems",
+          prose: "Tested the full transaction spectrum (purchase, refund, pre-auth, settlement, reversal, batch upload), including offline terminal scenarios, and ran Terminal Management System testing end-to-end across deployed terminals. Traced authorization flows through backend logs via Postman to validate processor integration.",
+          metric: "200+ terminals",
+        },
+      ],
     },
   ],
   education: { degree: "B.Tech (Bachelor of Technology)", school: "Parala Maharaja Engineering College, BPUT University, Odisha", year: "2020" },
@@ -562,12 +581,12 @@ export const modeContent: Record<Mode, ModeContent> = {
     ],
     aboutClosing: "QA taught me how payment systems break. Now I'm learning to build and evaluate the AI systems that come next.",
     skills: ["EMV & ISO-8583", "PCI DSS Compliance", "REST API Automation (Python/Selenium)", "Settlement & Reconciliation", "JIRA & Zephyr", "SQL / DBeaver", "GenAI / LLMs (learning)", "Agentic AI (learning)", "React & Next.js"],
-    contactRole: "QA Engineer → AI/Automation",
+    contactRole: "Senior Software QA Engineer",
     contactTags: ["QA Engineer", "Payments", "FinTech"],
     contactHeading1: "Let's",
     contactHeading2: "connect.",
-    contactSub: "Open to conversations about AI/Automation roles. Reach out on LinkedIn, email, or phone.",
-    contactBadge: "Open to AI/Automation conversations",
+    contactSub: "Happy to talk payments QA, test automation, or evaluating AI systems. Reach out on LinkedIn, email, or phone.",
+    contactBadge: "Open to connect",
     contactPrimaryCta: { label: "Connect on LinkedIn", href: LINKEDIN },
     contactTile2: { title: "Open to a conversation", sub: "No pitch, just a chat" },
     contactMessagePlaceholder: "Say hello, ask a question, or just connect…",

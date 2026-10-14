@@ -30,7 +30,9 @@ export default function SmoothScroll() {
       duration: 1.1,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      anchors: { offset: -72 }, // matches globals.css's scroll-padding-top (fixed header height)
+      // Lenis (>=1.3) already subtracts <html>'s scroll-padding-top (72px, globals.css)
+      // from anchor targets; an extra offset: -72 here doubled it to 144px.
+      anchors: true,
       autoRaf: true,
     });
 

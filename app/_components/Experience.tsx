@@ -20,33 +20,37 @@ export default function Experience() {
           </div>
         </div>
 
-        {/* Company header */}
-        <div className="reveal tile tile--static flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-6 mb-10">
-          <div className="tile-pull">
-            <h3 className="text-xl font-bold">{experience.company}</h3>
-            <p className="text-white/50 text-sm mt-1">{experience.role}</p>
-          </div>
-          <div className="font-mono text-sm text-white/55 sm:text-right shrink-0">
-            <p>{experience.dates}</p>
-            <p>{experience.location}</p>
-          </div>
-        </div>
-
-        {/* Client engagement timeline */}
-        <div>
-          {experience.engagements.map((e) => (
-            <div key={e.org} className="reveal group grid sm:grid-cols-[220px_1fr] gap-3 sm:gap-8 py-8 px-4 -mx-4 sm:px-6 sm:-mx-6 rounded-xl border-b border-white/[0.08] last:border-0 transition-colors duration-300 hover:bg-white/[0.03]">
-              <div>
-                <h4 className="font-semibold text-white/90">{e.org}</h4>
-                <p className="text-[var(--accent)] text-xs mt-1 leading-snug">{e.scope}</p>
+        {experience.companies.map((c) => (
+          <div key={c.company} className="mb-12 last:mb-0">
+            {/* Company header */}
+            <div className="reveal tile tile--static flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-6 mb-10">
+              <div className="tile-pull">
+                <h3 className="text-xl font-bold">{c.company}</h3>
+                <p className="text-white/50 text-sm mt-1">{c.role}</p>
               </div>
-              <div className="flex flex-col gap-3">
-                <p className="text-sm text-white/55 leading-relaxed">{e.prose}</p>
-                <p className="font-mono text-xs uppercase tracking-wide text-white/55">{e.metric}</p>
+              <div className="font-mono text-sm text-white/55 sm:text-right shrink-0">
+                <p>{c.dates}</p>
+                <p>{c.location}</p>
               </div>
             </div>
-          ))}
-        </div>
+
+            {/* Client engagement timeline */}
+            <div>
+              {c.engagements.map((e) => (
+                <div key={e.org} className="reveal group grid sm:grid-cols-[220px_1fr] gap-3 sm:gap-8 py-8 px-4 -mx-4 sm:px-6 sm:-mx-6 rounded-xl border-b border-white/[0.08] last:border-0 transition-colors duration-300 hover:bg-white/[0.03]">
+                  <div>
+                    <h4 className="font-semibold text-white/90">{e.org}</h4>
+                    <p className="text-[var(--accent)] text-xs mt-1 leading-snug">{e.scope}</p>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <p className="text-sm text-white/55 leading-relaxed">{e.prose}</p>
+                    <p className="font-mono text-xs uppercase tracking-wide text-white/55">{e.metric}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
 
         {/* Currently learning + education */}
         <div className="grid sm:grid-cols-2 gap-5 mt-4">

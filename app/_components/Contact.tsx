@@ -39,7 +39,7 @@ export default function Contact({ mode }: { mode: Mode }) {
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
               </span>
               <p className="text-white/60 text-sm">
-                {mode === "day" ? "Open to new opportunities right now." : "Open to new projects right now."}
+                {mode === "day" ? "Usually replies within a day." : "Open to new projects right now."}
               </p>
             </div>
           </div>
