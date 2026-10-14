@@ -46,13 +46,16 @@ export default function SiteHeader({ mode }: { mode: Mode }) {
           right={
             <>
               <ModeLinks mode={mode} className="hidden sm:inline-flex" />
-              <span className="hidden lg:flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-white/55">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              {/* Freelance availability: client route only, recruiters would read it as job hunting. */}
+              {mode === "side" && (
+                <span className="hidden lg:flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-white/55">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                  </span>
+                  Available
                 </span>
-                Available
-              </span>
+              )}
             </>
           }
         />

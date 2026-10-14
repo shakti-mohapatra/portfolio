@@ -164,7 +164,7 @@ export const experience = {
   companies: [
     {
       company: "Stixis Technologies Pvt Ltd",
-      role: "Senior Software QA Engineer",
+      role: "Senior QA Engineer",
       dates: "October 2026 – Present",
       location: "Bangalore, India",
       // TODO: fill scope, prose and metric once DRB KT and tool access land.
@@ -172,14 +172,14 @@ export const experience = {
         {
           org: "DRB",
           scope: "Client engagement · A Vontier company",
-          prose: "Joined in October 2026 as the Senior Software QA Engineer on the DRB engagement. Onboarding and knowledge transfer are under way, and the details of the work will be added here once they start.",
+          prose: "Joined in October 2026 as the Senior QA Engineer on the DRB engagement. Onboarding and knowledge transfer are under way, and the details of the work will be added here once they start.",
           metric: "Started October 2026",
         },
       ],
     },
     {
       company: "Girmiti Softwares Pvt Ltd",
-      role: "Software QA Engineer, Payments & FinTech Domain",
+      role: "Software Engineer-Quality Assurance, Payments & FinTech",
       dates: "March 2022 – August 2026",
       location: "Bangalore, India",
       // Bullets → prose + one mono metric line (PLAN §7). Same facts as before,
@@ -194,7 +194,7 @@ export const experience = {
         {
           org: "Sensei Sigma",
           scope: "Mobile Trading Platform, In-App Payments · Client: USA",
-          prose: "Led a 4-person QA team across the full SDLC for a B2C mobile trading platform shipped on Google Play and the App Store, owning strategy across Android, iOS, a React admin portal, and the backend API layer. Automated payment and user-journey API tests in Python and Selenium, validating card tokenization and balance reconciliation.",
+          prose: "Led a 4-person QA team across the full SDLC for a B2C mobile trading platform shipped on Google Play and the App Store, owning strategy across Android, iOS, a React admin portal, and the backend API layer. Automated the payment and user-journey API tests in Python, validating card tokenization and balance reconciliation, and covered the React admin portal's browser flows with Selenium WebDriver.",
           metric: "Team of 4 · Android + iOS + web",
         },
         {
@@ -206,7 +206,7 @@ export const experience = {
         {
           org: "L2 Kernel & L3 Card Certifications",
           scope: "Multi-scheme terminal certification",
-          prose: "Delivered L3 certifications for five card schemes (Visa, Mastercard, Amex, UnionPay, and Diners Club) on first or second submission every time. Led L2 Kernel certification for internal SPOS applications, passing EMV compliance on the first attempt, and took the Lavego POS through NEXO pre-certification to Visa and Mastercard certification.",
+          prose: "Delivered L3 certifications for five card schemes (Visa, Mastercard, Amex, Discover, and UnionPay) on first or second submission every time. Led L2 Kernel certification for internal SPOS applications, passing EMV compliance on the first attempt, and took the Lavego POS through NEXO pre-certification to Visa and Mastercard certification.",
           metric: "5 schemes L3-certified · EMV compliant on first attempt",
         },
         {
@@ -237,7 +237,7 @@ export const skillCategories: { icon: SkillIconKind; title: string; items: strin
   {
     icon: "terminal",
     title: "Test Automation & Tooling",
-    items: ["Python", "Selenium WebDriver", "REST API / Postman", "Shell Scripting (Linux CLI)", "Git & GitHub"],
+    items: ["Python", "Selenium WebDriver", "BrowserStack", "REST API / Postman", "Shell Scripting (Linux CLI)", "Git & GitHub"],
   },
   {
     icon: "clipboard",
@@ -576,12 +576,12 @@ export const modeContent: Record<Mode, ModeContent> = {
       { display: "GenAI", label: "Now learning: Agentic AI, LearnBay 2026–27" },
     ],
     aboutBio: [
-      "I'm a Senior QA Engineer with 4+ years in payments and fintech: EMV transaction processing, ISO-8583 & NEXO protocol testing, and L2/L3 card certifications for Visa, Mastercard, Amex, UnionPay, and Diners Club, delivered for tier-1 clients including Verifone, Geidea, and Gilbarco (Costco North America).",
+      "I'm a Senior QA Engineer with 4+ years in payments and fintech: EMV transaction processing, ISO-8583 & NEXO protocol testing, and L2/L3 card certifications for Visa, Mastercard, Amex, Discover, and UnionPay, delivered for tier-1 clients including Verifone, Geidea, and Gilbarco (Costco North America).",
       "I'm extending that discipline into AI: learning GenAI & Agentic AI through a Master's program, and building real AI-powered tools (a multi-tenant SaaS knowledge base, automation, chatbots) on the side to apply it hands-on.",
     ],
     aboutClosing: "QA taught me how payment systems break. Now I'm learning to build and evaluate the AI systems that come next.",
-    skills: ["EMV & ISO-8583", "PCI DSS Compliance", "REST API Automation (Python/Selenium)", "Settlement & Reconciliation", "JIRA & Zephyr", "SQL / DBeaver", "GenAI / LLMs (learning)", "Agentic AI (learning)", "React & Next.js"],
-    contactRole: "Senior Software QA Engineer",
+    skills: ["EMV & ISO-8583", "PCI DSS Compliance", "REST API Automation (Python)", "UI Automation (Selenium, BrowserStack)", "Settlement & Reconciliation", "JIRA & Zephyr", "SQL / DBeaver", "GenAI / LLMs (learning)", "Agentic AI (learning)", "React & Next.js"],
+    contactRole: "Senior QA Engineer",
     contactTags: ["QA Engineer", "Payments", "FinTech"],
     contactHeading1: "Let's",
     contactHeading2: "connect.",

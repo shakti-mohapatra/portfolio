@@ -114,13 +114,15 @@ export default function MobileMenu({
                     For Recruiters
                   </Link>
                 </div>
-                <div className="flex items-center gap-2.5">
-                  <span className="relative flex h-2 w-2 shrink-0">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-                  </span>
-                  <span className="font-mono text-xs uppercase tracking-[0.28em] text-emerald-400/80">Available</span>
-                </div>
+                {mode === "side" && (
+                  <div className="flex items-center gap-2.5">
+                    <span className="relative flex h-2 w-2 shrink-0">
+                      <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                    </span>
+                    <span className="font-mono text-xs uppercase tracking-[0.28em] text-emerald-400/80">Available</span>
+                  </div>
+                )}
                 <p className="text-sm text-white/60 leading-relaxed">{tagline}</p>
               </div>
 
