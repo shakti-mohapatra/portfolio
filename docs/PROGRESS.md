@@ -899,3 +899,21 @@ Every em-dash (`—`) in a visible string was replaced with natural punctuation 
 - The test is Chromium emulating iPad, not Safari. A WebKit or real-iPad confirmation is still owed.
 - About and the L3 certification entry still say Diners Club where the CV says Discover. Shakti hasn't decided yet.
 - The header "Available" pill shows on the recruiter route too. Shakti hasn't decided yet.
+
+---
+
+## 2026-10-14: release v1.2.0, Shakti's review notes on v1.1.0
+
+Shakti checked v1.1.0 on his own iPad and reported it fine. He then sent these corrections, all applied:
+- The official designation from the Stixis appointment letter is **Senior QA Engineer**. The site and CV now both use it. Girmiti's role on the site now matches the CV's official `Software Engineer-Quality Assurance`.
+- Diners Club changed to Discover on the site.
+- Selenium is a browser driver, not an API testing tool. The site's Sensei Sigma prose and skills, and the CV's summary, skills and Sensei Sigma bullets, now keep Python REST API testing and Selenium browser UI automation separate. BrowserStack was added to skills because the DRB project uses it.
+- The "Available" pill now shows on the client route only.
+- CV ATS: headings extracted as "PROFESS IONAL S UMMARY". The cause was expanded character spacing plus caps formatting. That was removed, the caps are typed in, and 38 split runs were merged. All three extractors now read the headings cleanly.
+
+**Verified:** tsc and eslint are clean. The iPad smoke test passes 9 of 9 on a production build with the new fact and pill checks. The ATS extraction check is in `docs/test-results/2026-10-14-ipad-v1.2.0/`.
+
+**Open:**
+- The new Sensei Sigma Selenium bullet says it covered the React admin portal. That's inferred from the platform list, so Shakti should confirm it.
+- pypdf still splits five body words in the résumé. PyMuPDF and pdfminer don't.
+- DRB scope is still a placeholder.

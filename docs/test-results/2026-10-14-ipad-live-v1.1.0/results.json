@@ -1,0 +1,254 @@
+{
+  "iPad Mini": {
+    "viewport": "768x1024",
+    "touch": true,
+    "gate": true,
+    "lenis": false,
+    "webgl_running": false,
+    "switches_ok": true,
+    "lag_after_switches_ms": 2,
+    "overflow_x": {
+      "/recruiters": false,
+      "/": false
+    },
+    "anchors": {
+      "/recruiters#experience": "ok",
+      "/recruiters#skills": "ok",
+      "/recruiters#about": "ok",
+      "/recruiters#contact": "ok",
+      "/#work": "ok",
+      "/#services": "ok",
+      "/#about": "ok",
+      "/#contact": "ok"
+    },
+    "stixis_listed": true,
+    "resume_pdf": 200,
+    "case_study": 200,
+    "errors": [],
+    "pass": true
+  },
+  "iPad Mini landscape": {
+    "viewport": "1024x768",
+    "touch": true,
+    "gate": true,
+    "lenis": false,
+    "webgl_running": false,
+    "switches_ok": true,
+    "lag_after_switches_ms": 2,
+    "overflow_x": {
+      "/recruiters": false,
+      "/": false
+    },
+    "anchors": {
+      "/recruiters#experience": "ok",
+      "/recruiters#skills": "ok",
+      "/recruiters#about": "ok",
+      "/recruiters#contact": "ok",
+      "/#work": "ok",
+      "/#services": "ok",
+      "/#about": "ok",
+      "/#contact": "ok"
+    },
+    "stixis_listed": true,
+    "resume_pdf": 200,
+    "case_study": 200,
+    "errors": [],
+    "pass": true
+  },
+  "iPad (gen 11)": {
+    "viewport": "656x944",
+    "touch": true,
+    "gate": true,
+    "lenis": false,
+    "webgl_running": false,
+    "switches_ok": true,
+    "lag_after_switches_ms": 2,
+    "overflow_x": {
+      "/recruiters": false,
+      "/": false
+    },
+    "anchors": {
+      "/recruiters#experience": "ok",
+      "/recruiters#skills": "ok",
+      "/recruiters#about": "ok",
+      "/recruiters#contact": "ok",
+      "/#work": "ok",
+      "/#services": "ok",
+      "/#about": "ok",
+      "/#contact": "ok"
+    },
+    "stixis_listed": true,
+    "resume_pdf": 200,
+    "case_study": 200,
+    "errors": [],
+    "pass": true
+  },
+  "iPad (gen 11) landscape": {
+    "viewport": "944x656",
+    "touch": true,
+    "gate": true,
+    "lenis": false,
+    "webgl_running": false,
+    "switches_ok": true,
+    "lag_after_switches_ms": 2,
+    "overflow_x": {
+      "/recruiters": false,
+      "/": false
+    },
+    "anchors": {
+      "/recruiters#experience": "ok",
+      "/recruiters#skills": "ok",
+      "/recruiters#about": "ok",
+      "/recruiters#contact": "ok",
+      "/#work": "ok",
+      "/#services": "ok",
+      "/#about": "ok",
+      "/#contact": "ok"
+    },
+    "stixis_listed": true,
+    "resume_pdf": 200,
+    "case_study": 200,
+    "errors": [],
+    "pass": true
+  },
+  "iPad Pro 11": {
+    "viewport": "834x1194",
+    "touch": true,
+    "gate": true,
+    "lenis": false,
+    "webgl_running": false,
+    "switches_ok": true,
+    "lag_after_switches_ms": 2,
+    "overflow_x": {
+      "/recruiters": false,
+      "/": false
+    },
+    "anchors": {
+      "/recruiters#experience": "ok",
+      "/recruiters#skills": "ok",
+      "/recruiters#about": "ok",
+      "/recruiters#contact": "ok",
+      "/#work": "ok",
+      "/#services": "ok",
+      "/#about": "ok",
+      "/#contact": "ok"
+    },
+    "stixis_listed": true,
+    "resume_pdf": 200,
+    "case_study": 200,
+    "errors": [],
+    "pass": true
+  },
+  "iPad Pro 11 landscape": {
+    "viewport": "1194x834",
+    "touch": true,
+    "gate": true,
+    "lenis": false,
+    "webgl_running": false,
+    "switches_ok": true,
+    "lag_after_switches_ms": 2,
+    "overflow_x": {
+      "/recruiters": false,
+      "/": false
+    },
+    "anchors": {
+      "/recruiters#experience": "ok",
+      "/recruiters#skills": "ok",
+      "/recruiters#about": "ok",
+      "/recruiters#contact": "ok",
+      "/#work": "ok",
+      "/#services": "ok",
+      "/#about": "ok",
+      "/#contact": "ok"
+    },
+    "stixis_listed": true,
+    "resume_pdf": 200,
+    "case_study": 200,
+    "errors": [],
+    "pass": true
+  },
+  "iPad Pro 12.9": {
+    "viewport": "1024x1366",
+    "touch": true,
+    "gate": true,
+    "lenis": false,
+    "webgl_running": false,
+    "switches_ok": true,
+    "lag_after_switches_ms": 2,
+    "overflow_x": {
+      "/recruiters": false,
+      "/": false
+    },
+    "anchors": {
+      "/recruiters#experience": "ok",
+      "/recruiters#skills": "ok",
+      "/recruiters#about": "ok",
+      "/recruiters#contact": "ok",
+      "/#work": "ok",
+      "/#services": "ok",
+      "/#about": "ok",
+      "/#contact": "ok"
+    },
+    "stixis_listed": true,
+    "resume_pdf": 200,
+    "case_study": 200,
+    "errors": [],
+    "pass": true
+  },
+  "iPad Pro 12.9 landscape": {
+    "viewport": "1366x1024",
+    "touch": true,
+    "gate": true,
+    "lenis": false,
+    "webgl_running": false,
+    "switches_ok": true,
+    "lag_after_switches_ms": 2,
+    "overflow_x": {
+      "/recruiters": false,
+      "/": false
+    },
+    "anchors": {
+      "/recruiters#experience": "ok",
+      "/recruiters#skills": "ok",
+      "/recruiters#about": "ok",
+      "/recruiters#contact": "ok",
+      "/#work": "ok",
+      "/#services": "ok",
+      "/#about": "ok",
+      "/#contact": "ok"
+    },
+    "stixis_listed": true,
+    "resume_pdf": 200,
+    "case_study": 200,
+    "errors": [],
+    "pass": true
+  },
+  "iPad Air + trackpad (desktop path)": {
+    "viewport": "1180x820",
+    "touch": false,
+    "gate": false,
+    "lenis": true,
+    "webgl_running": true,
+    "switches_ok": true,
+    "lag_after_switches_ms": 2,
+    "overflow_x": {
+      "/recruiters": false,
+      "/": false
+    },
+    "anchors": {
+      "/recruiters#experience": "ok",
+      "/recruiters#skills": "ok",
+      "/recruiters#about": "ok",
+      "/recruiters#contact": "ok",
+      "/#work": "ok",
+      "/#services": "ok",
+      "/#about": "ok",
+      "/#contact": "ok"
+    },
+    "stixis_listed": true,
+    "resume_pdf": 200,
+    "case_study": 200,
+    "errors": [],
+    "pass": true
+  }
+}

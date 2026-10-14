@@ -112,8 +112,16 @@ def run_profile(browser, base, name, desc, outdir):
     page.wait_for_timeout(1500)
     body = page.inner_text("body")
     r["stixis_listed"] = "Stixis Technologies" in body and "March 2022 – August 2026" in body
+    # v1.2.0 facts: official designation, Discover (not Diners Club), Available pill on client route only.
+    r["facts_ok"] = "Senior QA Engineer" in body and "Senior Software QA" not in body and "Diners" not in body and "Discover" in body
+    header_has_pill = "() => document.querySelector('header').textContent.includes('Available')"
+    r["pill_hidden_recruiter"] = not page.evaluate(header_has_pill)
     r["resume_pdf"] = page.request.head(base + "/resume-shakti-mohapatra.pdf").status
     r["case_study"] = page.request.get(base + "/work/aegisqa").status
+    page.goto(base + "/", wait_until="networkidle")
+    r["pill_shown_client"] = page.evaluate(header_has_pill)
+    page.goto(base + "/recruiters", wait_until="networkidle")
+    page.wait_for_timeout(1500)
 
     slug = name.lower().replace(" ", "-").replace("(", "").replace(")", "").replace("+", "plus").replace(".", "")
     page.screenshot(path=str(outdir / f"{slug}-hero.jpg"), type="jpeg", quality=55)
@@ -131,6 +139,7 @@ def run_profile(browser, base, name, desc, outdir):
         and not any(overflow.values())
         and all(v == "ok" for v in anchors.values())
         and r["stixis_listed"] and r["resume_pdf"] == 200 and r["case_study"] == 200
+        and r["facts_ok"] and r["pill_hidden_recruiter"] and r["pill_shown_client"]
         and not errors
     )
     ctx.close()
