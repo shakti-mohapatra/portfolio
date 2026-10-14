@@ -880,3 +880,22 @@ Every em-dash (`—`) in a visible string was replaced with natural punctuation 
 - Header fix needs the real-Firefox repro above before it can be marked verified.
 - New session-9 work (OrderFlow, header fix, 3 redesigns) is **uncommitted** — sessions 6-8 are the only part of this branch that's committed so far.
 - Reduced-motion (§10 #6) / Firefox parity (§10 #7) checks were handed to Shakti directly (dev server left running, "Firefox is okay for now") — not yet reported back as pass/fail.
+
+---
+
+## 2026-10-13 to 2026-10-14: release v1.1.0, Stixis on Experience, iPad pre-release check
+
+**Done and verified:**
+- Experience restructured to `experience.companies[]`. Stixis Technologies (Senior Software QA Engineer, October 2026 to Present, DRB engagement as a placeholder until KT) sits above Girmiti (now March 2022 to August 2026). No visual redesign; the existing header and timeline block repeats per company.
+- Recruiter contact copy reworded so it no longer reads as job hunting, including the hard-coded "Open to new opportunities right now." line in `Contact.tsx`.
+- `public/resume-shakti-mohapatra.pdf` replaced with the Global Draft CV export (Stixis added, 3 pages, Shakti's call).
+- iPad smoke test added (`tests/ipad_smoke.py`). Final run on a production build with the real GPU: 9 of 9 profiles pass. Report in `docs/test-results/2026-10-14-ipad/`.
+- Real bug found by that test and fixed: Lenis anchors double-counted the 72 px header offset on the desktop path (`SmoothScroll.tsx`).
+- Shakti reviewed the local build and approved the push.
+- Versioning started: `CHANGELOG.md`, tags `v1.0.0` (previous live build, `47292e4`) and `v1.1.0`.
+
+**Open:**
+- DRB scope, prose and metric are placeholders (`TODO` in `app/_data.ts`).
+- The test is Chromium emulating iPad, not Safari. A WebKit or real-iPad confirmation is still owed.
+- About and the L3 certification entry still say Diners Club where the CV says Discover. Shakti hasn't decided yet.
+- The header "Available" pill shows on the recruiter route too. Shakti hasn't decided yet.

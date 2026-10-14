@@ -6,7 +6,20 @@ Source for [my portfolio site](https://portfolio-xi-lilac-71.vercel.app) — Nex
 
 This repo tracks the **last shipped production build**. Active development has moved to a private repo — this one gets updated when something ships, not while it's being worked on.
 
-Latest: fixed a P0 bug where switching between `/` and `/recruiters` froze the page for 4-6 seconds on real mobile/tablet devices (native View Transition snapshotting a live WebGL canvas + heavy blur while the canvas and scroll library both re-initialized mid-navigation).
+Current release: **v1.1.0** (14 October 2026). Experience now includes Stixis Technologies and the DRB engagement, the résumé PDF is updated, and the menu anchor offset on desktop is fixed. Before release it passed a 9-profile iPad smoke test. See [CHANGELOG.md](CHANGELOG.md) for every release.
+
+Previous: fixed a P0 bug where switching between `/` and `/recruiters` froze the page for 4-6 seconds on real mobile/tablet devices (native View Transition snapshotting a live WebGL canvas + heavy blur while the canvas and scroll library both re-initialized mid-navigation).
+
+## Versions and test evidence
+
+- Each production release gets a `CHANGELOG.md` entry and a git tag (`v1.0.0`, `v1.1.0`, ...).
+- Test results for each release are kept in `docs/test-results/`, with the raw output and screenshots.
+- iPad smoke test (needs Python with `playwright`; run it against a production build):
+
+```bash
+npm run build && npm run start -- -p 3002
+python tests/ipad_smoke.py http://localhost:3002 docs/test-results/<date>-ipad --gpu
+```
 
 ## Stack
 
