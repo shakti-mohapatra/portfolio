@@ -4,9 +4,9 @@ Every release that reaches production gets an entry here and a matching git tag 
 
 Versioning: **major** for a redesign or structural change, **minor** for new content or features, **patch** for fixes only. Test evidence for a release lives in `docs/test-results/`.
 
-## v1.3.0, unreleased (on branch `feat/orchestrator-flagship`, awaiting Shakti's review)
+## v1.3.0, 23 October 2026
 
-Merging this branch to `main` deploys it. Tag `v1.3.0` on the merge commit.
+Shakti reviewed the Vercel preview on the iPad and approved the release.
 
 **Content**
 - New flagship project, **Local AI Orchestrator**, first on both routes. It is a coding pipeline that runs a 35B model on one 6 GB GPU and verifies every step the model writes. The client route gets a plain-English description (`descPlain`), and the recruiter route gets the technical one. Every figure comes from the orchestrator repo's own records.
