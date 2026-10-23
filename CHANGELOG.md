@@ -18,7 +18,8 @@ Merging this branch to `main` deploys it. Tag `v1.3.0` on the merge commit.
 
 **Testing**
 - `tests/ipad_smoke.py` now checks that the orchestrator leads Work on both routes and that its report is linked from both, that `/work/orchestrator` returns 200, and that the thumbnail returns 200. It also saves a Work screenshot per profile.
-- Pre-release checks: tsc clean, eslint clean on changed files, production build green, canonical tags checked in the built HTML. iPad smoke results and desktop/phone screenshots are in [`docs/test-results/2026-10-23-ipad-v1.3.0/`](docs/test-results/2026-10-23-ipad-v1.3.0/README.md).
+- Pre-release checks: tsc clean, eslint clean on changed files, production build green, canonical tags checked in the built HTML.
+- iPad smoke test in a cloud container without a GPU: 8 of 9 profiles pass, and the flagship checks pass on all 9. The desktop-path profile fails on software-rendered WebGL. Shipped v1.2.0 fails it the same way in the same container (817 ms lag against 853 ms), so it is the environment, not this release. A `--gpu` run on the PC is still owed. Report and desktop/phone screenshots: [`docs/test-results/2026-10-23-ipad-v1.3.0/`](docs/test-results/2026-10-23-ipad-v1.3.0/README.md).
 
 ## v1.2.0, 14 October 2026
 

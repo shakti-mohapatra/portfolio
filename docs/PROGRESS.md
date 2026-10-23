@@ -941,4 +941,4 @@ Shakti asked for the local AI orchestrator (private repo `My-ai-Orchestrator`) t
 - "Real projects shipped" 5 → 6 counts the orchestrator as shipped (v1.0.0 tagged 3 September, in use). Revert it if you see it as in progress.
 - The case study's "← Back to work" link goes to `/recruiters` for every reader, including clients who now arrive from `/`. Fixing it needs a referrer-aware link, which means a client island, and PLAN §10 #3 limits those, so it was left alone.
 - eslint on the whole `app/` folder still reports two `react-hooks/set-state-in-effect` errors, in `CountUp.tsx` and `HeroCanvas.tsx`. They fail on `main` too and were not touched here.
-- The iPad run in this session used software WebGL (no GPU in the container). A `--gpu` run on the Windows PC, or a real-iPad check, is still the stronger proof.
+- iPad smoke test (software WebGL, no GPU in the container): 8 of 9 pass, and the flagship checks pass on all 9. The desktop-path profile fails, and the shipped v1.2.0 build fails it identically in the same container, so it is the environment. A `--gpu` run on the Windows PC, or a real-iPad check, is still owed before merging.
