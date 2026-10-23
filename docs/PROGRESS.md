@@ -917,3 +917,30 @@ Shakti checked v1.1.0 on his own iPad and reported it fine. He then sent these c
 - The new Sensei Sigma Selenium bullet says it covered the React admin portal. That's inferred from the platform list, so Shakti should confirm it.
 - pypdf still splits five body words in the résumé. PyMuPDF and pdfminer don't.
 - DRB scope is still a placeholder.
+
+---
+
+## 2026-10-23: v1.3.0 prepared, the orchestrator as the flagship project
+
+Shakti asked for the local AI orchestrator (private repo `My-ai-Orchestrator`) to become the centrepiece and first client-facing self project, with full documentation on GitHub and in the portfolio, in the existing format. The session ran unattended in a cloud container. It started from the PC and is being continued from the iPad.
+
+**Done and verified, on branch `feat/orchestrator-flagship` (not merged, not deployed):**
+- `app/_data.ts`: a new first project, **Local AI Orchestrator** (badge "Flagship", order 1 on both routes), with a technical `desc` and a plain-English `descPlain` for the client route. Every number comes from the orchestrator repo's records (RESUME-2026-09-14, KNOWN-ISSUES, LOCAL-LLM-GUIDE §5.3). The other cards moved down one place, with their relative order kept.
+- New case study `orchestrator` (index 01), "Every check passed. / Search never worked.", in the defect-report format with readout, six prose sections and no em dashes. The facts were checked against DOGFOOD-AIKB-2026-09-09, KNOWN-ISSUES (9 to 11 Sep), RESUME-2026-09-10-night and RESUME-2026-09-12. The existing studies are renumbered 02 to 05, with the text unchanged.
+- `Project.reportOn` (optional, default `["day"]`) lets the flagship show "Read the report" on the client route too. `Work.tsx` makes a one-line change to read it. No new `"use client"` file.
+- Client stat 5 → 6 projects shipped. The recruiter bio names the orchestrator. The "Now Learning" skills gain "Local LLMs (llama.cpp)".
+- New thumbnail `public/projects/orchestrator-1.webp`, rendered from an HTML panel. The pipeline matches the real call chain. The terminal shows output produced on 23 October: `freeze_suite.py --verify v3` PASS, and `pytest` 121 passed over the validators, router, verifiers and mutate tests. Below that sits the 11 September mutation report (61.1% / 80.0%), reformatted with `mutate.py`'s own print format and labelled with its date. It was converted with the repo's `sharp`, WebP q84.
+- `tests/ipad_smoke.py` gained flagship checks and a Work screenshot per profile.
+- tsc clean. eslint is clean on the changed files. `npm run build` is green, and canonical tags were checked in the built HTML for `/`, `/recruiters` and `/work/orchestrator`. Desktop (1440) and phone (390) screenshots show no horizontal overflow and no page errors.
+
+**Orchestrator repo:** branch `docs/public-documentation` adds a root README and `docs/` (ARCHITECTURE, RESULTS, DESIGN-DECISIONS, GETTING-STARTED, DOCUMENT-MAP, PUBLISHING-CHECKLIST) as a draft PR. The repo is still private, so the portfolio card links to the GitHub profile, following the private-repo rule in PLAN §8.
+
+**Open, Shakti's call:**
+- Review and merge `feat/orchestrator-flagship` (merging deploys), then tag `v1.3.0`.
+- Whether to make `My-ai-Orchestrator` public. Work through `docs/PUBLISHING-CHECKLIST.md` in that repo first. If it goes public, set the card's `link` to the repo URL with `linkLabel: "View on GitHub"`, and add `repo` to the case study.
+- "Real projects shipped" 5 → 6 counts the orchestrator as shipped (v1.0.0 tagged 3 September, in use). Revert it if you see it as in progress.
+- The case study's "← Back to work" link goes to `/recruiters` for every reader, including clients who now arrive from `/`. Fixing it needs a referrer-aware link, which means a client island, and PLAN §10 #3 limits those, so it was left alone.
+- eslint on the whole `app/` folder still reports two `react-hooks/set-state-in-effect` errors, in `CountUp.tsx` and `HeroCanvas.tsx`. They fail on `main` too and were not touched here.
+- iPad smoke test (software WebGL, no GPU in the container): 8 of 9 pass, and the flagship checks pass on all 9. The desktop-path profile fails, and the shipped v1.2.0 build fails it identically in the same container, so it is the environment. A `--gpu` run on the Windows PC, or a real-iPad check, is still owed before merging.
+
+**Released 23 October 2026.** Shakti reviewed the Vercel preview on the iPad and asked for the release. PR #1 was merged to `main` (production deploy) and tagged `v1.3.0`. The orchestrator docs PR was merged in its repo. The `--gpu` iPad run on the PC was not done before release, so it is still a follow-up.

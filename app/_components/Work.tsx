@@ -29,7 +29,7 @@ function ProjectRow({ p, i, mode }: { p: Project; i: number; mode: Mode }) {
             {p.linkLabel}
             <span className="group-hover:translate-x-1 transition-transform"><ArrowUpRight /></span>
           </a>
-          {p.caseStudySlug && mode === "day" && (
+          {p.caseStudySlug && (p.reportOn ?? ["day"]).includes(mode) && (
             <Link href={`/work/${p.caseStudySlug}`} className="group inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wide text-[var(--accent)] hover:text-white transition-colors">
               Read the report
               <span className="group-hover:translate-x-1 transition-transform">→</span>

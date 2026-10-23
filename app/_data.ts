@@ -78,16 +78,30 @@ export type Project = {
   caseStudySlug?: string;
   /** Routes this card is hidden on (day = recruiter). Client keeps all. */
   hideOn?: Mode[];
+  /** Routes that show the "READ THE REPORT →" link. Defaults to recruiter only;
+   * the flagship opts the client route in too, since it leads that page. */
+  reportOn?: Mode[];
 };
 
 export const projects: Project[] = [
+  {
+    // Flagship (2026-10): leads both routes. Every figure is from the repo's own
+    // records (RESUME-2026-09-14.md, KNOWN-ISSUES.md, LOCAL-LLM-GUIDE.md §5.3).
+    badge: "Flagship", badgeClass: "text-amber-300 border-amber-400/30 bg-amber-400/10",
+    title: "Local AI Orchestrator", tagline: "An AI that writes software on my own desktop, then checks its own work before it calls anything done.",
+    desc: "A planner, router, executor and verifier stack over local llama.cpp models: a 35B mixture-of-experts model running on one 6 GB RTX 2060, with no cloud API. It turns a typed task into a validated multi-step plan, writes each step, runs the real tests plus deterministic verifiers and mutation testing, gets one targeted repair call, and logs every step to a JSONL ledger. 699 tests, a hash-verified frozen benchmark, and no judge model.",
+    descPlain: "Type what you want built, walk away, and come back to working code, written by an AI that runs entirely on my own desktop with no subscription. The interesting part is what happens after the AI says it's finished: every step is run, tested and checked by code the AI didn't write, and anything that fails gets one targeted fix or is reported plainly, never hidden. Nearly 700 automated tests keep the checker itself honest.",
+    tags: ["Python", "llama.cpp", "Local LLMs", "pytest", "Mutation testing"],
+    image: "/projects/orchestrator-1.webp", link: GITHUB, linkLabel: "GitHub profile",
+    order: { side: 1, day: 1 }, caseStudySlug: "orchestrator", reportOn: ["side", "day"],
+  },
   {
     badge: "Client project", badgeClass: "text-emerald-300 border-emerald-400/30 bg-emerald-400/10",
     title: "SS BAZAR", tagline: "Reserve & Collect store for a local fashion & grocery shop",
     desc: "Customers browse the catalogue, bag items, choose store pickup or home delivery, and get an order code. The merchant checks them out at the counter, and stock updates automatically on collection. No online payment; the whole experience is built around in-person transactions.",
     tags: ["Next.js", "Supabase", "TypeScript", "Tailwind", "Vercel"],
     image: "/projects/cs-2.png", link: "https://clothing-store-steel-kappa.vercel.app", linkLabel: "View live",
-    order: { side: 1, day: 4 }, hideOn: ["day"],
+    order: { side: 2, day: 5 }, hideOn: ["day"],
   },
   {
     badge: "Shipped", badgeClass: "text-violet-300 border-violet-400/30 bg-violet-400/10",
@@ -95,7 +109,7 @@ export const projects: Project[] = [
     desc: "A multi-tenant SaaS where organisations upload documents and get an AI assistant trained on them. Roles and invitations, document ingestion and chunking, API keys and webhooks, and a complete audit log. Built with FastAPI, Postgres, and React.",
     tags: ["FastAPI", "PostgreSQL", "React", "TanStack Query", "Alembic"],
     image: "/projects/ai-kb-1.webp", link: GITHUB, linkLabel: "GitHub profile",
-    order: { side: 2, day: 3 }, caseStudySlug: "ai-kb-saas",
+    order: { side: 3, day: 4 }, caseStudySlug: "ai-kb-saas",
   },
   {
     badge: "Personal tool", badgeClass: "text-sky-300 border-sky-400/30 bg-sky-400/10",
@@ -103,7 +117,7 @@ export const projects: Project[] = [
     desc: "Kanban board, sprint planning, bug tracker, and GitHub Issues sync, running offline as a local web app. A Ctrl+K command palette, dark mode, and an insights dashboard with velocity charts.",
     tags: ["Next.js", "SQLite", "TypeScript", "Tailwind"],
     image: "/projects/mc-4.webp", link: GITHUB, linkLabel: "GitHub profile",
-    order: { side: 3, day: 5 }, hideOn: ["day"],
+    order: { side: 4, day: 6 }, hideOn: ["day"],
   },
   {
     badge: "Shipped", badgeClass: "text-violet-300 border-violet-400/30 bg-violet-400/10",
@@ -112,7 +126,7 @@ export const projects: Project[] = [
     descPlain: "When an automated test breaks, most tools just say it failed. This one looks at what actually went wrong, explains it in plain terms, and suggests a fix, and a human reviews it before anything changes. 32 tests passing, verified against a real AI service.",
     tags: ["Playwright", "pytest", "Python", "LLM Agents"],
     image: "/projects/aegisqa-1.webp", link: GITHUB, linkLabel: "GitHub profile",
-    order: { side: 4, day: 2 }, caseStudySlug: "aegisqa",
+    order: { side: 5, day: 3 }, caseStudySlug: "aegisqa",
   },
   {
     badge: "Shipped", badgeClass: "text-violet-300 border-violet-400/30 bg-violet-400/10",
@@ -121,7 +135,7 @@ export const projects: Project[] = [
     descPlain: "Checks whether an AI model can be trusted with financial data before it goes near real customers, testing it against ten different ways it could go wrong, from leaking private information to giving inconsistent answers. Current score: 88.9% pass rate, zero data leaks found.",
     tags: ["Promptfoo", "Python", "LLM Evaluation", "FastAPI"],
     image: "/projects/fintech-ai-guard-1.webp", link: "https://github.com/shakti-mohapatra/fintech-ai-guard", linkLabel: "View on GitHub",
-    order: { side: 5, day: 1 }, caseStudySlug: "fintech-ai-guard",
+    order: { side: 6, day: 2 }, caseStudySlug: "fintech-ai-guard",
   },
 ];
 
@@ -252,7 +266,7 @@ export const skillCategories: { icon: SkillIconKind; title: string; items: strin
   {
     icon: "spark",
     title: "Now Learning: GenAI & Agentic AI",
-    items: ["LLMs & Prompting", "RAG Pipelines", "LangChain / LangGraph", "Agentic Systems", "LLM Evaluation"],
+    items: ["LLMs & Prompting", "Local LLMs (llama.cpp)", "RAG Pipelines", "LangChain / LangGraph", "Agentic Systems", "LLM Evaluation"],
   },
 ];
 
@@ -282,8 +296,74 @@ export type CaseStudy = {
 
 export const caseStudies: CaseStudy[] = [
   {
-    slug: "trading-bot",
+    // Flagship report. Sourced from the orchestrator repo's own records:
+    // DOGFOOD-AIKB-2026-09-09.md, KNOWN-ISSUES.md (9-11 Sep 2026 entries),
+    // RESUME-2026-09-10-night.md, RESUME-2026-09-12.md, ORCHESTRATOR-PLAN.md.
+    slug: "orchestrator",
     index: "01",
+    date: "2026-09-10",
+    project: "Local AI Orchestrator, a coding pipeline that verifies its own model",
+    title1: "Every check passed.",
+    title2: "Search never worked.",
+    standfirst:
+      "I built a pipeline that lets an AI model on my own desktop write software unattended, and checks the work instead of trusting it. Its first real job came back green. The program it built never finished running, and the search at its heart had never worked in any build.",
+    readout: [
+      { label: "SEVERITY",   value: "CRITICAL: false green on delivered code" },
+      { label: "COMPONENT",  value: "verification layer of a local-LLM coding orchestrator" },
+      { label: "EXPECTED",   value: "a document-search service, built and tested end to end by a local model" },
+      { label: "ACTUAL",     value: "every check passed; search was broken in 4 of 4 builds, 4 different ways" },
+      { label: "ROOT CAUSE", value: "the plan the model wrote for itself was unsatisfiable, and its tests could not see it" },
+      { label: "RESOLUTION", value: "the tests are now measured themselves; specs are checked for leaked reasoning" },
+    ],
+    sections: [
+      {
+        heading: "What I built",
+        body: [
+          "The goal was simple to say: type a coding task, walk away, come back to working code, with no API bill. Everything runs on one desktop with a 6 GB RTX 2060. The main model is a 35-billion-parameter mixture-of-experts model that only fits because most of its expert layers live in system memory, and it reads a full 30,000-token prompt in about four and a half minutes. That is the budget every design decision has to respect.",
+          "The orchestrator turns a task into a multi-step plan, checks the plan against schema, policy and resource rules before anything runs, writes the code one step at a time, runs the real tests and a set of deterministic verifiers after each step, and gives a failing step exactly one repair call. Every step writes a row to a ledger with the model file, context size and free GPU memory, so no two results get compared unless the machine was in the same state.",
+          "Every agent framework ships a planner and a router. The part I own is the one none of them have: a layer that refuses to believe the model. Each component has to add verification or it doesn't get built.",
+        ],
+      },
+      {
+        heading: "The run that looked finished",
+        body: [
+          "The first real job was a small document question-answering service: split documents into chunks, index them in SQLite's full-text search, answer questions with citations, refuse when nothing matches, at least twelve tests. It came back in three minutes and six seconds. Every check passed. The modules imported, the tests were collected, no conflict markers, deliverables copied.",
+          "The deliverable didn't work. The chunking loop never terminated on any non-empty input: once the chunk end reached the end of the text, the start pointer stopped advancing. Two of the three test files hung forever. When I ran that suite by hand outside the harness, with no limits, it ate all 32 GB of memory over about 27 minutes.",
+        ],
+      },
+      {
+        heading: "Four reasonable rules, one false green",
+        body: [
+          "No single bug did this. Four individually sensible behaviours chained together. A policy rule demanded a timeout from any step tagged as network code, which is right for a step that calls out and impossible for a step that serves, so the plan for a web API was rejected twice and the run fell back to a single step. That fallback was written with no test command, so the tests it produced were never executed. It also skipped writing the original task file, so the acceptance checklist silently didn't run, which is how eleven tests against a stated minimum of twelve went unnoticed. And nothing capped the memory of a test run.",
+          "Each one got its own fix: the policy rule now separates outbound calls from serving, the fallback runs whatever tests it produced, the acceptance checklist runs on every path, and every test subprocess runs under a 2,048 MB memory cap as well as the clock. A kill is no longer swallowed. It goes back to the model as a repair instruction that names the loop bound.",
+        ],
+      },
+      {
+        heading: "Green again, and still wrong",
+        body: [
+          "A later build passed fourteen of fourteen tests. I no longer trusted that, so I built a mutation tester: it changes the generated code one syntax node at a time and reruns the model's own tests against each change. A change the tests catch is killed. One they still pass is a behaviour nothing actually checks.",
+          "The search module scored 23.1%: three changes killed, ten survived. The relevance formula could be inverted, the sort reversed, the sort key swapped from score to title, and all fourteen tests stayed green. Every ranking assertion was a membership check, \"Doc1 is somewhere in the results\", which tests that search finds a document, not that it ranks them. A passing step wasn't weak evidence. It was misleading evidence.",
+        ],
+      },
+      {
+        heading: "Four builds, four different failures",
+        body: [
+          "Then the stronger tests came back, and four of them failed, correctly: search returned an empty list. Looking back across every build the pipeline had ever produced, there were four builds and four different search failures. One never returned, one ranked the least relevant result first, one scored everything 0.999998, and one always returned nothing. A model that gets something wrong once got unlucky. A model that gets it wrong four different ways was handed a specification it could not satisfy.",
+          "The spec was the model's own. The planning step had written both \"rank by bm25()\" and \"filter results where score is at least 0.5\". SQLite's bm25() returns a negative, unbounded number, so that filter removes everything, always. No implementation can honour both lines, so each build invented its own private escape and each escape broke differently. The same spec also contained the planner's unfinished thinking, verbatim: \"No, simpler:\" and \"Actually, ... Let's use\". One of those abandoned alternatives handed the model a table that stores no text at all, and the model followed it literally.",
+        ],
+      },
+      {
+        heading: "What I actually did about it",
+        body: [
+          "Rewrote the specification so it can be satisfied: normalise scores per query against the best hit, and pin the chunking rule with one worked example instead of a prose rule. Zero of four builds had a working search before. Two of two did after. Added a check that rejects any plan step containing the planner's leftover deliberation, because a plan step is a contract, not a scratchpad, and whatever runs next follows it to the letter. Taught the mutation tester to flip SQL sort direction, and made the test spec name ordering, boundaries and default values. Flipping the sort used to pass twenty of twenty tests. On the regenerated build it fails the suite, and the tests now catch 10 of 17 changes to the search module.",
+          "It isn't solved, and the record says so. Fresh builds are still the largest open problem, and the repair call fixes 21 of the 54 failing steps it has been given. That's a number I can only state because a later audit caught my own metrics reader double-counting reruns and understating every figure. The standing rule this left behind: a green step is a claim, not a result, until something has measured the tests themselves.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "trading-bot",
+    index: "02",
     date: "2026-07-16",
     project: "JARVIS-Trader, algorithmic paper-trading bot",
     title1: "The backtest that",
@@ -347,7 +427,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     slug: "aegisqa",
-    index: "02",
+    index: "03",
     date: "2026-07-17",
     project: "AegisQA, self-healing test infrastructure",
     title1: "The AI that isn't",
@@ -395,7 +475,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     slug: "fintech-ai-guard",
-    index: "03",
+    index: "04",
     date: "2026-07-06",
     project: "Fintech-AI-Guard, LLM safety evaluation harness",
     title1: "The AI that said",
@@ -451,7 +531,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     slug: "ai-kb-saas",
-    index: "04",
+    index: "05",
     date: "2026-07-05",
     project: "AI Knowledge Base, multi-tenant RAG platform",
     title1: "The permission check",
@@ -541,7 +621,7 @@ export const modeContent: Record<Mode, ModeContent> = {
       { display: "24–48h", label: "Typical delivery" },
       { to: 100, suffix: "%", label: "Built personally" },
       { display: "2", label: "Rounds included" },
-      { to: 5, suffix: "", label: "Real projects shipped" },
+      { to: 6, suffix: "", label: "Real projects shipped" },
     ],
     aboutBio: [
       "I'm a full-stack developer specialising in Python and JavaScript. I've spent the last few years building things that actually get used: automation that runs every morning, AI tools that answer the questions support teams got tired of handling, and web apps that shops opened to real customers.",
@@ -577,7 +657,7 @@ export const modeContent: Record<Mode, ModeContent> = {
     ],
     aboutBio: [
       "I'm a Senior QA Engineer with 4+ years in payments and fintech: EMV transaction processing, ISO-8583 & NEXO protocol testing, and L2/L3 card certifications for Visa, Mastercard, Amex, Discover, and UnionPay, delivered for tier-1 clients including Verifone, Geidea, and Gilbarco (Costco North America).",
-      "I'm extending that discipline into AI: learning GenAI & Agentic AI through a Master's program, and building real AI-powered tools (a multi-tenant SaaS knowledge base, automation, chatbots) on the side to apply it hands-on.",
+      "I'm extending that discipline into AI: learning GenAI & Agentic AI through a Master's program, and building real AI-powered tools on the side to apply it hands-on. The largest is a local AI coding orchestrator that runs a 35B model on one 6 GB GPU and verifies every step the model writes instead of trusting it.",
     ],
     aboutClosing: "QA taught me how payment systems break. Now I'm learning to build and evaluate the AI systems that come next.",
     skills: ["EMV & ISO-8583", "PCI DSS Compliance", "REST API Automation (Python)", "UI Automation (Selenium, BrowserStack)", "Settlement & Reconciliation", "JIRA & Zephyr", "SQL / DBeaver", "GenAI / LLMs (learning)", "Agentic AI (learning)", "React & Next.js"],

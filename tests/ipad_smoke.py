@@ -4,14 +4,17 @@ Drives a running build through Playwright's iPad device profiles (touch and
 mobile emulation on, so `(pointer: coarse)` matches like a real iPad) and
 checks the things that broke on tablets before: route switching between `/`
 and `/recruiters`, the menu's in-page anchors, horizontal overflow, and the
-tablet gate that skips WebGL, Lenis and the native ViewTransition.
+tablet gate that skips WebGL, Lenis and the native ViewTransition. Also checks
+release facts: designation, card schemes, the pill rule, and (v1.3.0) that the
+orchestrator leads Work on both routes with its report linked.
+
+Writes results.json and hero, Experience and Work screenshots per profile.
 
 Usage (against a production build, not `next dev`):
     npm run build && npm run start -- -p 3002
     python tests/ipad_smoke.py http://localhost:3002 docs/test-results/<date>-ipad [--gpu] [--only NAME]
 
-Exits non-zero if any profile fails. Writes results.json and one hero plus
-one Experience screenshot per profile into the output folder.
+Exits non-zero if any profile fails.
 
 Limitation: this is Chromium emulating iPad, not Safari on iPadOS. Real-device
 or WebKit runs are still the stronger proof.
@@ -118,8 +121,17 @@ def run_profile(browser, base, name, desc, outdir):
     r["pill_hidden_recruiter"] = not page.evaluate(header_has_pill)
     r["resume_pdf"] = page.request.head(base + "/resume-shakti-mohapatra.pdf").status
     r["case_study"] = page.request.get(base + "/work/aegisqa").status
+    # v1.3.0: the orchestrator leads Work on both routes, and its report is linked on both.
+    first_project = "() => document.querySelector('#work h3')?.textContent.trim()"
+    report_link = "() => document.querySelectorAll('#work a[href=\"/work/orchestrator\"]').length"
+    flagship = {"/recruiters": [page.evaluate(first_project), page.evaluate(report_link)]}
+    r["flagship_report"] = page.request.get(base + "/work/orchestrator").status
+    r["flagship_thumb"] = page.request.head(base + "/projects/orchestrator-1.webp").status
     page.goto(base + "/", wait_until="networkidle")
     r["pill_shown_client"] = page.evaluate(header_has_pill)
+    flagship["/"] = [page.evaluate(first_project), page.evaluate(report_link)]
+    r["flagship"] = flagship
+    r["flagship_ok"] = all(t == "Local AI Orchestrator" and n == 1 for t, n in flagship.values())
     page.goto(base + "/recruiters", wait_until="networkidle")
     page.wait_for_timeout(1500)
 
@@ -128,6 +140,9 @@ def run_profile(browser, base, name, desc, outdir):
     page.evaluate("document.getElementById('experience').scrollIntoView({behavior: 'instant'})")
     page.wait_for_timeout(1200)
     page.screenshot(path=str(outdir / f"{slug}-experience.jpg"), type="jpeg", quality=55)
+    page.evaluate("document.getElementById('work').scrollIntoView({behavior: 'instant'})")
+    page.wait_for_timeout(1200)
+    page.screenshot(path=str(outdir / f"{slug}-work.jpg"), type="jpeg", quality=55)
 
     r["errors"] = errors
     expect_gate = touch or desc["viewport"]["width"] <= 1024
@@ -140,6 +155,7 @@ def run_profile(browser, base, name, desc, outdir):
         and all(v == "ok" for v in anchors.values())
         and r["stixis_listed"] and r["resume_pdf"] == 200 and r["case_study"] == 200
         and r["facts_ok"] and r["pill_hidden_recruiter"] and r["pill_shown_client"]
+        and r["flagship_ok"] and r["flagship_report"] == 200 and r["flagship_thumb"] == 200
         and not errors
     )
     ctx.close()
