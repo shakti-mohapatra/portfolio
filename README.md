@@ -6,6 +6,8 @@ Source for [my portfolio site](https://portfolio-xi-lilac-71.vercel.app) — Nex
 
 This repo tracks the **last shipped production build**. Active development has moved to a private repo — this one gets updated when something ships, not while it's being worked on.
 
+In review: **v1.3.0** on branch `feat/orchestrator-flagship`. The Local AI Orchestrator becomes the flagship project on both routes, with a new lead case study. See the [CHANGELOG](CHANGELOG.md).
+
 Current release: **v1.2.0** (14 October 2026). The designation is aligned with the appointment letter (Senior QA Engineer), the L3 scheme list and the Selenium wording are corrected, the "Available" pill is on the client route only, and the résumé PDF is ATS-safe. Before release it passed a 9-profile iPad smoke test. See [CHANGELOG.md](CHANGELOG.md) for every release.
 
 Previous: fixed a P0 bug where switching between `/` and `/recruiters` froze the page for 4-6 seconds on real mobile/tablet devices (native View Transition snapshotting a live WebGL canvas + heavy blur while the canvas and scroll library both re-initialized mid-navigation).

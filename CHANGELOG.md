@@ -4,6 +4,22 @@ Every release that reaches production gets an entry here and a matching git tag 
 
 Versioning: **major** for a redesign or structural change, **minor** for new content or features, **patch** for fixes only. Test evidence for a release lives in `docs/test-results/`.
 
+## v1.3.0, unreleased (on branch `feat/orchestrator-flagship`, awaiting Shakti's review)
+
+Merging this branch to `main` deploys it. Tag `v1.3.0` on the merge commit.
+
+**Content**
+- New flagship project, **Local AI Orchestrator**, first on both routes. It is a coding pipeline that runs a 35B model on one 6 GB GPU and verifies every step the model writes. The client route gets a plain-English description (`descPlain`), and the recruiter route gets the technical one. Every figure comes from the orchestrator repo's own records.
+- New case study **01, "Every check passed. Search never worked."**, in the existing defect-report format. It covers the first real job the orchestrator built, which reported green while the program never terminated, and the unsatisfiable spec that broke search in 4 of 4 builds. The existing case studies move to 02 to 05, with their order and text unchanged.
+- The flagship's "Read the report" link also shows on the client route. Other cards keep it on the recruiter route only (new optional `reportOn` field on `Project`).
+- Other cards moved down one place on each route. Their relative order is unchanged.
+- Client stat "Real projects shipped" went from 5 to 6. The recruiter bio names the orchestrator, and the "Now Learning" skills gain "Local LLMs (llama.cpp)".
+- New thumbnail `public/projects/orchestrator-1.webp` (1920x1440, WebP q84). It shows the pipeline next to real output: the frozen-suite verify, a 121-test pytest run and the recorded mutation report. None of it is mocked.
+
+**Testing**
+- `tests/ipad_smoke.py` now checks that the orchestrator leads Work on both routes and that its report is linked from both, that `/work/orchestrator` returns 200, and that the thumbnail returns 200. It also saves a Work screenshot per profile.
+- Pre-release checks: tsc clean, eslint clean on changed files, production build green, canonical tags checked in the built HTML. iPad smoke results and desktop/phone screenshots are in [`docs/test-results/2026-10-23-ipad-v1.3.0/`](docs/test-results/2026-10-23-ipad-v1.3.0/README.md).
+
 ## v1.2.0, 14 October 2026
 
 **Content**
